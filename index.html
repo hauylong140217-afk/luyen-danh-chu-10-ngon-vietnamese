@@ -2,263 +2,226 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Typing Master - Rain Mode</title>
+    <title>Typing Master Pro - Gemini & Ha Uy Long</title>
     <style>
         :root {
-            --bg: #f0f2f5; --sidebar-w: 240px; --primary: #007bff;
-            --success: #28a745; --danger: #dc3545; --dark: #2f3542;
+            --bg: #f4f7f6; --sidebar-w: 240px; --primary: #007bff;
+            --success: #28a745; --danger: #dc3545; --dark: #2d3436;
         }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
         /* Sidebar */
-        .sidebar { width: var(--sidebar-w); background: var(--dark); color: white; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .sidebar h2 { padding: 20px; font-size: 18px; border-bottom: 1px solid #444; margin: 0; color: var(--primary); text-align: center; }
-        .nav-item { padding: 12px 20px; color: #ccc; text-decoration: none; display: flex; align-items: center; cursor: pointer; transition: 0.3s; font-size: 14px; border-bottom: 1px solid #3e4451; }
-        .nav-item:hover { background: #3e4451; color: white; }
+        .sidebar { width: var(--sidebar-w); background: var(--dark); color: white; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .sidebar h2 { padding: 25px 20px; font-size: 20px; border-bottom: 1px solid #444; margin: 0; color: var(--primary); text-align: center; letter-spacing: 1px; }
+        .nav-list { flex: 1; overflow-y: auto; padding: 10px 0; }
+        .nav-item { padding: 12px 25px; color: #dfe6e9; text-decoration: none; display: block; cursor: pointer; transition: 0.3s; font-size: 14px; border-left: 4px solid transparent; }
+        .nav-item:hover, .nav-item.active { background: #3b444b; color: white; border-left-color: var(--primary); }
 
         /* Main Content */
-        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .container { padding: 30px; display: flex; flex-direction: column; align-items: center; min-height: 100%; }
-
-        /* Game Screen */
-        #game-stage { 
-            width: 800px; height: 550px; background: #1a1a2e; border-radius: 15px; 
-            position: relative; overflow: hidden; border: 4px solid #333;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .falling-word { 
-            position: absolute; color: #00d4ff; font-family: 'Consolas', monospace; 
-            font-size: 22px; font-weight: bold; white-space: nowrap;
-            text-shadow: 0 0 8px rgba(0, 212, 255, 0.8);
-            background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;
-        }
-        .falling-word.typing { color: #ffeb3b; border: 1px solid #ffeb3b; }
+        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .container { padding: 40px; display: flex; flex-direction: column; align-items: center; min-height: 100%; }
 
         /* Stats Bar */
-        .stats-bar { display: flex; width: 800px; background: white; padding: 15px; border-radius: 10px; justify-content: space-around; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stats-bar { display: flex; width: 850px; background: white; padding: 20px; border-radius: 12px; justify-content: space-around; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .stat-box { text-align: center; }
-        .stat-val { display: block; font-size: 22px; font-weight: bold; color: var(--dark); }
+        .stat-val { display: block; font-size: 24px; font-weight: 700; color: var(--dark); }
+        .stat-label { font-size: 12px; color: #636e72; text-transform: uppercase; margin-top: 5px; }
 
-        /* Buttons & Overlay */
-        .btn-start { padding: 15px 40px; font-size: 18px; background: var(--success); color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; }
-        #game-overlay { position:absolute; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; color: white; }
-
-        /* Typing & Modal (Giữ nguyên từ code cũ) */
-        .typing-box { width: 850px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .text-display { font-family: 'Consolas', monospace; font-size: 24px; line-height: 1.8; margin-bottom: 25px; white-space: pre-wrap; color: #999; }
-        .char.current { border-bottom: 3px solid var(--primary); background: #e7f1ff; color: #000; }
+        /* Typing Area */
+        .typing-box { width: 850px; background: white; padding: 45px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); position: relative; }
+        .text-display { 
+            font-family: 'Consolas', 'Courier New', monospace; font-size: 28px; line-height: 2.2; 
+            margin-bottom: 20px; white-space: pre-wrap; color: #b2bec3;
+            text-align: left; word-spacing: 8px;
+        }
+        .char { border-bottom: 3px solid transparent; position: relative; }
+        .char.current { border-bottom-color: var(--primary); background: #e1f5fe; color: #0984e3; border-radius: 2px; }
         .char.correct { color: #2ecc71; }
-        .char.wrong { background: var(--danger); color: white; }
-        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 20px; box-shadow: 0 0 100px rgba(0,0,0,0.5); display: none; z-index: 1000; text-align: center; width: 400px; }
-        #input-hidden { position: absolute; opacity: 0; }
+        .char.wrong { background: #ff7675; color: white; border-radius: 2px; }
+
+        /* Modal Results */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 1000; align-items: center; justify-content: center; }
+        .modal { background: white; padding: 40px; border-radius: 25px; text-align: center; width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal h2 { color: var(--success); margin-bottom: 25px; font-size: 28px; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; text-align: left; background: #f9f9f9; padding: 20px; border-radius: 15px; }
+        
+        .btn { padding: 14px 30px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-retry { background: #636e72; color: white; }
+        .btn-next:hover { background: #0056b3; transform: translateY(-2px); }
+
+        #input-hidden { position: absolute; opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2>TYPING MASTER</h2>
-        <a class="nav-item" onclick="location.reload()">🏠 Trang chủ</a>
-        <div id="lesson-list"></div>
-        <a class="nav-item" onclick="showScreen('game')">🎮 Trò chơi rơi chữ</a>
-        <a class="nav-item" onclick="showScreen('about')">ℹ Giới thiệu</a>
+        <h2>TYPING PRO</h2>
+        <div class="nav-list" id="lesson-list"></div>
+        <div style="padding: 20px; border-top: 1px solid #444; font-size: 12px; color: #888; text-align: center;">
+            By Gemini & Ha Uy Long
+        </div>
     </div>
 
     <div class="main">
-        <div id="screen-home" class="container">
-            <h1 style="font-size: 45px;">Mưa Từ Vựng</h1>
-            <p>Thử thách gõ phím tốc độ cao cùng Gemini & Ha Uy Long</p>
-            <button class="btn-start" onclick="startLesson(1)">BẮT ĐẦU HỌC</button>
-            <button class="btn-start" style="background: var(--primary);" onclick="showScreen('game')">VÀO TRÒ CHƠI</button>
-        </div>
-
-        <div id="screen-typing" class="container" style="display:none">
-            <div class="stats-bar"><div class="stat-box"><span class="stat-val" id="s-progress">0%</span></div><div class="stat-box"><span class="stat-val" id="s-wpm">0</span> WPM</div></div>
-            <div class="typing-box"><div id="text-display" class="text-display"></div></div>
-        </div>
-
-        <div id="screen-game" class="container" style="display:none">
-            <div class="stats-bar" style="width: 800px;">
-                <div class="stat-box"><span class="stat-val" id="g-score">0</span><span class="stat-label">ĐIỂM</span></div>
-                <div class="stat-box"><span class="stat-val" id="g-level">1</span><span class="stat-label">CẤP ĐỘ</span></div>
-                <div class="stat-box"><span class="stat-val" id="g-lives">5</span><span class="stat-label">MẠNG</span></div>
+        <div class="container">
+            <div class="stats-bar">
+                <div class="stat-box"><span class="stat-val" id="s-progress">0%</span><span class="stat-label">Tiến độ</span></div>
+                <div class="stat-box"><span class="stat-val" id="s-wpm">0</span><span class="stat-label">Từ/Phút</span></div>
+                <div class="stat-box"><span class="stat-val" id="s-errors">0</span><span class="stat-label">Lỗi sai</span></div>
+                <div class="stat-box"><span class="stat-val" id="s-acc">100%</span><span class="stat-label">Chính xác</span></div>
             </div>
-            <div id="game-stage">
-                <div id="game-overlay">
-                    <h2>MƯA TỪ VỰNG</h2>
-                    <p>Nhiều khối sẽ rơi ngẫu nhiên. Gõ đúng từ để phá hủy chúng!</p>
-                    <button class="btn-start" onclick="initGame()">START GAME</button>
-                </div>
-                <div id="word-container"></div>
-            </div>
-        </div>
 
-        <div id="screen-about" class="container" style="display:none">
-            <h1>Giới thiệu</h1>
-            <p>By <b>Gemini</b> and <b>Ha Uy Long</b>. Thanks for playing typing!</p>
+            <div class="typing-box">
+                <div id="lesson-title" style="font-size: 18px; color: var(--primary); font-weight: bold; margin-bottom: 15px;">Bài học 1</div>
+                <div id="text-display" class="text-display"></div>
+            </div>
         </div>
     </div>
 
-    <div id="result-modal" class="modal">
-        <h2>HOÀN THÀNH</h2>
-        <div id="res-detail" style="margin:20px 0;"></div>
-        <button class="btn-start" onclick="nextLesson()">BÀI TIẾP THEO</button>
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2>KẾT QUẢ BÀI TẬP</h2>
+            <div class="result-grid" id="res-grid"></div>
+            <div style="margin-top: 30px;">
+                <button class="btn btn-retry" onclick="startLesson(curLesson)">LUYỆN LẠI</button>
+                <button class="btn btn-next" onclick="nextLesson()">BÀI TIẾP THEO ➡️</button>
+            </div>
+        </div>
     </div>
 
-    <input type="text" id="input-hidden">
+    <input type="text" id="input-hidden" autofocus>
 
     <script>
-        const lessons = { 1: "aa ss dd ff jj\nkk ll ;; aa ss\ndd ff jj kk ll\naa ss dd ff jj\nkk ll ;; aa ss" };
-        const alpha = "qwertyuiopasdfghjklzxcvbnm";
-        const vnSigns = ["á", "à", "ả", "ã", "ạ", "đ", "ê", "ô", "ư"];
-        
-        let curLesson = 1, charIdx = 0, gameActive = false, lives = 5, level = 1, score = 0;
-        let fallingWords = []; // Danh sách các object word đang rơi
-        let currentTypingInput = "";
-
-        window.onload = () => {
-            const list = document.getElementById('lesson-list');
-            for(let i=1; i<=15; i++) {
-                let a = document.createElement('a'); a.className = 'nav-item'; a.innerText = `Bài học ${i}`;
-                a.onclick = () => startLesson(i); list.appendChild(a);
-            }
-            showScreen('home');
+        const lessonsData = {
+            1: "aa ss dd ff jj\nkk ll ;; aa ss\ndd ff jj kk ll\naa ss dd ff jj\nkk ll ;; aa ss",
+            2: "asdf jkl; asdf\njkl; asdf jkl;\nasdf jkl; asdf\njkl; asdf jkl;\nasdf jkl; asdf",
+            3: "fj fj fj dk dk\nsl sl a; a; fj\ndk sl a; fj dk\nsl a; fj dk sl\na; fj dk sl a;",
+            4: "aaa sss ddd fff\njjj kkk lll ;;;\nasdf jkl; asdf\njkl; asdf jkl;\na s d f j k l ;",
+            5: "ee rr tt uu ii\nee rr tt uu ii\ner tu ri et ru\nit re ut ir te\nee rr tt uu ii"
         };
 
-        function showScreen(id) {
-            ['home', 'typing', 'game', 'about'].forEach(s => document.getElementById('screen-'+s).style.display = 'none');
-            document.getElementById('screen-'+id).style.display = 'flex';
-            gameActive = false;
-            document.getElementById('word-container').innerHTML = "";
-            fallingWords = [];
+        let curLesson = 1, charIdx = 0, errors = 0, startTime = null, timerIdx;
+        let keyScores = {}; // Lưu trữ số lần gõ đúng/sai của từng phím
+
+        // Khởi tạo Sidebar
+        const listEl = document.getElementById('lesson-list');
+        for(let i=1; i<=15; i++) {
+            const item = document.createElement('a');
+            item.className = 'nav-item';
+            item.id = 'L' + i;
+            item.innerText = `Bài học ${i}`;
+            item.onclick = () => startLesson(i);
+            listEl.appendChild(item);
         }
 
-        // --- LOGIC GAME MỚI ---
-        function initGame() {
-            document.getElementById('game-overlay').style.display = 'none';
-            gameActive = true; lives = 5; level = 1; score = 0;
-            document.getElementById('g-lives').innerText = lives;
-            document.getElementById('g-level').innerText = level;
-            document.getElementById('g-score').innerText = score;
-            gameLoop();
-            spawnInterval = setInterval(spawnWord, 2000); // Cứ 2 giây tạo 1 từ mới
-        }
-
-        function spawnWord() {
-            if(!gameActive) return;
-            
-            // Tạo từ ngẫu nhiên
-            let wordText = "";
-            let len = Math.min(2 + Math.floor(level/4), 7);
-            for(let i=0; i<len; i++) wordText += alpha[Math.floor(Math.random()*alpha.length)];
-            if(level > 5) wordText += vnSigns[Math.floor(Math.random()*vnSigns.length)];
-
-            const wordObj = {
-                text: wordText,
-                x: Math.random() * (700 - 50),
-                y: -30,
-                speed: 1 + (level * 0.2) + Math.random(),
-                el: document.createElement('div')
-            };
-
-            wordObj.el.className = 'falling-word';
-            wordObj.el.innerText = wordText;
-            wordObj.el.style.left = wordObj.x + 'px';
-            document.getElementById('word-container').appendChild(wordObj.el);
-            fallingWords.push(wordObj);
-
-            // Tăng độ khó: rút ngắn thời gian tạo từ tiếp theo
-            clearInterval(spawnInterval);
-            let nextSpawn = Math.max(500, 2000 - (level * 100));
-            spawnInterval = setInterval(spawnWord, nextSpawn);
-        }
-
-        function gameLoop() {
-            if(!gameActive) return;
-
-            for(let i = fallingWords.length - 1; i >= 0; i--) {
-                let w = fallingWords[i];
-                w.y += w.speed;
-                w.el.style.top = w.y + 'px';
-
-                // Nếu chạm đất
-                if(w.y > 520) {
-                    w.el.remove();
-                    fallingWords.splice(i, 1);
-                    lives--;
-                    document.getElementById('g-lives').innerText = lives;
-                    if(lives <= 0) gameOver();
-                }
-            }
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Xử lý gõ phím trong Game (Chơi vô hạn)
-        window.addEventListener('keydown', (e) => {
-            if(!gameActive) return;
-            
-            if(e.key === "Backspace") {
-                currentTypingInput = "";
-            } else if(e.key.length === 1) {
-                currentTypingInput += e.key;
-            }
-
-            let found = false;
-            for(let i = 0; i < fallingWords.length; i++) {
-                let w = fallingWords[i];
-                if(w.text.startsWith(currentTypingInput)) {
-                    w.el.classList.add('typing');
-                    // Nếu gõ xong hoàn toàn 1 từ
-                    if(w.text === currentTypingInput) {
-                        w.el.remove();
-                        fallingWords.splice(i, 1);
-                        score += 10;
-                        document.getElementById('g-score').innerText = score;
-                        currentTypingInput = "";
-                        if(score % 50 === 0) { // Cứ 50 điểm lên 1 cấp
-                            level++;
-                            document.getElementById('g-level').innerText = level;
-                        }
-                        found = true;
-                        break;
-                    }
-                    found = true;
-                } else {
-                    w.el.classList.remove('typing');
-                }
-            }
-            if(!found) currentTypingInput = ""; 
-        });
-
-        function gameOver() {
-            gameActive = false;
-            clearInterval(spawnInterval);
-            alert("BẠN HẾT MẠNG! \nĐiểm số: " + score + "\nCấp độ: " + level);
-            document.getElementById('game-overlay').style.display = 'flex';
-        }
-
-        // --- PHẦN BÀI HỌC (GIỮ NGUYÊN LOGIC CŨ) ---
         function startLesson(n) {
-            curLesson = n; charIdx = 0;
-            const text = lessons[n] || lessons[1];
-            document.getElementById('text-display').innerHTML = text.split('').map((c, i) => c === '\n' ? '<br>' : `<span class="char ${i===0?'current':''}">${c}</span>`).join('');
-            showScreen('typing');
+            curLesson = n; charIdx = 0; errors = 0; startTime = null; keyScores = {};
+            clearInterval(timerIdx);
+            
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('lesson-title').innerText = `Bài học ${n}`;
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('L'+n).classList.add('active');
+
+            const text = lessonsData[n] || lessonsData[1].replace(/a/g, 'x'); // Dự phòng bài chưa nhập
+            const display = document.getElementById('text-display');
+            
+            display.innerHTML = text.split('').map((c, i) => {
+                if(c === '\n') return `<br>`;
+                return `<span class="char ${i===0?'current':''}">${c}</span>`;
+            }).join('');
+
+            updateStats();
+            document.getElementById('input-hidden').value = "";
             document.getElementById('input-hidden').focus();
         }
 
+        function nextLesson() {
+            if (curLesson < 15) startLesson(curLesson + 1);
+            else { alert("Tuyệt vời! Bạn đã hoàn thành toàn bộ 15 bài học!"); location.reload(); }
+        }
+
         document.getElementById('input-hidden').addEventListener('input', (e) => {
-            const val = e.target.value; e.target.value = "";
+            const val = e.target.value;
             const charSpans = document.querySelectorAll('.char');
             if(charIdx >= charSpans.length) return;
-            if(val[val.length-1] === charSpans[charIdx].innerText) {
-                charSpans[charIdx].className = 'char correct'; charIdx++;
-                if(charIdx < charSpans.length) charSpans[charIdx].classList.add('current');
+
+            if(!startTime) { 
+                startTime = new Date(); 
+                timerIdx = setInterval(updateStats, 1000); 
+            }
+
+            const targetChar = charSpans[charIdx].innerText;
+            const keyName = targetChar.toLowerCase();
+
+            // Khởi tạo bộ đếm phím
+            if(!keyScores[keyName]) keyScores[keyName] = { correct: 0, total: 0 };
+            keyScores[keyName].total++;
+
+            if(val[val.length-1] === targetChar) {
+                charSpans[charIdx].className = 'char correct';
+                keyScores[keyName].correct++;
+                charIdx++;
             } else {
                 charSpans[charIdx].classList.add('wrong');
+                errors++;
             }
-            if(charIdx === charSpans.length) document.getElementById('result-modal').style.display = 'block';
+
+            e.target.value = "";
+            
+            if(charIdx < charSpans.length) {
+                charSpans.forEach(s => s.classList.remove('current'));
+                charSpans[charIdx].classList.add('current');
+                updateStats();
+            } else {
+                finishSession();
+            }
         });
 
-        document.addEventListener('click', () => { if(gameActive) return; document.getElementById('input-hidden').focus(); });
+        function updateStats() {
+            const charSpans = document.querySelectorAll('.char');
+            const progress = Math.round((charIdx / charSpans.length) * 100);
+            document.getElementById('s-progress').innerText = progress + "%";
+            document.getElementById('s-errors').innerText = errors;
+            
+            const acc = charIdx === 0 ? 100 : Math.round(((charIdx - errors) / charIdx) * 100);
+            document.getElementById('s-acc').innerText = Math.max(0, acc) + "%";
+
+            if(startTime) {
+                const sec = (new Date() - startTime) / 1000;
+                const wpm = Math.round((charIdx / 5) / (sec / 60));
+                document.getElementById('s-wpm').innerText = wpm || 0;
+            }
+        }
+
+        function finishSession() {
+            clearInterval(timerIdx);
+            const grid = document.getElementById('res-grid');
+            grid.innerHTML = "";
+
+            // Chỉ liệt kê các phím có trong bài tập vừa gõ
+            for(let key in keyScores) {
+                if(key === " " || key === "") continue;
+                const stats = keyScores[key];
+                const acc = Math.round((stats.correct / stats.total) * 100);
+                const color = acc > 80 ? '#27ae60' : (acc > 50 ? '#f39c12' : '#e74c3c');
+                grid.innerHTML += `
+                    <div style="font-size: 16px;">
+                        Phím <b>${key.toUpperCase()}</b>: 
+                        <span style="color: ${color}; font-weight: bold;">${acc}%</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }
+
+        // Tự động focus vào ô nhập
+        document.addEventListener('click', () => document.getElementById('input-hidden').focus());
+        
+        // Bắt đầu với bài 1
+        window.onload = () => startLesson(1);
     </script>
 </body>
 </html>
