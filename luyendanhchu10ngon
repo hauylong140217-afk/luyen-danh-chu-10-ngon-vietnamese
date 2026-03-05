@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Typing Master - Phiên bản Tùy chỉnh</title>
+    <style>
+        :root {
+            --bg: #dee2e6; --panel: #f8f9fa; --text: #212529;
+            --primary: #007bff; --success: #28a745; --danger: #dc3545;
+            --key-bg: #ffffff;
+        }
+        [data-theme="dark"] {
+            --bg: #212529; --panel: #343a40; --text: #f8f9fa;
+            --key-bg: #495057;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* Stats Bar */
+        .stats { display: flex; width: 900px; background: var(--panel); padding: 15px; border-radius: 8px; justify-content: space-around; margin-bottom: 20px; border: 1px solid #adb5bd; }
+        .stat-item { text-align: center; }
+        .stat-label { font-size: 12px; display: block; opacity: 0.8; }
+        .stat-val { font-size: 20px; font-weight: bold; }
+
+        /* Typing Area */
+        .typing-container { width: 900px; background: var(--panel); padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .display-text { font-family: 'Consolas', monospace; font-size: 28px; line-height: 1.5; background: white; color: #333; padding: 20px; border-radius: 8px; border: 2px solid #ced4da; margin-bottom: 20px; white-space: pre-wrap; }
+        .char { position: relative; border-bottom: 3px solid transparent; }
+        .current { border-bottom-color: var(--primary); background: #e7f1ff; }
+        .correct { color: #aaa; }
+        .wrong { background: var(--danger); color: white; }
+
+        /* Keyboard */
+        .keyboard { display: grid; gap: 5px; justify-content: center; background: #adb5bd; padding: 10px; border-radius: 10px; }
+        .row { display: flex; gap: 5px; }
+        .key { width: 45px; height: 45px; background: var(--key-bg); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 1px solid #6c757d; }
+        .key.active { background: var(--success); color: white; transform: scale(0.95); }
+        .key.error { background: var(--danger); color: white; }
+        .key.space { width: 250px; }
+
+        /* Control Buttons */
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; background: var(--primary); color: white; font-weight: bold; }
+        #input-trigger { position: absolute; opacity: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="toggleTheme()">Sáng/Tối 🌙</button>
+        <button onclick="resetGame()">Làm mới bài tập 🔄</button>
+        <span style="align-self: center;">Kỷ lục của bạn: <b id="high-score">0</b> WPM</span>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item"><span class="stat-label">Tiến độ</span><span class="stat-val" id="progress">0%</span></div>
+        <div class="stat-item"><span class="stat-label">Từ/Phút (WPM)</span><span class="stat-val" id="wpm">0</span></div>
+        <div class="stat-item"><span class="stat-label">Lỗi</span><span class="stat-val" id="errors">0</span></div>
+        <div class="stat-item"><span class="stat-label">Chính xác</span><span class="stat-val" id="accuracy">100%</span></div>
+        <div class="stat-item"><span class="stat-label">Thời gian</span><span class="stat-val" id="timer">00:00</span></div>
+    </div>
+
+    <div class="typing-container">
+        <div class="display-text" id="display-text"></div>
+        <input type="text" id="input-trigger" autofocus>
+
+        <div class="keyboard" id="keyboard">
+            <div class="row">
+                <div class="key" id="k-q">q</div><div class="key" id="k-w">w</div><div class="key" id="k-e">e</div><div class="key" id="k-r">r</div><div class="key" id="k-t">t</div>
+                <div class="key" id="k-y">y</div><div class="key" id="k-u">u</div><div class="key" id="k-i">i</div><div class="key" id="k-o">o</div><div class="key" id="k-p">p</div>
+            </div>
+            <div class="row">
+                <div class="key" id="k-a">a</div><div class="key" id="k-s">s</div><div class="key" id="k-d">d</div><div class="key" id="k-f">f</div><div class="key" id="k-g">g</div>
+                <div class="key" id="k-h">h</div><div class="key" id="k-j">j</div><div class="key" id="k-k">k</div><div class="key" id="k-l">l</div><div class="key" id="k-;">;</div>
+            </div>
+            <div class="row">
+                <div class="key" id="k-z">z</div><div class="key" id="k-x">x</div><div class="key" id="k-c">c</div><div class="key" id="k-v">v</div><div class="key" id="k-b">b</div>
+                <div class="key" id="k-n">n</div><div class="key" id="k-m">m</div><div class="key space" id="k- ">Dấu cách</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nội dung bài 3 Tiếng Việt - Các phím hàng cơ sở
+        const lesson = "asdf jkl; asdf jkl; aass ddf fjj kk ll ;; asdf jkl;";
+        let charIndex = 0, errors = 0, startTime = null, timerInterval;
+
+        const display = document.getElementById('display-text');
+        const input = document.getElementById('input-trigger');
+        const highScoreEl = document.getElementById('high-score');
+
+        // Âm thanh giả lập (có thể thay bằng file mp3)
+        const playSound = (type) => {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(type === 'correct' ? 440 : 150, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            osc.start(); osc.stop(ctx.currentTime + 0.05);
+        };
+
+        function init() {
+            display.innerHTML = lesson.split('').map((c, i) => `<span class="char ${i===0?'current':''}">${c}</span>`).join('');
+            highScoreEl.innerText = localStorage.getItem('highScore') || 0;
+            updateKeyboard();
+        }
+
+        input.addEventListener('input', () => {
+            if (!startTime) { startTime = new Date(); timerInterval = setInterval(updateTimer, 1000); }
+            
+            const typed = input.value;
+            const target = lesson[charIndex];
+            const charSpans = display.querySelectorAll('.char');
+
+            if (typed[typed.length - 1] === target) {
+                charSpans[charIndex].className = 'char correct';
+                charIndex++;
+                if (charIndex < lesson.length) charSpans[charIndex].classList.add('current');
+                playSound('correct');
+            } else {
+                charSpans[charIndex].classList.add('wrong');
+                errors++;
+                playSound('wrong');
+                highlightError(typed[typed.length - 1]);
+            }
+
+            input.value = "";
+            updateStats();
+            updateKeyboard();
+
+            if (charIndex === lesson.length) finish();
+        });
+
+        function updateStats() {
+            document.getElementById('progress').innerText = Math.round((charIndex / lesson.length) * 100) + "%";
+            document.getElementById('errors').innerText = errors;
+            const acc = charIndex === 0 ? 100 : Math.round(((charIndex - errors) / charIndex) * 100);
+            document.getElementById('accuracy').innerText = (acc < 0 ? 0 : acc) + "%";
+        }
+
+        function updateTimer() {
+            const seconds = Math.floor((new Date() - startTime) / 1000);
+            document.getElementById('timer').innerText = new Date(seconds * 1000).toISOString().substr(14, 5);
+            const wpm = Math.round((charIndex / 5) / (seconds / 60)) || 0;
+            document.getElementById('wpm').innerText = wpm;
+        }
+
+        function updateKeyboard() {
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+            if (charIndex < lesson.length) {
+                const key = document.getElementById('k-' + lesson[charIndex].toLowerCase());
+                if (key) key.classList.add('active');
+            }
+        }
+
+        function highlightError(char) {
+            const key = document.getElementById('k-' + char.toLowerCase());
+            if (key) {
+                key.classList.add('error');
+                setTimeout(() => key.classList.remove('error'), 200);
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        function finish() {
+            clearInterval(timerInterval);
+            const finalWpm = document.getElementById('wpm').innerText;
+            const currentHigh = localStorage.getItem('highScore') || 0;
+            if (parseInt(finalWpm) > parseInt(currentHigh)) {
+                localStorage.setItem('highScore', finalWpm);
+                alert("KỶ LỤC MỚI: " + finalWpm + " WPM!");
+            } else {
+                alert("Hoàn thành! Tốc độ: " + finalWpm + " WPM.");
+            }
+            resetGame();
+        }
+
+        function resetGame() { location.reload(); }
+        document.addEventListener('click', () => input.focus());
+        init();
+    </script>
+</body>
+</html>
