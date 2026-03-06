@@ -2,53 +2,96 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Luyện Gõ Tiếng Việt - Hướng Dẫn Ngón Tay</title>
+    <title>Luyện Gõ 10 Ngón - Full Version</title>
     <style>
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; }
-        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        .sidebar { width: 220px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; padding: 10px 0; }
-        .nav-item { padding: 6px 20px; color: #0056b3; text-decoration: none; display: block; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .nav-item.active { font-weight: bold; background: #e7f1ff; border-right: 4px solid var(--primary); }
+        /* Sidebar */
+        .sidebar { width: 220px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; padding: 10px 0; }
+        .nav-item { padding: 10px 20px; color: #333; text-decoration: none; cursor: pointer; font-size: 14px; transition: 0.2s; border-left: 4px solid transparent; }
+        .nav-item.active { background: #e7f1ff; border-left-color: var(--primary); font-weight: bold; color: var(--primary); }
 
         .main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto; }
         
-        #unikey-note { width: 100%; max-width: 600px; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #ffeeba; text-align: center; font-weight: bold; }
+        /* Bảng hướng dẫn gõ dấu (Dựa trên ảnh của bạn) */
+        .guide-container { width: 100%; max-width: 900px; margin-bottom: 20px; display: none; }
+        .guide-table { width: 100%; border-collapse: collapse; background: white; border: 2px solid #333; }
+        .guide-table th, .guide-table td { border: 1px solid #333; padding: 8px; text-align: center; font-weight: bold; }
+        .guide-table th { background: #f8f9fa; font-size: 16px; }
+        .type-label { background: #eee; width: 80px; }
+        .key-highlight { color: var(--danger); font-size: 20px; }
 
-        .typing-box { width: 100%; max-width: 800px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); min-height: 80px; line-height: 2; margin-bottom: 20px; text-align: center; }
-        .word-label { font-family: 'Consolas', monospace; font-size: 32px; padding: 0 8px; color: #ccc; border-bottom: 3px solid transparent; }
-        .word-label.current { color: #000; background: #fff9c4; border-bottom-color: var(--primary); }
-        .word-label.correct { color: var(--success); }
-        .word-label.wrong { color: var(--danger); }
+        /* Khu vực hiển thị chữ gõ */
+        .typing-area { width: 100%; max-width: 900px; text-align: center; margin-bottom: 20px; min-height: 60px; }
+        .char-box { font-family: 'Consolas', monospace; font-size: 40px; color: #bbb; margin: 0 1px; display: inline-block; }
+        .char-box.current { color: #000; border-bottom: 4px solid var(--primary); background: rgba(0,123,255,0.1); }
+        .char-box.correct { color: var(--success); }
+        .char-box.wrong { color: var(--danger); background: rgba(220,53,69,0.1); }
 
         /* Bàn phím ảo */
-        .keyboard { background: #e9ecef; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        .kb-row { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
-        .key { width: 45px; height: 45px; background: white; border: 1px solid #ccc; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .key.active { background: var(--success) !important; color: white; transform: scale(1.05); box-shadow: 0 0 10px var(--success); }
+        .keyboard { background: #dee2e6; padding: 12px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .kb-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 6px; }
+        .key { width: 45px; height: 45px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 1px solid #ccc; }
+        .key.active { background: var(--success) !important; color: white; transform: translateY(2px); box-shadow: inset 0 3px 5px rgba(0,0,0,0.2); }
         .key.space { width: 250px; }
 
-        /* Sơ đồ bàn tay & Chấm xanh */
-        .hands-container { position: relative; width: 500px; height: 180px; background: #eee; border-radius: 10px; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 10px; transition: 0.3s; }
-        .hands-container.hidden { opacity: 0; pointer-events: none; }
-        .hand { width: 200px; height: 150px; border: 2px dashed #ccc; border-radius: 50% 50% 0 0; position: relative; display: flex; justify-content: space-around; padding-top: 20px; }
-        .finger { width: 20px; height: 20px; background: #ddd; border-radius: 50%; position: relative; }
-        .finger.active::after { content: ''; position: absolute; width: 14px; height: 14px; background: var(--success); border-radius: 50%; top: 3px; left: 3px; box-shadow: 0 0 8px var(--success); }
-        .hand-label { position: absolute; bottom: -25px; font-size: 12px; color: #888; }
+        /* SVG 10 ngón tay */
+        .hands-display { display: flex; gap: 80px; align-items: flex-end; }
+        .hand-svg { width: 180px; height: auto; fill: #d1d1d1; }
+        .finger-dot { fill: #d1d1d1; transition: 0.2s; }
+        .finger-dot.active { fill: var(--success); filter: drop-shadow(0 0 5px var(--success)); }
+        
+        #unikey-msg { color: #856404; background: #fff3cd; padding: 10px 25px; border-radius: 20px; margin-bottom: 15px; font-weight: bold; border: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebar-menu">
-        <a class="nav-item" onclick="location.reload()">🏠 Trang chủ</a>
-        <div id="lesson-links" style="margin-top: 10px;"></div>
+    <div class="sidebar">
+        <div style="padding: 20px; font-weight: bold; font-size: 18px; color: var(--primary);">TYPING MASTER</div>
+        <div id="lesson-links"></div>
     </div>
 
     <div class="main">
-        <div id="unikey-note" style="display:none">⚠️ Chuyển Unikey sang Tiếng Anh (E)</div>
+        <div id="unikey-msg" style="display:none">⚠️ CHUYỂN UNIKEY SANG CHẾ ĐỘ TIẾNG ANH (CHỮ E)</div>
 
-        <div class="typing-box" id="typing-box">
-            <div id="display-text">Chọn bài học 1-4 để thấy hướng dẫn ngón tay</div>
+        <div class="guide-container" id="viet-guide">
+            <table class="guide-table">
+                <tr>
+                    <th class="type-label" rowspan="2">TELEX</th>
+                    <th>Dấu sắc</th>
+                    <th>Dấu huyền</th>
+                    <th>Dấu hỏi</th>
+                    <th>Dấu ngã</th>
+                    <th>Dấu nặng</th>
+                </tr>
+                <tr>
+                    <td class="key-highlight">S</td>
+                    <td class="key-highlight">F</td>
+                    <td class="key-highlight">R</td>
+                    <td class="key-highlight">X</td>
+                    <td class="key-highlight">J</td>
+                </tr>
+                <tr>
+                    <th class="type-label" rowspan="2">VNI</th>
+                    <th>Dấu sắc</th>
+                    <th>Dấu huyền</th>
+                    <th>Dấu hỏi</th>
+                    <th>Dấu ngã</th>
+                    <th>Dấu nặng</th>
+                </tr>
+                <tr>
+                    <td class="key-highlight">1</td>
+                    <td class="key-highlight">2</td>
+                    <td class="key-highlight">3</td>
+                    <td class="key-highlight">4</td>
+                    <td class="key-highlight">5</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="typing-area" id="display-container">
+            <p style="color: #888; font-size: 20px;">Chọn bài học để bắt đầu luyện tập</p>
         </div>
 
         <div class="keyboard" id="kb-area">
@@ -58,31 +101,47 @@
             <div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>
         </div>
 
-        <div class="hands-container" id="hands-area">
-            <div class="hand" id="left-hand">
-                <div class="finger" id="f-left-5"></div> <div class="finger" id="f-left-4"></div> <div class="finger" id="f-left-3"></div> <div class="finger" id="f-left-2"></div> <div class="hand-label">TAY TRÁI</div>
-            </div>
-            <div class="hand" id="right-hand">
-                <div class="finger" id="f-right-2"></div> <div class="finger" id="f-right-3"></div> <div class="finger" id="f-right-4"></div> <div class="finger" id="f-right-5"></div> <div class="hand-label">TAY PHẢI</div>
-            </div>
-            <div class="finger" id="f-thumb" style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%)"></div>
-            <div style="position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:10px">NGÓN CÁI (CÁCH)</div>
+        <div class="hands-display" id="hands-area">
+            <svg class="hand-svg" viewBox="0 0 200 150">
+                <circle id="f-l-5" class="finger-dot" cx="30" cy="70" r="10" />
+                <circle id="f-l-4" class="finger-dot" cx="60" cy="40" r="10" />
+                <circle id="f-l-3" class="finger-dot" cx="100" cy="30" r="10" />
+                <circle id="f-l-2" class="finger-dot" cx="140" cy="45" r="10" />
+                <circle id="f-l-1" class="finger-dot" cx="170" cy="110" r="10" />
+                <path d="M20,150 Q20,80 50,50 T150,50 T180,150" fill="none" stroke="#ccc" stroke-width="2"/>
+            </svg>
+            <svg class="hand-svg" viewBox="0 0 200 150">
+                <circle id="f-r-1" class="finger-dot" cx="30" cy="110" r="10" />
+                <circle id="f-r-2" class="finger-dot" cx="60" cy="45" r="10" />
+                <circle id="f-r-3" class="finger-dot" cx="100" cy="30" r="10" />
+                <circle id="f-r-4" class="finger-dot" cx="140" cy="40" r="10" />
+                <circle id="f-r-5" class="finger-dot" cx="170" cy="70" r="10" />
+                <path d="M20,150 Q20,80 50,50 T150,50 T180,150" fill="none" stroke="#ccc" stroke-width="2"/>
+            </svg>
         </div>
     </div>
 
-    <input type="text" id="input-hidden" autofocus>
+    <input type="text" id="hidden-input" style="opacity: 0; position: absolute;">
 
     <script>
-        const lessons = { 1: "as af ar ax aj", 2: "sa fa ra xa ja", 3: "asdf jkl; asdf jkl;", 4: "aaaa ffff ssss jjjj", 5: "má mà mả mã mạ", 10: "lá lành đùm lá rách", 20: "hoàn thành khóa học" };
-        const fingerMap = {
-            'a': 'f-left-5', 's': 'f-left-4', 'd': 'f-left-3', 'f': 'f-left-2',
-            'j': 'f-right-2', 'k': 'f-right-3', 'l': 'f-right-4', ';': 'f-right-5',
-            ' ': 'f-thumb'
+        const lessons = {
+            1: "aaaa ssss dddd ffff jjjj kkkk llll ;;;;",
+            2: "asdf jkl; asdf jkl; asdf jkl;",
+            3: "aa ss dd ff jj kk ll ;; af jk sd l;",
+            4: "aaa sss ddd fff jjj kkk lll ;;;",
+            5: "má mà mả mã mạ cá cà cả mã mạ",
+            10: "lá lành đùm lá rách công cha như núi thái sơn",
+            20: "hoàn thành bài tập luyện gõ 10 ngón"
         };
 
-        let currentIdx = 0, words = [], curLsn = 0;
+        const fingerMap = {
+            'a': 'f-l-5', 's': 'f-l-4', 'd': 'f-l-3', 'f': 'f-l-2',
+            'j': 'f-r-2', 'k': 'f-r-3', 'l': 'f-r-4', ';': 'f-r-5',
+            ' ': 'f-r-1'
+        };
 
-        // Tạo Menu & Bàn phím
+        let currentIdx = 0, text = "", curLsn = 0;
+
         const menu = document.getElementById('lesson-links');
         for(let i=1; i<=20; i++) {
             const a = document.createElement('a'); a.className = 'nav-item'; a.id = `nav-${i}`;
@@ -99,54 +158,60 @@
 
         function startLesson(id) {
             curLsn = id;
-            words = (lessons[id] || "nội dung bài học đang cập nhật").split(' ');
+            text = lessons[id] || "Nội dung đang cập nhật...";
             currentIdx = 0;
             
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`nav-${id}`).classList.add('active');
-            document.getElementById('unikey-note').style.display = id <= 4 ? 'block' : 'none';
-            document.getElementById('hands-area').className = id <= 4 ? 'hands-container' : 'hands-container hidden';
+            
+            // Hiện bảng hướng dẫn gõ dấu từ bài 5
+            document.getElementById('viet-guide').style.display = id >= 5 ? 'block' : 'none';
+            // Hiện lưu ý Unikey từ bài 1 đến 4
+            document.getElementById('unikey-msg').style.display = id <= 4 ? 'block' : 'none';
 
-            const display = document.getElementById('display-text');
-            display.innerHTML = words.map((w, i) => `<label class="word-label" id="w-${i}">${w}</label>`).join('');
+            const container = document.getElementById('display-container');
+            container.innerHTML = text.split('').map((char, i) => 
+                `<span class="char-box" id="c-${i}">${char === ' ' ? '&nbsp;' : char}</span>`
+            ).join('');
 
-            updateState();
-            document.getElementById('input-hidden').value = "";
-            document.getElementById('input-hidden').focus();
+            updateHighlight();
+            document.getElementById('hidden-input').focus();
         }
 
-        function updateState() {
-            document.querySelectorAll('.word-label').forEach(el => el.classList.remove('current'));
-            document.querySelectorAll('.key, .finger').forEach(el => el.classList.remove('active'));
+        function updateHighlight() {
+            document.querySelectorAll('.char-box').forEach(el => el.classList.remove('current'));
+            document.querySelectorAll('.key, .finger-dot').forEach(el => el.classList.remove('active'));
 
-            const label = document.getElementById(`w-${currentIdx}`);
-            if(!label) return;
-            label.classList.add('current');
+            const charEl = document.getElementById(`c-${currentIdx}`);
+            if(!charEl) return;
+            charEl.classList.add('current');
 
-            if(curLsn <= 4) {
-                const firstChar = words[currentIdx][0];
-                const keyEl = document.getElementById('k-' + firstChar) || document.getElementById('k-space');
-                if(keyEl) keyEl.classList.add('active');
+            const char = text[currentIdx].toLowerCase();
+            const keyEl = document.getElementById(char === ' ' ? 'k-space' : 'k-' + char);
+            if(keyEl) keyEl.classList.add('active');
 
-                const fingerId = fingerMap[firstChar] || 'f-thumb';
-                const fingerEl = document.getElementById(fingerId);
-                if(fingerEl) fingerEl.classList.add('active');
-            }
+            const fingerEl = document.getElementById(fingerMap[char] || 'f-r-1');
+            if(fingerEl) fingerEl.classList.add('active');
         }
 
-        document.getElementById('input-hidden').addEventListener('input', (e) => {
-            if(e.target.value.endsWith(' ')) {
-                const typed = e.target.value.trim();
-                const label = document.getElementById(`w-${currentIdx}`);
-                label.className = 'word-label ' + (typed === words[currentIdx] ? 'correct' : 'wrong');
+        document.getElementById('hidden-input').addEventListener('input', function(e) {
+            if(!e.data) return;
+            const targetChar = text[currentIdx];
+            const charEl = document.getElementById(`c-${currentIdx}`);
+
+            if(e.data === targetChar || (targetChar === ' ' && e.data === ' ')) {
+                charEl.className = 'char-box correct';
                 currentIdx++;
-                e.target.value = "";
-                if(currentIdx < words.length) updateState();
-                else alert("Xong bài!");
+                this.value = "";
+                if(currentIdx < text.length) updateHighlight();
+                else alert("Chúc mừng! Bạn đã hoàn thành bài học.");
+            } else {
+                charEl.classList.add('wrong');
+                this.value = "";
             }
         });
 
-        document.addEventListener('click', () => document.getElementById('input-hidden').focus());
+        document.addEventListener('click', () => document.getElementById('hidden-input').focus());
     </script>
 </body>
 </html>
