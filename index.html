@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Luyện Gõ 10 Ngón - Full Mode (All Lessons Guide)</title>
+    <title>Luyện Gõ 10 Ngón - Full Mode</title>
     <style>
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
@@ -16,14 +16,12 @@
 
         .main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 15px; overflow-y: auto; }
         
-        /* Phần giới thiệu */
+        /* Giới thiệu & Lưu ý */
         .intro-section { width: 100%; max-width: 850px; text-align: center; margin-bottom: 15px; }
         .intro-section h2 { margin: 5px 0; color: var(--dark); }
-
-        /* Lưu ý Unikey */
         .unikey-note { width: 100%; max-width: 850px; background: #fff3cd; color: #856404; padding: 12px; border: 1px solid #ffeeba; border-radius: 6px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 14px; }
 
-        /* Bảng hướng dẫn gõ dấu (Hiển thị cho tất cả các bài) */
+        /* Bảng hướng dẫn gõ dấu */
         .guide-container { width: 100%; max-width: 850px; margin-bottom: 20px; }
         .guide-table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #333; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .guide-table td { border: 1px solid #333; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
@@ -106,9 +104,9 @@
 
     <div class="modal" id="modal-res">
         <div class="result-box">
-            <h2>Hoàn thành bài tập!</h2>
+            <h2 id="modal-title">Hoàn thành bài tập!</h2>
             <p id="stats-info" style="font-size: 18px;"></p>
-            <button class="btn-next" onclick="nextLesson()">Sang bài học tiếp theo ➔</button>
+            <button class="btn-next" id="btn-next-action" onclick="handleNextStep()">Sang bài học tiếp theo ➔</button>
         </div>
     </div>
 
@@ -121,14 +119,12 @@
             3: "aa ss dd ff jj kk ll ;; af jk sd l;",
             4: "asdfgh jkl;'; asdfgh jkl;';",
             5: "má mà mả mã mạ cá cà cả mã mạ",
-            6: "bé bè bẻ bẽ bẹ tí tì tỉ tĩ tị",
-            20: "chúc mừng bạn đã hoàn thành khóa học"
+            20: "chúc mừng bạn đã hoàn thành toàn bộ khóa học gõ 10 ngón"
         };
 
         let currentIdx = 0, currentLesson = 1, errors = 0, rawText = "";
         let wordsArray = [];
 
-        // Menu bài học
         const list = document.getElementById('lesson-list');
         for(let i=1; i<=20; i++) {
             const div = document.createElement('div');
@@ -138,7 +134,6 @@
             list.appendChild(div);
         }
 
-        // Bàn phím ảo
         const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
         rows.forEach((str, idx) => {
             const container = document.getElementById(`r${idx+1}`);
@@ -152,7 +147,7 @@
 
         function loadLesson(id) {
             currentLesson = id;
-            rawText = lessons[id] || "Dữ liệu bài học đang được cập nhật...";
+            rawText = lessons[id] || "Nội dung bài học đang được soạn thảo...";
             currentIdx = 0; errors = 0;
             
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -162,13 +157,11 @@
             const display = document.getElementById('target-text');
             
             if (id >= 5) {
-                // Chế độ gõ cụm từ (Bài 5 trở đi)
                 wordsArray = rawText.split(' ');
                 display.innerHTML = wordsArray.map((w, i) => 
                     `<span class="char" id="char-${i}">${w}</span>`
                 ).join('<span>&nbsp;</span>');
             } else {
-                // Chế độ gõ từng chữ (Bài 1-4)
                 wordsArray = rawText.split('');
                 display.innerHTML = wordsArray.map((c, i) => 
                     `<span class="char" id="char-${i}">${c === ' ' ? '&nbsp;' : c}</span>`
@@ -187,7 +180,6 @@
             if(!activeChar) return;
             activeChar.classList.add('current');
 
-            // Highlight phím (Chỉ áp dụng cho chế độ ký tự đơn bài 1-4)
             if (currentLesson < 5) {
                 const char = wordsArray[currentIdx].toLowerCase();
                 const keyEl = document.getElementById(char === ' ' ? 'k-space' : `key-${char}`);
@@ -247,12 +239,29 @@
         function finish() {
             const total = wordsArray.length;
             const accuracy = Math.round(((total - errors) / total) * 100);
-            document.getElementById('stats-info').innerHTML = `Độ chính xác: <b>${accuracy}%</b> | Số lỗi: <b>${errors}</b>`;
+            const stats = document.getElementById('stats-info');
+            const btn = document.getElementById('btn-next-action');
+            const title = document.getElementById('modal-title');
+
+            stats.innerHTML = `Độ chính xác: <b>${accuracy}%</b> | Số lỗi: <b>${errors}</b>`;
+            
+            if (currentLesson === 20) {
+                title.innerText = "🌟 CHÚC MỪNG HOÀN THÀNH!";
+                btn.innerText = "Quay lại Bài 1 ↺";
+            } else {
+                title.innerText = "Hoàn thành bài tập!";
+                btn.innerText = "Sang bài học tiếp theo ➔";
+            }
+            
             document.getElementById('modal-res').style.display = 'flex';
         }
 
-        function nextLesson() {
-            if(currentLesson < 20) loadLesson(currentLesson + 1);
+        function handleNextStep() {
+            if (currentLesson === 20) {
+                loadLesson(1);
+            } else {
+                loadLesson(currentLesson + 1);
+            }
         }
 
         window.onload = () => loadLesson(1);
