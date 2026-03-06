@@ -28,15 +28,25 @@
         .guide-header { background: #f8f9fa; font-weight: bold; }
         .red-key { color: var(--danger); font-size: 18px; }
 
-        /* Khu vực hiển thị chữ */
-        .typing-box { width: 100%; max-width: 850px; text-align: center; margin: 20px 0; min-height: 60px; }
-        .char { font-family: 'Consolas', monospace; font-size: 36px; color: #ccc; margin: 0 1px; padding: 0 4px; border-radius: 4px; }
+        /* Khu vực hiển thị chữ - ĐÃ CẬP NHẬT TỰ ĐỘNG XUỐNG HÀNG */
+        .typing-box { 
+            width: 100%; 
+            max-width: 850px; 
+            text-align: center; 
+            margin: 20px 0; 
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap; /* Cho phép xuống hàng */
+            justify-content: center;
+            gap: 10px 2px; /* Khoảng cách giữa các chữ */
+        }
+        .char { font-family: 'Consolas', monospace; font-size: 32px; color: #ccc; padding: 2px 4px; border-radius: 4px; white-space: nowrap; }
         .char.current { color: #000; border-bottom: 4px solid var(--primary); background: #fff9c4; }
         .char.correct { color: var(--success); }
         .char.wrong { color: var(--danger); background: #ffebee; }
 
         /* Bàn phím ảo */
-        .keyboard { background: #dee2e6; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+        .keyboard { background: #dee2e6; padding: 12px; border-radius: 10px; margin-bottom: 15px; flex-shrink: 0; }
         .kb-row { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
         .key { width: 42px; height: 42px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #bbb; font-size: 13px; }
         .key.active { background: var(--success) !important; color: white; transform: translateY(2px); }
@@ -114,12 +124,12 @@
 
     <script>
         const lessons = {
-            1: "aaaa ssss dddd ffff jjjj kkkk llll ;;;;",
-            2: "asdf jkl; asdf jkl; asdf jkl;",
-            3: "aa ss dd ff jj kk ll ;; af jk sd l;",
-            4: "asdfgh jkl;'; asdfgh jkl;';",
-            5: "má mà mả mã mạ cá cà cả mã mạ",
-            20: "chúc mừng bạn đã hoàn thành toàn bộ khóa học gõ 10 ngón"
+            1: "aaaa ssss dddd ffff jjjj kkkk llll ;;;; aaaa ssss dddd ffff jjjj kkkk llll ;;;;",
+            2: "asdf jkl; asdf jkl; asdf jkl; asdf jkl; asdf jkl; asdf jkl;",
+            3: "aa ss dd ff jj kk ll ;; af jk sd l; aa ss dd ff jj kk ll ;; af jk sd l;",
+            4: "asdfgh jkl;'; asdfgh jkl;'; asdfgh jkl;'; asdfgh jkl;';",
+            5: "má mà mả mã mạ cá cà cả mã mạ má mà mả mã mạ cá cà cả mã mạ",
+            20: "chúc mừng bạn đã hoàn thành toàn bộ khóa học gõ 10 ngón. hãy luyện tập chăm chỉ mỗi ngày để nâng cao kỹ năng của mình!"
         };
 
         let currentIdx = 0, currentLesson = 1, errors = 0, rawText = "";
@@ -147,7 +157,7 @@
 
         function loadLesson(id) {
             currentLesson = id;
-            rawText = lessons[id] || "Nội dung bài học đang được soạn thảo...";
+            rawText = lessons[id] || "Nội dung bài học đang được soạn thảo để giúp bạn tiến bộ hơn mỗi ngày...";
             currentIdx = 0; errors = 0;
             
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -160,7 +170,7 @@
                 wordsArray = rawText.split(' ');
                 display.innerHTML = wordsArray.map((w, i) => 
                     `<span class="char" id="char-${i}">${w}</span>`
-                ).join('<span>&nbsp;</span>');
+                ).join(''); // Xóa nbsp để flex-wrap hoạt động chuẩn
             } else {
                 wordsArray = rawText.split('');
                 display.innerHTML = wordsArray.map((c, i) => 
