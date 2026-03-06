@@ -2,224 +2,183 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Typing Master Ultra - Gemini & Ha Uy Long</title>
+    <title>Typing Master - Ha Uy Long & Gemini</title>
     <style>
         :root {
-            --bg: #f0f2f5; --sidebar-w: 260px; --primary: #0984e3;
-            --success: #00b894; --danger: #d63031; --dark: #2d3436;
+            --bg: #f8f9fa; --sidebar-w: 250px; --primary: #007bff;
+            --success: #28a745; --danger: #dc3545; --dark: #343a40;
         }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
         /* Sidebar */
         .sidebar { width: var(--sidebar-w); background: var(--dark); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar h2 { padding: 20px; font-size: 18px; border-bottom: 1px solid #444; margin: 0; color: var(--primary); text-align: center; }
+        .sidebar h2 { padding: 20px; font-size: 18px; border-bottom: 1px solid #495057; margin: 0; color: var(--primary); text-align: center; }
         .nav-list { flex: 1; overflow-y: auto; padding: 10px 0; }
-        .nav-item { padding: 12px 20px; color: #dfe6e9; text-decoration: none; display: block; cursor: pointer; transition: 0.3s; font-size: 14px; border-left: 4px solid transparent; }
-        .nav-item:hover, .nav-item.active { background: #3b444b; color: white; border-left-color: var(--primary); }
+        .nav-item { padding: 10px 20px; color: #adb5bd; text-decoration: none; display: block; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .nav-item:hover, .nav-item.active { background: #495057; color: white; border-left: 4px solid var(--primary); }
 
-        /* Main Content */
-        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .container { padding: 40px; display: flex; flex-direction: column; align-items: center; min-height: 100%; overflow-y: auto; }
+        /* Main */
+        .main { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .container { width: 90%; max-width: 900px; padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
 
-        /* Guide Table */
-        .guide-section { width: 850px; background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .guide-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .guide-table th, .guide-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        .guide-table th { background: #f1f2f6; }
-
-        /* Typing Area */
-        .typing-box { width: 850px; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
-        .text-display { 
-            font-family: 'Consolas', monospace; font-size: 26px; line-height: 2.5; 
-            margin-bottom: 20px; text-align: left;
+        /* Label Display Area */
+        .typing-box { width: 100%; background: white; padding: 50px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.05); min-height: 200px; }
+        .word-label { 
+            display: inline-block; font-family: 'Consolas', monospace; font-size: 32px; 
+            margin: 10px 12px; padding: 2px 8px; border-radius: 6px; 
+            color: #dee2e6; border-bottom: 3px solid transparent; transition: 0.2s;
         }
-        /* Style cho Label giảng ra */
-        .word-label { display: inline-block; margin-right: 15px; padding: 2px 5px; border-radius: 5px; transition: 0.3s; border: 1px solid transparent; }
-        .word-label.current { background: #e1f5fe; border-color: var(--primary); }
-        .word-label.wrong { background: #ffeaa7; color: var(--danger); border-color: var(--danger); border-style: dashed; }
-        .char { color: #b2bec3; }
-        .char.correct { color: #2ecc71; }
-        .char.error-highlight { color: var(--danger); font-weight: bold; }
+        .word-label.current { color: #212529; border-bottom-color: var(--primary); background: #e7f1ff; }
+        .word-label.correct { color: var(--success); border-bottom-color: var(--success); }
+        .word-label.wrong { color: var(--danger); border-bottom-color: var(--danger); background: #fff5f5; }
 
-        /* Keyboard */
-        .keyboard { display: flex; flex-direction: column; gap: 5px; background: #dfe6e9; padding: 15px; border-radius: 10px; margin-top: 20px; }
-        .row { display: flex; gap: 5px; justify-content: center; }
-        .key { width: 45px; height: 45px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #b2bec3; font-size: 14px; }
-        .key.active { background: var(--primary); color: white; border-color: white; }
+        /* Keyboard Guide */
+        .keyboard { display: flex; flex-direction: column; gap: 6px; background: #e9ecef; padding: 20px; border-radius: 12px; margin-top: 30px; }
+        .row { display: flex; gap: 6px; justify-content: center; }
+        .key { 
+            width: 50px; height: 50px; background: white; border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; border: 1px solid #dee2e6; font-size: 16px; color: #495057;
+        }
+        .key.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
+        .key.space { width: 300px; }
 
         /* Modal */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 2000; align-items: center; justify-content: center; }
-        .modal { background: white; padding: 40px; border-radius: 20px; text-align: center; width: 400px; }
-
-        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px; transition: 0.3s; }
-        .btn-primary { background: var(--primary); color: white; }
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.2); display: none; z-index: 100; text-align: center; }
+        
+        #input-hidden { position: absolute; opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2>TYPING PRO</h2>
+        <h2>TYPING MASTER</h2>
         <div class="nav-list">
-            <a class="nav-item" onclick="showScreen('home')">🏠 Trang chủ</a>
-            <a class="nav-item" onclick="showScreen('guide')">⌨️ Hướng dẫn Telex/VNI</a>
-            <a class="nav-item" onclick="startTestMode()">🧪 Bắt đầu thử (1 câu)</a>
-            <div style="padding: 15px 20px 5px; font-size: 11px; color: #888;">BÀI HỌC CHÍNH</div>
-            <div id="lesson-list"></div>
-        </div>
-        <div style="padding: 20px; border-top: 1px solid #444; font-size: 12px; color: #888; text-align: center;">
-            Ghi nhớ: Gõ 10 ngón - Không nhìn phím!
+            <a class="nav-item active" onclick="showHome()">🏠 Trang chủ</a>
+            <div style="padding: 10px 20px; font-size: 12px; color: #6c757d; font-weight: bold;">DANH SÁCH BÀI HỌC</div>
+            <div id="lesson-links"></div>
+            <a class="nav-item" onclick="showIntro()">ℹ️ Giới thiệu</a>
         </div>
     </div>
 
     <div class="main">
-        <div id="screen-home" class="container">
-            <h1>Chào mừng đến với Typing Master</h1>
-            <p>Hệ thống ghi nhớ và luyện tập đánh máy chuyên nghiệp.</p>
-            <button class="btn btn-primary" style="font-size: 20px;" onclick="startLesson(1)">BẮT ĐẦU LUYỆN TẬP</button>
-        </div>
-
-        <div id="screen-guide" class="container" style="display:none">
-            <div class="guide-section">
-                <h3>Quy tắc gõ Tiếng Việt</h3>
-                <table class="guide-table">
-                    <tr><th>Dấu</th><th>Telex</th><th>VNI</th><th>Ví dụ (Telex)</th></tr>
-                    <tr><td>Sắc</td><td>s</td><td>1</td><td>as -> á</td></tr>
-                    <tr><td>Huyền</td><td>f</td><td>2</td><td>af -> à</td></tr>
-                    <tr><td>Hỏi</td><td>r</td><td>3</td><td>ar -> ả</td></tr>
-                    <tr><td>Ngã</td><td>x</td><td>4</td><td>ax -> ã</td></tr>
-                    <tr><td>Nặng</td><td>j</td><td>5</td><td>aj -> ạ</td></tr>
-                    <tr><td>Â, Ê, Ô</td><td>aa, ee, oo</td><td>a6, e6, o6</td><td>â, ê, ô</td></tr>
-                    <tr><td>Ă, Ư, Ơ</td><td>aw, uw, ow</td><td>a8, u7, o7</td><td>ă, ư, ơ</td></tr>
-                </table>
-            </div>
+        <div class="container" id="content-area">
+            <h1 id="title">Luyện Gõ 10 Ngón</h1>
             
+            <div class="typing-box" id="typing-box">
+                <div id="text-display"></div>
+            </div>
+
             <div class="keyboard">
-                <div class="row">
-                    <div class="key" id="k-q">Q</div><div class="key" id="k-w">W</div><div class="key" id="k-e">E</div><div class="key" id="k-r">R</div><div class="key" id="k-t">T</div>
-                    <div class="key" id="k-y">Y</div><div class="key" id="k-u">U</div><div class="key" id="k-i">I</div><div class="key" id="k-o">O</div><div class="key" id="k-p">P</div>
-                </div>
-                <div class="row">
-                    <div class="key" id="k-a">A</div><div class="key" id="k-s">S</div><div class="key" id="k-d">D</div><div class="key" id="k-f">F</div><div class="key" id="k-g">G</div>
-                    <div class="key" id="k-h">H</div><div class="key" id="k-j">J</div><div class="key" id="k-k">K</div><div class="key" id="k-l">L</div><div class="key" id="k-;">;</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="screen-typing" class="container" style="display:none">
-            <div class="typing-box">
-                <h3 id="typing-title" style="color:var(--primary)">Bài học</h3>
-                <div id="text-display" class="text-display"></div>
+                <div class="row" id="row-1"></div>
+                <div class="row" id="row-2"></div>
+                <div class="row" id="row-3"></div>
+                <div class="row"><div class="key space" id="key-space">Space</div></div>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-res">
-        <div class="modal">
-            <h2 id="res-status">HOÀN THÀNH</h2>
-            <div id="res-info" style="margin: 20px 0; text-align: left;"></div>
-            <button class="btn btn-primary" onclick="location.reload()">TRANG CHỦ</button>
-        </div>
+    <div id="modal" class="modal">
+        <h2 style="color: var(--success);">HOÀN THÀNH!</h2>
+        <p id="result-text"></p>
+        <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer;">Tiếp tục</button>
     </div>
 
-    <input type="text" id="input-hidden" autofocus>
+    <input type="text" id="input-hidden">
 
     <script>
         const lessons = {
-            1: "aa ss dd ff jj kk ll ;; aa ss dd ff jj kk ll ;;",
-            "test": "Học đi đôi với hành, gõ máy nhanh giúp bạn làm việc hiệu quả hơn."
+            1: "aa ss dd ff jj kk ll ;;",
+            2: "asdf jkl; asdf jkl;",
+            3: "ee rr tt uu ii oo pp",
+            4: "Học đi đôi với hành.",
+            5: "Chúc bạn thành công.",
+            // Bạn có thể thêm tiếp đến bài 15 ở đây
         };
 
-        let currentWordIdx = 0, words = [], isTestMode = false, currentLessonIdx = 1;
-        let userInput = "";
+        let currentWordIdx = 0, words = [], curLesson = 0;
 
-        // Khởi tạo Sidebar
-        const listEl = document.getElementById('lesson-list');
+        // Khởi tạo phím ảo
+        const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
+        rows.forEach((r, idx) => {
+            const rowEl = document.getElementById(`row-${idx+1}`);
+            r.split('').forEach(char => {
+                const k = document.createElement('div');
+                k.className = 'key'; k.id = 'key-' + char; k.innerText = char.toUpperCase();
+                rowEl.appendChild(k);
+            });
+        });
+
+        // Khởi tạo danh sách bài học Sidebar
+        const linkContainer = document.getElementById('lesson-links');
         for(let i=1; i<=15; i++) {
-            const a = document.createElement('a'); a.className = 'nav-item'; a.id = 'L'+i;
-            a.innerText = `Bài học ${i}`; a.onclick = () => startLesson(i);
-            listEl.appendChild(a);
+            const a = document.createElement('a');
+            a.className = 'nav-item';
+            a.innerText = `Bài học ${i}`;
+            a.onclick = () => startLesson(i);
+            linkContainer.appendChild(a);
         }
 
-        function showScreen(id) {
-            ['home', 'guide', 'typing'].forEach(s => document.getElementById('screen-'+s).style.display = 'none');
-            document.getElementById('screen-'+id).style.display = 'flex';
-        }
-
-        function startLesson(n) {
-            isTestMode = false;
-            currentLessonIdx = n;
-            setupTyping(lessons[n] || lessons[1]);
-            document.getElementById('typing-title').innerText = `Bài học ${n}`;
-            showScreen('typing');
-        }
-
-        function startTestMode() {
-            isTestMode = true;
-            setupTyping(lessons["test"]);
-            document.getElementById('typing-title').innerText = "Chế độ thử nghiệm (1 câu)";
-            showScreen('typing');
-        }
-
-        function setupTyping(text) {
-            const display = document.getElementById('text-display');
+        function startLesson(id) {
+            curLesson = id;
+            const text = lessons[id] || "Dữ liệu bài học đang cập nhật...";
             words = text.split(' ');
             currentWordIdx = 0;
-            userInput = "";
             
-            display.innerHTML = words.map((w, i) => {
-                const chars = w.split('').map(c => `<span class="char">${c}</span>`).join('');
-                return `<label class="word-label" id="w-${i}">${chars}</label>`;
-            }).join(' ');
-
-            document.getElementById('w-0').classList.add('current');
+            document.getElementById('title').innerText = `Bài học ${id}`;
+            const display = document.getElementById('text-display');
+            display.innerHTML = words.map((w, i) => `<label class="word-label" id="word-${i}">${w}</label>`).join('');
+            
+            document.getElementById('word-0').classList.add('current');
+            highlightKey(words[0][0]);
             document.getElementById('input-hidden').focus();
         }
 
         document.getElementById('input-hidden').addEventListener('input', (e) => {
             const input = e.target.value;
-            const currentLabel = document.getElementById(`w-${currentWordIdx}`);
+            const currentLabel = document.getElementById(`word-${currentWordIdx}`);
             const targetWord = words[currentWordIdx];
-            
-            // Highlight bàn phím cho ký tự tiếp theo cần gõ
-            updateKeyboard(targetWord[input.length]);
 
-            // Nếu người dùng nhấn Space (kết thúc 1 từ/cụm từ)
+            // Highlight phím tiếp theo
+            highlightKey(targetWord[input.length] || ' ');
+
+            // Kiểm tra khi nhấn phím Space (cách)
             if (input.endsWith(' ')) {
-                const typedWord = input.trim();
-                
-                if (typedWord === targetWord) {
-                    currentLabel.classList.remove('current', 'wrong');
-                    currentLabel.querySelectorAll('.char').forEach(c => c.className = 'char correct');
-                    
-                    currentWordIdx++;
-                    if (currentWordIdx >= words.length) {
-                        finishAll();
-                    } else {
-                        document.getElementById(`w-${currentWordIdx}`).classList.add('current');
-                    }
+                const typed = input.trim();
+                if (typed === targetWord) {
+                    currentLabel.className = 'word-label correct';
                 } else {
-                    // Nếu gõ xong 1 từ mà sai -> Báo đỏ cả cụm từ như bạn yêu cầu
-                    currentLabel.classList.add('wrong');
-                    const chars = currentLabel.querySelectorAll('.char');
-                    chars.forEach((c, idx) => {
-                        if (typedWord[idx] !== targetWord[idx]) c.className = 'char error-highlight';
-                    });
+                    currentLabel.className = 'word-label wrong';
                 }
+
+                currentWordIdx++;
                 e.target.value = "";
+
+                if (currentWordIdx < words.length) {
+                    const nextWord = document.getElementById(`word-${currentWordIdx}`);
+                    nextWord.classList.add('current');
+                    highlightKey(words[currentWordIdx][0]);
+                } else {
+                    showResult();
+                }
             }
         });
 
-        function updateKeyboard(char) {
+        function highlightKey(char) {
             document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
             if (!char) return;
-            const k = document.getElementById('k-' + char.toLowerCase());
-            if (k) k.classList.add('active');
+            const id = char === ' ' ? 'key-space' : 'key-' + char.toLowerCase();
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
         }
 
-        function finishAll() {
-            document.getElementById('modal-res').style.display = 'flex';
-            document.getElementById('res-info').innerHTML = `Chúc mừng bạn đã gõ xong ${isTestMode ? 'câu thử nghiệm' : 'bài học ' + currentLessonIdx}!`;
+        function showResult() {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('result-text').innerText = `Bạn đã hoàn thành bài học ${curLesson}!`;
         }
+
+        function showHome() { location.reload(); }
+        function showIntro() { alert("Ứng dụng luyện gõ 10 ngón Tiếng Việt.\nPhát triển bởi Ha Uy Long & Gemini."); }
 
         document.addEventListener('click', () => document.getElementById('input-hidden').focus());
     </script>
