@@ -2,13 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Master PRO - Bản Chuẩn</title>
+    <title>Typing Master PRO - Cứu Hộ Đôi Tay</title>
     <style>
         :root {
-            --bg: #0f172a; --panel: #1e293b; --primary: #38bdf8;
+            --bg: #020617; --panel: #1e293b; --primary: #38bdf8;
             --success: #22c55e; --danger: #ef4444; --text: #f8fafc;
-            --sidebar-w: 240px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -18,76 +16,62 @@
         }
 
         /* SIDEBAR */
-        .sidebar {
-            width: var(--sidebar-w); background: #020617;
-            border-right: 1px solid #1e293b; display: flex; flex-direction: column;
-        }
-        .sb-title { padding: 25px; font-size: 14px; font-weight: 900; color: var(--primary); border-bottom: 1px solid #1e293b; text-align: center; }
-        .ls-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .sidebar { width: 260px; background: #000; border-right: 1px solid #1e293b; display: flex; flex-direction: column; }
+        .sb-title { padding: 30px; font-size: 16px; font-weight: 900; color: var(--primary); text-align: center; border-bottom: 1px solid #1e293b; }
+        .ls-list { flex: 1; overflow-y: auto; padding: 15px; }
         .ls-item {
-            padding: 12px; margin-bottom: 5px; border-radius: 6px;
-            cursor: pointer; font-size: 13px; color: #64748b;
-            display: flex; justify-content: space-between;
-            border: 1px solid transparent; transition: 0.2s;
+            padding: 12px; margin-bottom: 8px; border-radius: 8px;
+            cursor: pointer; font-size: 14px; color: #64748b;
+            display: flex; justify-content: space-between; transition: 0.2s;
+            border: 1px solid transparent;
         }
         .ls-item:hover { background: rgba(56, 189, 248, 0.1); color: #fff; }
         .ls-item.active { background: var(--primary); color: #000; font-weight: bold; }
-        .ls-item.done { border-left: 3px solid var(--success); }
 
-        /* MAIN */
-        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .stats-strip {
-            height: 60px; background: rgba(30, 41, 59, 0.5);
-            display: flex; align-items: center; justify-content: space-around;
+        /* MAIN AREA */
+        .main { flex: 1; display: flex; flex-direction: column; }
+        .stats {
+            height: 70px; background: rgba(15, 23, 42, 0.8);
+            display: flex; align-items: center; justify-content: center; gap: 50px;
             border-bottom: 1px solid #1e293b;
         }
-        .stat-group { text-align: center; }
-        .stat-v { font-size: 18px; font-weight: bold; color: var(--primary); display: block; }
-        .stat-l { font-size: 9px; text-transform: uppercase; color: #64748b; }
+        .stat-item { font-size: 20px; font-weight: bold; color: var(--primary); }
 
         .typing-zone {
             flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; padding: 40px; gap: 30px;
+            align-items: center; justify-content: center; padding: 20px; gap: 40px;
         }
-        #mode-tag { padding: 5px 20px; border-radius: 20px; font-size: 12px; font-weight: bold; transition: 0.3s; }
 
         .display-area {
-            width: 100%; max-width: 900px; background: var(--panel);
-            padding: 40px; border-radius: 20px; min-height: 180px;
+            width: 90%; max-width: 1000px; background: var(--panel);
+            padding: 50px; border-radius: 24px; min-height: 200px;
             display: flex; flex-wrap: wrap; justify-content: center;
-            align-content: center; gap: 10px; border: 1px solid #334155;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            align-content: center; gap: 12px; border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .word { display: flex; align-items: center; }
-        .char { font-size: 32px; color: #475569; border-bottom: 3px solid transparent; transition: 0.1s; }
+        .word { display: flex; }
+        .char { font-size: 36px; color: #475569; border-bottom: 3px solid transparent; transition: 0.1s; }
         .char.active { color: #fff; border-bottom-color: var(--primary); background: rgba(56, 189, 248, 0.1); }
         .char.ok { color: #e2e8f0; }
-        .char.err { background: var(--danger); color: #fff; border-radius: 4px; animation: shake 0.2s; }
+        .char.err { background: var(--danger); color: #fff; border-radius: 6px; }
 
-        /* KEYBOARD - Giữ cho phím luôn rõ nét */
-        .kb-container { background: #000; padding: 20px; border-radius: 25px; border: 3px solid #1e293b; }
-        .kb-row { display: flex; gap: 6px; margin-bottom: 6px; justify-content: center; }
+        /* VIRTUAL KEYBOARD - TRẢ LẠI TAY CHO BẠN */
+        .kb-container { background: #000; padding: 25px; border-radius: 20px; border: 2px solid #1e293b; }
+        .kb-row { display: flex; gap: 8px; margin-bottom: 8px; justify-content: center; }
         .k-cap {
-            width: 44px; height: 44px; background: #111827;
-            border-radius: 8px; display: flex; align-items: center;
+            width: 48px; height: 48px; background: #111827;
+            border-radius: 10px; display: flex; align-items: center;
             justify-content: center; font-size: 14px; font-weight: bold;
-            color: #4b5563; border-bottom: 4px solid #000;
-            transition: 0.1s;
+            color: #4b5563; border-bottom: 4px solid #000; transition: 0.1s;
         }
-        .k-cap.on { background: var(--primary); color: #000; transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 0 15px var(--primary); }
-        .k-cap.fail { background: var(--danger) !important; color: #fff !important; transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 0 15px var(--danger); }
-        .k-cap.space { width: 250px; }
-
-        /* MODAL */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            display: none; align-items: center; justify-content: center; z-index: 100;
+        .k-cap.on { 
+            background: var(--primary); color: #000; 
+            transform: translateY(2px); border-bottom-width: 1px;
+            box-shadow: 0 0 20px var(--primary);
         }
-        .modal-box { background: var(--panel); padding: 50px; border-radius: 30px; text-align: center; border: 1px solid var(--primary); }
-        .btn { margin-top: 25px; padding: 12px 30px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
+        .k-cap.space { width: 300px; }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        #hidden-input { position: absolute; opacity: 0; pointer-events: none; }
+        #hidden-input { position: absolute; opacity: 0; }
     </style>
 </head>
 <body>
@@ -98,32 +82,20 @@
 </div>
 
 <div class="main">
-    <div class="stats-strip">
-        <div class="stat-group"><span class="stat-v" id="s-wpm">0</span><span class="stat-l">WPM</span></div>
-        <div class="stat-group"><span class="stat-v" id="s-acc">0%</span><span class="stat-l">Accuracy</span></div>
-        <div class="stat-group"><span class="stat-v" id="s-err">0</span><span class="stat-l">Errors</span></div>
+    <div class="stats">
+        <div class="stat-item">WPM: <span id="s-wpm">0</span></div>
+        <div class="stat-item">ACC: <span id="s-acc">0%</span></div>
+        <div id="mode-tag" style="font-size: 12px; padding: 5px 15px; border-radius: 10px;">MODE</div>
     </div>
 
     <div class="typing-zone">
-        <div id="mode-tag">CHẾ ĐỘ</div>
         <div class="display-area" id="display"></div>
         
-        <div style="display:flex; gap: 40px; align-items: center;">
-             <div class="kb-container" id="keyboard"></div>
-             <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
-                <span style="color:var(--primary)">HƯỚNG DẪN TELEX:</span><br>
-                Sắc: <b>S</b> | Huyền: <b>F</b> | Hỏi: <b>R</b><br>
-                Ngã: <b>X</b> | Nặng: <b>J</b>
-             </div>
+        <div class="kb-container" id="keyboard"></div>
+        
+        <div style="font-size: 13px; color: #64748b;">
+            Dùng Unikey Telex: <b>S</b> (sắc), <b>F</b> (huyền), <b>R</b> (hỏi), <b>X</b> (ngã), <b>J</b> (nặng)
         </div>
-    </div>
-</div>
-
-<div class="modal" id="modal">
-    <div class="modal-box">
-        <h1 style="color:var(--primary)">KẾT QUẢ</h1>
-        <div id="res-info" style="margin: 20px 0; font-size: 20px;"></div>
-        <button class="btn" onclick="nextLesson()">BÀI TIẾP THEO ➔</button>
     </div>
 </div>
 
@@ -132,22 +104,8 @@
 <script>
     const DATA = [
         "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
-        "có công mài sắt có ngày nên kim", "học đi đôi với hành", "tiên học lễ hậu học văn",
-        "ăn quả nhớ kẻ trồng cây", "uống nước nhớ nguồn", "lá lành đùm lá rách",
-        "bầu ơi thương lấy bí cùng", "một cây làm chẳng nên non", "có chí thì nên",
-        "tốt gỗ hơn tốt nước sơn", "đói cho sạch rách cho thơm", "thương người như thể thương thân",
-        "kiến tha lâu cũng đầy tổ", "hầy không tày học bạn", "không thầy đố mày làm nên",
-        "công cha như núi thái sơn", "nghĩa mẹ như nước trong nguồn", "gần mực thì đen gần đèn thì sáng",
-        "ăn chậm nhai kỹ", "học một biết mười", "thời gian là vàng bạc", "lời chào cao hơn mâm cỗ",
-        "một con ngựa đau cả tàu bỏ cỏ", "đoàn kết là sức mạnh", "sức khỏe là vốn quý nhất",
-        "đi một ngày đàng học một sàng khôn", "cái nết đánh chết cái đẹp", "chậm mà chắc",
-        "nhập gia tùy tục", "nói đi đôi với làm", "tấc đất tấc vàng", "chân cứng đá mềm",
-        "lửa thử vàng gian nan thử sức", "gieo gió gặt bão", "kính trên nhường dưới",
-        "uống nước nhớ người đào giếng", "luyện tay mỗi ngày", "kỹ năng gõ mười ngón",
-        "kiên trì sẽ thành công", "làm việc có kế hoạch", "đam mê dẫn lối", "tập trung là chìa khóa",
-        "sáng tạo không ngừng", "hành trình vạn dặm bắt đầu từ bước chân", "thất bại là mẹ thành công",
-        "đừng bao giờ bỏ cuộc", "vượt qua giới hạn bản thân", "không thầy đố mày làm nên công ơn",
-        "tri thức là sức mạnh", "đường tuy ngắn không đi không đến"
+        "có công mài sắt có ngày nên kim", "uống nước nhớ nguồn", "học đi đôi với hành",
+        "ăn quả nhớ kẻ trồng cây", "lá lành đùm lá rách", "thương người như thể thương thân"
     ];
 
     const KB = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
@@ -158,7 +116,7 @@
         DATA.forEach((_, i) => {
             const item = document.createElement('div');
             item.className = 'ls-item'; item.id = `ls-${i+1}`;
-            item.innerHTML = `<span>Bài ${i+1}</span><small>--%</small>`;
+            item.innerHTML = `Bài ${i+1}`;
             item.onclick = () => loadLesson(i+1); list.appendChild(item);
         });
 
@@ -176,9 +134,7 @@
         input.addEventListener('compositionstart', () => { isCompiling = true; });
         input.addEventListener('compositionend', () => { isCompiling = false; });
 
-        input.onkeydown = (e) => {
-            if(e.key === 'Backspace') { e.preventDefault(); return false; }
-        };
+        input.onkeydown = (e) => { if(e.key === 'Backspace') e.preventDefault(); };
 
         input.oninput = (e) => {
             if(isCompiling) return;
@@ -187,24 +143,25 @@
             const val = input.value;
             if(!val) return;
 
-            const target = words[curIdx];
-            if(curL <= 4) {
-                const typed = val.slice(-1);
+            // FIX LỖI GÕ ĐÚNG THÀNH SAI: Chuẩn hóa NFC
+            const typed = val.trim().normalize('NFC');
+            const target = words[curIdx].normalize('NFC');
+
+            if(curL <= 3) {
+                const charTyped = val.slice(-1);
                 const el = document.getElementById(`c-${curIdx}`);
-                if(typed === target) el.className = 'char ok';
-                else { el.className = 'char err'; errors++; triggerErr(typed); }
+                if(charTyped === words[curIdx]) el.className = 'char ok';
+                else { el.className = 'char err'; errors++; }
                 curIdx++; input.value = "";
                 checkEnd();
             } else {
                 if(val.endsWith(' ')) {
-                    const typedWord = val.trim();
                     const wEl = document.getElementById(`w-${curIdx}`);
-                    if(typedWord === target) {
+                    if(typed === target) {
                         wEl.querySelectorAll('.char').forEach(c => c.className = 'char ok');
                     } else {
                         wEl.querySelectorAll('.char').forEach(c => c.className = 'char err');
                         errors++;
-                        triggerErr(' ');
                     }
                     curIdx++; input.value = "";
                     checkEnd();
@@ -218,25 +175,17 @@
         curL = id; curIdx = 0; errors = 0; startTime = null;
         document.querySelectorAll('.ls-item').forEach(i => i.classList.remove('active'));
         document.getElementById(`ls-${id}`).classList.add('active');
-        document.getElementById('modal').style.display = 'none';
         
         const tag = document.getElementById('mode-tag');
-        if(id <= 4) { 
-            tag.innerText = "TẮT UNIKEY [E]"; 
-            tag.style.background = "#ef4444"; 
-            tag.style.color = "#fff";
-        } else { 
-            tag.innerText = "BẬT UNIKEY [V]"; 
-            tag.style.background = "#22c55e"; 
-            tag.style.color = "#000"; 
-        }
+        tag.innerText = id <= 3 ? "TẮT UNIKEY" : "BẬT UNIKEY";
+        tag.style.background = id <= 3 ? "#ef4444" : "#22c55e";
 
         const text = DATA[id-1].toLowerCase();
-        words = (id <= 4) ? text.split('') : text.split(' ');
+        words = (id <= 3) ? text.split('') : text.split(' ');
         
         const disp = document.getElementById('display');
         disp.innerHTML = words.map((w, i) => {
-            if(id <= 4) return `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`;
+            if(id <= 3) return `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`;
             return `<div class="word" id="w-${i}">${w.split('').map((c, ci) => `<span class="char" id="c-${i}-${ci}">${c}</span>`).join('')}</div><span>&nbsp;</span>`;
         }).join('');
         
@@ -246,14 +195,13 @@
     function updateH() {
         document.querySelectorAll('.char, .k-cap').forEach(el => el.classList.remove('active', 'on'));
         let target = "";
-        if(curL <= 4) {
+        if(curL <= 3) {
             const el = document.getElementById(`c-${curIdx}`);
             if(el) { el.classList.add('active'); target = words[curIdx]; }
         } else {
             const wEl = document.getElementById(`w-${curIdx}`);
             if(wEl) { 
-                const firstChar = wEl.querySelector('.char');
-                if(firstChar) firstChar.classList.add('active');
+                wEl.querySelector('.char').classList.add('active');
                 target = words[curIdx][0];
             }
         }
@@ -261,33 +209,20 @@
         if(k) k.classList.add('on');
     }
 
-    function triggerErr(key) {
-        const k = document.getElementById(key === ' ' ? 'k-space' : `k-${key.toLowerCase()}`);
-        if(k) { k.classList.add('fail'); setTimeout(() => k.classList.remove('fail'), 600); }
-    }
-
     function checkEnd() {
         updateStats();
         if(curIdx >= words.length) {
-            const acc = Math.round(((words.length - errors) / words.length) * 100);
-            document.getElementById('res-info').innerText = `Chính xác: ${acc}% | Lỗi: ${errors}`;
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById(`ls-${curL}`).querySelector('small').innerText = acc + "%";
-            document.getElementById(`ls-${curL}`).classList.add('done');
+            alert(`Xong! Lỗi: ${errors}`);
+            loadLesson(curL + 1);
         } else updateH();
     }
 
     function updateStats() {
         if(!startTime) return;
         const min = (new Date() - startTime) / 60000;
-        const wpm = Math.round((curIdx / 5) / min) || 0;
-        const acc = Math.round(((curIdx - errors) / curIdx) * 100) || 0;
-        document.getElementById('s-wpm').innerText = wpm;
-        document.getElementById('s-acc').innerText = acc + "%";
-        document.getElementById('s-err').innerText = errors;
+        document.getElementById('s-wpm').innerText = Math.round((curIdx / 5) / min) || 0;
+        document.getElementById('s-acc').innerText = Math.round(((curIdx - errors) / curIdx) * 100) + "%";
     }
-
-    function nextLesson() { loadLesson(curL >= 54 ? 1 : curL + 1); }
 
     window.onload = init;
 </script>
