@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Luyện Gõ 10 Ngón - Full Mode</title>
+    <title>Luyện Gõ 10 Ngón - 60 Bài Học</title>
     <style>
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
@@ -20,7 +20,7 @@
         /* Khu vực nội dung */
         .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 15px; padding-bottom: 250px; }
 
-        .intro-section { width: 100%; max-width: 800px; text-align: center; margin-bottom: 10px; }
+        .intro-section { width: 100%; max-width: 800px; text-align: center; margin-bottom: 10px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
         /* Phần lưu ý sẽ thay đổi */
         .note-box { width: 100%; max-width: 800px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 14px; transition: 0.3s; }
@@ -75,14 +75,15 @@
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-header">DANH SÁCH BÀI</div>
+        <div class="sidebar-header">LỘ TRÌNH 60 BÀI</div>
         <div id="lesson-list"></div>
     </div>
 
     <div class="main">
         <div class="content-area" id="scroll-area">
             <div class="intro-section">
-                <h2 style="margin: 5px;">Luyện Gõ 10 Ngón</h2>
+                <h2 style="margin: 5px; color: var(--primary);">Hệ Thống Luyện Gõ 10 Ngón Chuyên Nghiệp</h2>
+                <p style="font-size: 14px; color: #666; margin: 5px 0;">Lộ trình từ cơ bản đến nâng cao giúp bạn làm chủ bàn phím, tăng tốc độ soạn thảo và làm việc hiệu quả.</p>
             </div>
 
             <div id="dynamic-note" class="note-box note-unikey">
@@ -135,6 +136,7 @@
             2: "asdf jkl; asdf jkl; asdf jkl; asdf jkl; asdf jkl; asdf jkl; asdf jkl;",
             3: "aa ss dd ff jj kk ll ;; af jk sd l; aa ss dd ff jj kk ll ;; af jk sd l;",
             4: "gh gh gh gh ty ty ty ty ur ur ur ur ei ei ei ei wo wo wo wo qp qp qp qp",
+            // CHẾ ĐỘ TIẾNG VIỆT (TỪ BÀI 5)
             5: "má mà mả mã mạ cá cà cả mã mạ má mà mả mã mạ cá cà cả mã mạ",
             6: "bé bè bẻ bẽ bẹ tí tì tỉ tĩ tị bé bè bẻ bẽ bẹ tí tì tỉ tĩ tị",
             7: "con cò bé bé nó đậu cành tre đi không hỏi mẹ biết đi đường nào",
@@ -150,13 +152,53 @@
             17: "trời xanh mây trắng nắng vàng một ngày mới bắt đầu với thật nhiều năng lượng tích cực",
             18: "đừng bao giờ từ bỏ ước mơ vì đó chính là động lực để bạn tiến về phía trước mỗi ngày",
             19: "kỹ năng gõ phím mười ngón sẽ giúp bạn làm việc nhanh hơn và chuyên nghiệp hơn rất nhiều",
-            20: "chúc mừng bạn đã hoàn thành khóa học! hãy quay lại bài 1 để rèn luyện thêm kỹ năng gõ phím của mình mỗi ngày."
+            20: "thất bại là mẹ thành công hãy luôn kiên trì theo đuổi đam mê đến tận cùng của con đường",
+            21: "thời gian là vàng bạc đừng lãng phí từng giây phút quý giá vào những việc vô bổ",
+            22: "gia đình là nơi bình yên nhất để trở về sau những mệt mỏi của cuộc sống đời thường",
+            23: "lòng biết ơn là cội nguồn của hạnh phúc hãy trân trọng những gì bạn đang có hôm nay",
+            24: "một nụ cười bằng mười thang thuốc bổ hãy luôn giữ tinh thần lạc quan trong mọi hoàn cảnh",
+            25: "không có gì là không thể nếu chúng ta thực sự nỗ lực và tin tưởng vào bản thân mình",
+            26: "sách là kho tàng tri thức quý giá của nhân loại hãy duy trì thói quen đọc sách mỗi ngày",
+            27: "âm nhạc làm cho tâm hồn ta trở nên phong phú và yêu đời hơn sau mỗi giờ làm việc căng thẳng",
+            28: "tình bạn chân thành là món quà tuyệt vời nhất mà cuộc sống đã ban tặng cho mỗi chúng ta",
+            29: "hãy sống sao cho xứng đáng với những gì cha mẹ đã hy sinh và kỳ vọng vào chúng ta",
+            30: "mỗi ngày là một cơ hội mới để bạn trở thành phiên bản tốt hơn của chính mình ngày hôm qua",
+            31: "trung thực là đức tính quý báu nhất của con người giúp chúng ta nhận được sự tin tưởng",
+            32: "sự tử tế là ngôn ngữ mà người điếc có thể nghe và người mù có thể nhìn thấy rõ ràng",
+            33: "đừng so sánh mình với bất kỳ ai khác hãy chỉ so sánh mình với chính mình của ngày cũ",
+            34: "kỷ luật là cầu nối giữa mục tiêu và thành tựu nếu thiếu kỷ luật bạn khó lòng thành công",
+            35: "kiên trì là chìa khóa mở cánh cửa của mọi thành công dù con đường phía trước đầy gian truân",
+            36: "yêu thương cho đi là yêu thương còn mãi hãy lan tỏa sự ấm áp đến mọi người xung quanh",
+            37: "thái độ quan trọng hơn trình độ hãy luôn giữ cho mình một thái độ cầu thị và ham học hỏi",
+            38: "cuộc sống không phải để tìm thấy chính mình mà là để tạo ra chính bản thân mình theo cách riêng",
+            39: "đam mê là ngọn lửa thắp sáng con đường đi tới thành công của mỗi con người trong cuộc đời",
+            40: "tự do không phải là làm những gì mình muốn mà là không phải làm những gì mình không muốn",
+            41: "hãy học cách chấp nhận những điều không thể thay đổi và nỗ lực thay đổi những điều có thể",
+            42: "thành công không phải là điểm dừng cuối cùng mà là cả một hành trình trải nghiệm đầy thú vị",
+            43: "sức khỏe là tài sản vô giá nhất của con người hãy chăm sóc bản thân thật tốt mỗi ngày",
+            44: "đừng chờ đợi thời cơ thuận lợi mà hãy tự mình tạo ra thời cơ để nắm bắt thành công",
+            45: "sự im lặng đôi khi là câu trả lời tốt nhất cho những tranh cãi không cần thiết trong đời",
+            46: "hành trình vạn dặm luôn bắt đầu từ những bước chân nhỏ bé đầu tiên đầy kiên định",
+            47: "hãy làm việc trong im lặng và để sự thành công của bạn lên tiếng thay cho những lời nói",
+            48: "không có kho tàng nào quý giá bằng trí tuệ và không có sự nghèo đói nào đáng sợ bằng thiếu hiểu biết",
+            49: "lòng can đảm không phải là không sợ hãi mà là đối mặt với nỗi sợ để vượt qua nó mạnh mẽ",
+            50: "cuộc đời như một cuốn sách người không đi du lịch thì chỉ mới đọc được trang đầu tiên",
+            51: "sáng tạo là khả năng nhìn thấy những điều cũ dưới một góc nhìn hoàn toàn mới mẻ và khác biệt",
+            52: "hạnh phúc không phải là có tất cả những gì bạn muốn mà là trân trọng những gì bạn đang có",
+            53: "hãy tin rằng bạn có thể làm được và bạn đã đi được nửa chặng đường đến với thành công",
+            54: "sự khiêm tốn là đỉnh cao của sự hiểu biết và là biểu hiện của một tâm hồn cao thượng",
+            55: "tương lai thuộc về những ai tin tưởng vào vẻ đẹp của những ước mơ mà họ đang ấp ủ",
+            56: "đừng nói về những kế hoạch của bạn hãy cho họ thấy kết quả sau khi bạn đã thực hiện chúng",
+            57: "giáo dục là vũ khí mạnh nhất mà bạn có thể sử dụng để thay đổi cả thế giới này tốt đẹp hơn",
+            58: "biết người là thông minh biết mình là thông thái làm chủ người là quyền lực làm chủ mình là sức mạnh",
+            59: "đỉnh núi nào cũng có đường lên và mọi khó khăn đều có cách giải quyết nếu ta đủ bình tĩnh",
+            60: "chúc mừng bạn đã hoàn thành xuất sắc 60 bài luyện tập! bạn đã chính thức làm chủ được bàn phím của mình."
         };
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
 
         const list = document.getElementById('lesson-list');
-        for(let i=1; i<=20; i++) {
+        for(let i=1; i<=60; i++) {
             const div = document.createElement('div');
             div.className = 'nav-item'; div.id = `nav-${i}`;
             div.innerText = `Bài học ${i}`;
@@ -180,7 +222,6 @@
             let rawText = lessons[id] || "Dữ liệu bài tập đang được cập nhật...";
             currentIdx = 0; errors = 0;
             
-            // Xử lý Lưu ý
             const noteEl = document.getElementById('dynamic-note');
             if (id >= 5) {
                 noteEl.innerText = "⚠️ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHẾ ĐỘ TIẾNG VIỆT (CHỮ V)";
@@ -214,7 +255,6 @@
             if(!activeChar) return;
             activeChar.classList.add('current');
             
-            // Cuộn màn hình để không bị bàn phím che
             activeChar.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             if (currentLesson < 5) {
@@ -265,9 +305,9 @@
             const accuracy = Math.round(((wordsArray.length - errors) / wordsArray.length) * 100);
             document.getElementById('stats-info').innerHTML = `Độ chính xác: <b>${accuracy}%</b> | Lỗi: <b>${errors}</b>`;
             const btn = document.getElementById('btn-next-action');
-            if (currentLesson === 20) {
-                document.getElementById('modal-title').innerText = "🌟 XUẤT SẮC!";
-                btn.innerText = "Quay lại Bài 1 ↺";
+            if (currentLesson === 60) {
+                document.getElementById('modal-title').innerText = "🏆 ĐỈNH CAO!";
+                btn.innerText = "Luyện lại từ đầu ↺";
             } else {
                 document.getElementById('modal-title').innerText = "Hoàn thành bài tập!";
                 btn.innerText = "Tiếp theo ➔";
@@ -276,7 +316,7 @@
         }
 
         function handleNextStep() {
-            if (currentLesson === 20) loadLesson(1); else loadLesson(currentLesson + 1);
+            if (currentLesson === 60) loadLesson(1); else loadLesson(currentLesson + 1);
         }
 
         window.onload = () => loadLesson(1);
