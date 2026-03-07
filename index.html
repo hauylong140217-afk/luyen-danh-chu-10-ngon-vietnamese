@@ -7,50 +7,42 @@
     <style>
         :root { --bg: #f8f9fa; --primary: #007bff; --success: #28a745; --danger: #dc3545; }
         * { box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        /* Sidebar siêu gọn */
-        .sidebar { width: 60px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .nav-item { padding: 10px 0; text-align: center; color: #666; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; font-weight: bold; }
+        /* Sidebar */
+        .sidebar { width: 55px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        .nav-item { padding: 12px 0; text-align: center; color: #666; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; font-weight: bold; }
         .nav-item.active { background: var(--primary); color: white; }
 
-        /* Main Area */
         .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        
-        /* Thanh tiến độ mỏng trên cùng */
-        .progress-container { width: 100%; background: #eee; height: 4px; position: absolute; top: 0; }
-        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: 0.3s; }
+        .progress-container { width: 100%; background: #eee; height: 6px; position: absolute; top: 0; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #5cb85c); width: 0%; transition: 0.5s; }
 
-        .content-area { flex: 1; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden; }
-        .lesson-info { text-align: center; margin-top: 10px; margin-bottom: 10px; }
+        .content-area { flex: 1; padding: 10px; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+        .lesson-info { text-align: center; margin: 20px 0 10px; }
         .lesson-info h2 { margin: 0; font-size: 16px; color: #333; text-transform: uppercase; }
         
         .note-box { width: 95%; max-width: 600px; padding: 6px; border-radius: 5px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 10px; }
         .note-unikey { background: #fff3cd; color: #856404; }
         .note-v { background: #d4edda; color: #155724; }
 
-        /* Vùng hiển thị chữ */
-        .typing-box { width: 100%; max-width: 700px; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .char { font-family: 'Consolas', monospace; font-size: 20px; color: #ccc; border-radius: 3px; padding: 1px 2px; }
+        .typing-box { width: 100%; max-width: 700px; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .char { font-family: 'Consolas', monospace; font-size: 22px; color: #ccc; border-radius: 3px; }
         .char.current { color: #000; border-bottom: 3px solid var(--primary); background: #fffde7; }
         .char.correct { color: var(--success); }
         .char.wrong { color: white; background: var(--danger); }
 
-        /* Bàn phím: Ẩn trên mobile để tiết kiệm diện tích */
         .keyboard-wrapper { background: #dee2e6; padding: 10px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 1px solid #bbb; }
         .kb-row { display: flex; gap: 4px; margin-bottom: 4px; }
-        .key { width: 35px; height: 35px; background: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 12px; }
+        .key { width: 36px; height: 36px; background: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 12px; }
         .key.active { background: var(--success) !important; color: white; }
-        .key.space { width: 150px; }
+        .key.space { width: 160px; }
 
-        @media (max-width: 768px) {
-            .keyboard-wrapper { display: none; } /* Mobile ẩn phím ảo */
-            .char { font-size: 18px; }
-            .sidebar { width: 50px; }
-        }
+        @media (max-width: 768px) { .keyboard-wrapper { display: none; } .char { font-size: 19px; } }
 
+        /* Modal */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .result-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 80%; max-width: 300px; }
+        .result-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 85%; max-width: 300px; }
         .btn-next { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
@@ -60,18 +52,11 @@
 
 <div class="main">
     <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
-    
     <div class="content-area">
-        <div class="lesson-info">
-            <h2 id="title">BÀI 1</h2>
-            <small style="color: #999;">Hà Uy Long & Gemini</small>
-        </div>
-        
+        <div class="lesson-info"><h2 id="title">BÀI 1</h2><small style="color: #999;">Hà Uy Long & Gemini</small></div>
         <div id="note" class="note-box note-unikey">UNIKEY: E</div>
-        
         <div class="typing-box" id="target-text"></div>
     </div>
-
     <div class="keyboard-wrapper" id="kb-area">
         <div class="kb-row" id="r1"></div><div class="kb-row" id="r2"></div><div class="kb-row" id="r3"></div>
         <div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>
@@ -80,9 +65,10 @@
 
 <div class="modal" id="modal-res">
     <div class="result-box">
-        <h3 id="m-title">Hoàn thành!</h3>
+        <h3 id="m-title">Kết quả bài học</h3>
         <p id="stats"></p>
         <button class="btn-next" onclick="handleNext()">Tiếp tục ➔</button>
+        <button class="btn-next" style="background:#6c757d; margin-top:5px;" onclick="closeModal()">Xem lại bài gõ</button>
     </div>
 </div>
 
@@ -103,10 +89,11 @@
         "có nuôi con mới biết lòng cha mẹ ơn nghĩa sinh thành", "cây có cội nước có nguồn luôn nhớ về cội nguồn", "lá rụng về cội tình yêu quê hương luôn cháy bỏng", "trâu ta ăn cỏ đồng ta dù trong dù đục ao nhà vẫn hơn",
         "tốt gỗ hơn tốt nước sơn cái nết đánh chết cái đẹp", "đói cho sạch rách cho thơm giữ gìn phẩm giá con người", "giấy rách phải giữ lấy lề lòng tự trọng là trên hết", "gần bùn mà chẳng hôi tanh mùi bùn giữ tâm trong sáng",
         "một chữ cũng là thầy nửa chữ cũng là thầy tôn sư trọng đạo", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy", "kỷ luật là sức mạnh của tập thể và của sự thành công",
-        "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;"
+        "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 53 (Nội dung bài 1)
+        "asdf jkl; asdf jkl; asdf jkl; asdf jkl;"  // 54 (Nội dung bài 2)
     ];
 
-    let currentIdx = 0, currentLesson = 1, errors = 0, words = [];
+    let currentIdx = 0, currentLesson = 1, errors = 0, words = [], isFinished = false;
     const list = document.getElementById('lesson-list');
     for(let i=1; i<=54; i++){
         const d = document.createElement('div'); d.className = 'nav-item'; d.id = `n-${i}`; d.innerText = `B${i}`;
@@ -120,23 +107,35 @@
     });
 
     function loadLesson(id) {
-        currentLesson = id; currentIdx = 0; errors = 0;
+        currentLesson = id; currentIdx = 0; errors = 0; isFinished = false;
         document.getElementById('title').innerText = `BÀI ${id}`;
-        document.getElementById('p-bar').style.width = (id/54*100) + "%";
+        
+        // Bài 52 đầy thanh progress (100%)
+        let progress = (id >= 52) ? 100 : (id / 52 * 100);
+        document.getElementById('p-bar').style.width = progress + "%";
+        
         const n = document.getElementById('note');
         if(id >= 5 && id <= 52) { n.innerText = "UNIKEY: V"; n.className="note-box note-v"; }
         else { n.innerText = "UNIKEY: E"; n.className="note-box note-unikey"; }
+
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById(`n-${id}`).classList.add('active');
         document.getElementById('modal-res').style.display = 'none';
+
         const display = document.getElementById('target-text');
         const text = lessonData[id-1];
-        if(id >= 5 && id <= 52) { words = text.split(' '); display.innerHTML = words.map((w,i)=>`<span class="char" id="c-${i}">${w}</span>`).join('<span>&nbsp;</span>'); }
-        else { words = text.split(''); display.innerHTML = words.map((x,i)=>`<span class="char" id="c-${i}">${x===' '?'&nbsp;':x}</span>`).join(''); }
+        if(id >= 5 && id <= 52) { 
+            words = text.split(' '); 
+            display.innerHTML = words.map((w,i)=>`<span class="char" id="c-${i}">${w}</span>`).join('<span>&nbsp;</span>'); 
+        } else { 
+            words = text.split(''); 
+            display.innerHTML = words.map((x,i)=>`<span class="char" id="c-${i}">${x===' '?'&nbsp;':x}</span>`).join(''); 
+        }
         update(); document.getElementById('k-input').focus();
     }
 
     function update() {
+        if(isFinished) return;
         document.querySelectorAll('.char').forEach(e => e.classList.remove('current'));
         document.querySelectorAll('.key').forEach(e => e.classList.remove('active'));
         const active = document.getElementById(`c-${currentIdx}`);
@@ -150,6 +149,7 @@
 
     const input = document.getElementById('k-input');
     input.onkeydown = (e) => {
+        if(isFinished) return;
         if(currentLesson >= 5 && currentLesson <= 52 && e.key === ' ') {
             e.preventDefault(); const typed = input.value.trim(); if(!typed) return;
             const el = document.getElementById(`c-${currentIdx}`);
@@ -158,6 +158,7 @@
         }
     };
     input.oninput = (e) => {
+        if(isFinished) return;
         if(currentLesson < 5 || currentLesson > 52) {
             const typed = input.value.slice(-1); const target = words[currentIdx];
             const el = document.getElementById(`c-${currentIdx}`);
@@ -169,14 +170,24 @@
     };
 
     function finish() {
+        isFinished = true;
         const acc = Math.round(((words.length - errors)/words.length)*100);
-        document.getElementById('stats').innerHTML = `Độ chính xác: ${acc}% - Lỗi: ${errors}`;
+        document.getElementById('stats').innerHTML = `Độ chính xác: <b>${acc}%</b><br>Số lỗi: <b>${errors}</b>`;
         document.getElementById('modal-res').style.display = 'flex';
+        // Xóa tiêu điểm bàn phím để không gõ tiếp được
+        document.getElementById('k-input').blur();
     }
 
-    function handleNext() { if(currentLesson >= 54) loadLesson(1); else loadLesson(currentLesson + 1); }
+    function closeModal() {
+        document.getElementById('modal-res').style.display = 'none';
+    }
+
+    function handleNext() { 
+        if(currentLesson >= 54) loadLesson(1); else loadLesson(currentLesson + 1); 
+    }
+
     window.onload = () => loadLesson(1);
-    document.onclick = () => input.focus();
+    document.onclick = () => { if(!isFinished) document.getElementById('k-input').focus(); };
 </script>
 </body>
 </html>
