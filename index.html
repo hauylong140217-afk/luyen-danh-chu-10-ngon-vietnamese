@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Luyện Gõ 10 Ngón - Full 60 Bài</title>
+    <title>Luyện Gõ 10 Ngón - Full 62 Bài</title>
     <style>
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
@@ -75,15 +75,15 @@
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-header">LỘ TRÌNH 60 BÀI</div>
+        <div class="sidebar-header">LỘ TRÌNH LUYỆN TẬP</div>
         <div id="lesson-list"></div>
     </div>
 
     <div class="main">
         <div class="content-area" id="scroll-area">
             <div class="intro-section">
-                <h2 style="margin: 5px; color: var(--primary);">Luyện Gõ 10 Ngón Chuyên Nghiệp</h2>
-                <p style="font-size: 14px; color: #666; margin: 5px 0;">Học cách gõ phím nhanh chóng và chính xác qua 60 bài học từ cơ bản đến nâng cao.</p>
+                <h2 style="margin: 5px; color: var(--primary);">Hệ Thống Luyện Gõ 10 Ngón Chuyên Nghiệp</h2>
+                <p style="font-size: 14px; color: #666; margin: 5px 0;">Hoàn thành 62 bài tập để trở thành bậc thầy bàn phím.</p>
             </div>
 
             <div id="dynamic-note" class="note-box note-unikey">
@@ -191,13 +191,15 @@
             57: "giáo dục là vũ khí mạnh nhất mà bạn có thể sử dụng để thay đổi cả thế giới này tốt đẹp hơn",
             58: "biết người là thông minh biết mình là thông thái làm chủ người là quyền lực làm chủ mình là sức mạnh",
             59: "sự kiên nhẫn là yếu tố cốt lõi giúp bạn vượt qua mọi rào cản để chạm đến đích đến cuối cùng",
-            60: "chúc mừng bạn đã hoàn thành xuất sắc 60 bài luyện tập! bạn đã chính thức làm chủ được bàn phím của mình."
+            60: "mỗi bước đi dù nhỏ bé cũng đưa bạn đến gần hơn với mục tiêu to lớn mà mình đã đặt ra",
+            61: "hãy luôn giữ vững niềm tin vào bản thân vì đó chính là sức mạnh lớn nhất giúp bạn chiến thắng",
+            62: "chúc mừng bạn đã hoàn thành xuất sắc 62 bài luyện tập! bạn đã chính thức làm chủ được bàn phím của mình."
         };
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
 
         const list = document.getElementById('lesson-list');
-        for(let i=1; i<=60; i++) {
+        for(let i=1; i<=62; i++) {
             const div = document.createElement('div');
             div.className = 'nav-item'; div.id = `nav-${i}`;
             div.innerText = `Bài học ${i}`;
@@ -304,8 +306,8 @@
             const accuracy = Math.round(((wordsArray.length - errors) / wordsArray.length) * 100);
             document.getElementById('stats-info').innerHTML = `Độ chính xác: <b>${accuracy}%</b> | Lỗi: <b>${errors}</b>`;
             const btn = document.getElementById('btn-next-action');
-            if (currentLesson === 60) {
-                document.getElementById('modal-title').innerText = "🏆 XUẤT SẮC!";
+            if (currentLesson === 62) {
+                document.getElementById('modal-title').innerText = "🏆 CHIẾN THẮNG!";
                 btn.innerText = "Luyện lại từ đầu ↺";
             } else {
                 document.getElementById('modal-title').innerText = "Hoàn thành bài tập!";
@@ -315,7 +317,7 @@
         }
 
         function handleNextStep() {
-            if (currentLesson === 60) loadLesson(1); else loadLesson(currentLesson + 1);
+            if (currentLesson === 62) loadLesson(1); else loadLesson(currentLesson + 1);
         }
 
         window.onload = () => loadLesson(1);
