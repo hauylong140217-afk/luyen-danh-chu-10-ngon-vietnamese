@@ -7,12 +7,14 @@
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
+        /* Sidebar */
         .sidebar { width: 220px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; height: 100vh; }
         .sidebar-header { padding: 20px; font-weight: bold; color: var(--primary); border-bottom: 2px solid #eee; text-align: center; position: sticky; top: 0; background: white; z-index: 10; }
         .nav-item { padding: 12px 20px; color: #444; cursor: pointer; border-left: 4px solid transparent; font-size: 13px; border-bottom: 1px solid #f1f1f1; }
         .nav-item:hover { background: #f8f9fa; }
         .nav-item.active { background: #e7f1ff; border-left-color: var(--primary); font-weight: bold; color: var(--primary); }
 
+        /* Main Area */
         .main { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
         .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; padding-bottom: 260px; }
 
@@ -29,12 +31,14 @@
         .char.correct { color: var(--success); }
         .char.wrong { color: white; background: var(--danger); }
 
+        /* Keyboard */
         .keyboard-wrapper { background: #dee2e6; padding: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #bbb; position: absolute; bottom: 0; left: 0; }
         .kb-row { display: flex; gap: 5px; margin-bottom: 5px; }
         .key { width: 42px; height: 42px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 14px; }
         .key.active { background: var(--success) !important; color: white; }
         .key.space { width: 240px; }
 
+        /* Modal */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .result-box { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
         .btn-next { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; width: 100%; }
@@ -43,7 +47,7 @@
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-header">LỘ TRÌNH 54 BÀI</div>
+        <div class="sidebar-header">TIẾN TRÌNH 54 BÀI</div>
         <div id="lesson-list"></div>
     </div>
 
@@ -73,7 +77,7 @@
     <input type="text" id="keyboard-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
     <script>
-        // DANH SÁCH 54 BÀI - ĐÃ KIỂM TRA THỦ CÔNG TỪNG DÒNG
+        // DANH SÁCH 52 BÀI + 2 BÀI QUAY LẠI (TỔNG 54)
         const lessonData = [
             "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 1
             "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", // 2
@@ -127,15 +131,15 @@
             "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", // 50
             "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy", // 51
             "kỷ luật là sức mạnh của tập thể và của sự thành công", // 52
-            "tự do của bạn kết thúc nơi tự do người khác bắt đầu", // 53
-            "chúc mừng bạn hoàn thành xuất sắc 54 bài tập gõ mười ngón" // 54
+            "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 53 (LẶP LẠI BÀI 1)
+            "asdf jkl; asdf jkl; asdf jkl; asdf jkl;"  // 54 (LẶP LẠI BÀI 2)
         ];
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
         const list = document.getElementById('lesson-list');
 
-        // Render Sidebar - Đảm bảo i chạy đến đúng 54
-        for(let i=1; i<=lessonData.length; i++) {
+        // Render Sidebar đủ 54 bài
+        for(let i=1; i<=54; i++) {
             const div = document.createElement('div');
             div.className = 'nav-item'; div.id = `nav-${i}`;
             div.innerText = `Bài học ${i}`;
@@ -160,9 +164,10 @@
             currentIdx = 0; errors = 0;
             
             document.getElementById('current-lesson-title').innerText = `BÀI HỌC SỐ ${id}`;
-            
             const noteEl = document.getElementById('dynamic-note');
-            if (id >= 5) {
+            
+            // Bài 1-4 và 53-54 là Tiếng Anh
+            if (id >= 5 && id <= 52) {
                 noteEl.innerText = "⚠️ LƯU Ý: CHUYỂN UNIKEY SANG TIẾNG VIỆT (CHỮ V)";
                 noteEl.className = "note-box note-v";
             } else {
@@ -175,7 +180,7 @@
             document.getElementById('modal-res').style.display = 'none';
 
             const display = document.getElementById('target-text');
-            if (id >= 5) {
+            if (id >= 5 && id <= 52) {
                 wordsArray = rawText.split(' ');
                 display.innerHTML = wordsArray.map((w, i) => `<span class="char" id="char-${i}">${w}</span>`).join('<span>&nbsp;</span>');
             } else {
@@ -194,7 +199,7 @@
             activeChar.classList.add('current');
             activeChar.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            if (currentLesson < 5) {
+            if (currentLesson < 5 || currentLesson > 52) {
                 const char = wordsArray[currentIdx].toLowerCase();
                 const keyEl = document.getElementById(char === ' ' ? 'k-space' : `key-${char}`);
                 if(keyEl) keyEl.classList.add('active');
@@ -203,7 +208,7 @@
 
         const inputField = document.getElementById('keyboard-input');
         inputField.onkeydown = (e) => {
-            if (currentLesson >= 5 && e.key === ' ') {
+            if (currentLesson >= 5 && currentLesson <= 52 && e.key === ' ') {
                 e.preventDefault();
                 const typedWord = inputField.value.trim();
                 if(!typedWord) return;
@@ -216,7 +221,7 @@
         };
 
         inputField.oninput = (e) => {
-            if (currentLesson < 5) {
+            if (currentLesson < 5 || currentLesson > 52) {
                 const typed = inputField.value.slice(-1);
                 const target = wordsArray[currentIdx];
                 const charEl = document.getElementById(`char-${currentIdx}`);
@@ -232,9 +237,9 @@
             const accuracy = Math.round(((wordsArray.length - errors) / wordsArray.length) * 100);
             document.getElementById('stats-info').innerHTML = `Độ chính xác: <b>${accuracy}%</b><br>Số lỗi: <b>${errors}</b>`;
             const btn = document.getElementById('btn-next-action');
-            if (currentLesson === lessonData.length) {
-                document.getElementById('modal-title').innerText = "🏆 HOÀN THÀNH!";
-                btn.innerText = "Luyện lại từ Bài 1 ↺";
+            if (currentLesson === 54) {
+                document.getElementById('modal-title').innerText = "🏆 XUẤT SẮC!";
+                btn.innerText = "Quay lại Bài 1 ↺";
             } else {
                 document.getElementById('modal-title').innerText = "Xong Bài " + currentLesson;
                 btn.innerText = "Bài tiếp theo ➔";
@@ -243,7 +248,7 @@
         }
 
         function handleNextStep() {
-            if (currentLesson >= lessonData.length) loadLesson(1); else loadLesson(currentLesson + 1);
+            if (currentLesson >= 54) loadLesson(1); else loadLesson(currentLesson + 1);
         }
 
         window.onload = () => loadLesson(1);
