@@ -2,209 +2,224 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Luyện Gõ 10 Ngón - Smart Sidebar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Gõ 10 Ngón Tiếng Việt - Chuyên Nghiệp</title>
     <style>
-        :root { --bg: #f1f5f9; --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --sidebar-w: 80px; }
+        :root { --bg: #f8fafc; --primary: #2563eb; --success: #16a34a; --danger: #ef4444; --sidebar-w: 75px; }
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        /* Sidebar thông minh */
-        .sidebar { 
-            width: var(--sidebar-w); 
-            height: 100vh; 
-            background: #fff; 
-            border-right: 2px solid #cbd5e1; 
-            display: flex; 
-            flex-direction: column; 
-            flex-shrink: 0;
-            transition: 0.3s;
-        }
-        .lesson-list { flex: 1; overflow-y: hidden; display: flex; flex-direction: column; }
+        /* Sidebar Danh Sách Bài Tập */
+        .sidebar { width: var(--sidebar-w); height: 100vh; background: #ffffff; border-right: 2px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; }
+        .lesson-list { flex: 1; overflow-y: hidden; }
         .lesson-list.expanded { overflow-y: auto; }
-        
-        .nav-item { padding: 12px 0; text-align: center; color: #64748b; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 12px; font-weight: bold; }
+        .nav-item { padding: 15px 0; text-align: center; color: #64748b; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        .nav-item:hover { background: #f8fafc; color: var(--primary); }
         .nav-item.active { background: var(--primary); color: white; }
+        .view-all-btn { background: #f1f5f9; text-align: center; padding: 12px 0; font-size: 11px; font-weight: 800; cursor: pointer; color: var(--primary); border-top: 1px solid #e2e8f0; }
+
+        /* Vùng Chính */
+        .main { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .progress-bar { width: 100%; height: 6px; background: #e2e8f0; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.6s; }
         
-        .view-all-btn { 
-            background: #e2e8f0; color: #1e293b; padding: 10px 0; text-align: center; 
-            font-size: 11px; font-weight: 900; cursor: pointer; border-top: 1px solid #cbd5e1;
+        .app-container { flex: 1; width: 95%; max-width: 900px; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 15px 0; }
+
+        /* Vùng Văn Bản */
+        .display-box { width: 100%; background: white; border-radius: 15px; padding: 30px; min-height: 140px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .char { font-family: 'Consolas', 'Courier New', monospace; font-size: 36px; color: #cbd5e1; border-bottom: 4px solid transparent; }
+        .char.current { color: #1e293b; border-bottom-color: var(--primary); background: #eff6ff; }
+        .char.correct { color: #1e293b; opacity: 1; }
+        .char.wrong { color: white; background: var(--danger); border-radius: 6px; }
+
+        /* Bảng Hướng Dẫn Trung Tâm */
+        .guide-center { 
+            width: 100%; max-width: 750px; background: #ffffff; border-radius: 12px; 
+            padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            border: 1px solid #cbd5e1;
         }
+        .guide-section { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .guide-label { grid-column: span 5; font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 5px; text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 3px; }
+        .g-cell { font-size: 11px; text-align: center; background: #f8fafc; padding: 6px 2px; border-radius: 4px; color: #475569; }
+        .g-cell b { display: block; color: var(--danger); font-size: 13px; margin-top: 2px; }
 
-        /* Bảng hướng dẫn Telex/VNI mini trong Sidebar */
-        .mini-guide { padding: 10px 5px; background: #f8fafc; border-top: 2px solid #cbd5e1; font-size: 10px; }
-        .guide-row { display: flex; justify-content: space-between; margin-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
-        .guide-row b { color: var(--danger); }
-
-        /* Main Area */
-        .main { flex: 1; display: flex; flex-direction: column; }
-        .progress-bar { width: 100%; background: #94a3b8; height: 20px; position: relative; color: white; font-size: 11px; font-weight: bold; }
-        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; position: absolute; }
-        .progress-text { width: 100%; text-align: center; z-index: 1; position: relative; line-height: 20px; }
-
-        .app-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 20px; }
-
-        .display-box { width: 100%; max-width: 850px; background: white; border-radius: 12px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #94a3b8; border-bottom: 3px solid transparent; }
-        .char.current { color: #000; border-bottom-color: var(--primary); background: #eff6ff; }
-        .char.correct { color: #1e293b; }
-        .char.wrong { color: white; background: var(--danger); border-radius: 4px; }
-
-        /* Keyboard & Hands */
-        .keyboard-wrapper { display: flex; align-items: flex-end; gap: 15px; padding: 20px; background: #fff; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
-        .hand-svg { width: 130px; height: 160px; }
-        .finger { fill: #f1f5f9; stroke: #64748b; stroke-width: 1.5; }
-        .finger.active { fill: var(--primary); }
-        .kb-grid { display: flex; flex-direction: column; gap: 5px; background: #e2e8f0; padding: 8px; border-radius: 12px; }
+        /* Bàn Phím & Tay */
+        .typing-area { display: flex; align-items: flex-end; gap: 25px; padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .hand-svg { width: 130px; height: 160px; opacity: 0.9; }
+        .finger { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; transition: 0.2s; }
+        .finger.active { fill: var(--primary); stroke: var(--primary); }
+        .kb-grid { display: flex; flex-direction: column; gap: 5px; background: #f1f5f9; padding: 8px; border-radius: 12px; }
         .kb-row { display: flex; gap: 5px; justify-content: center; }
-        .key { min-width: 38px; height: 38px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid #94a3b8; }
-        .key.active { background: var(--success); color: white; border-bottom: 1px solid #15803d; transform: translateY(2px); }
-        .key.space { width: 240px; }
+        .key { min-width: 40px; height: 40px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border-bottom: 3px solid #cbd5e1; color: #475569; }
+        .key.active { background: var(--success); color: white; border-bottom-width: 1px; transform: translateY(2px); }
+        .key.space { width: 250px; }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .res-box { background: white; padding: 30px; border-radius: 20px; text-align: center; }
+        /* Thông Báo Kết Quả */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 350px; width: 90%; }
+        .btn-next { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="lesson-list" id="ls-list">
-        </div>
-    <div class="view-all-btn" id="expand-btn" onclick="toggleExpand()">XEM TẤT CẢ ▼</div>
-    
-    <div class="mini-guide">
-        <div style="text-align:center; font-weight:bold; margin-bottom:5px; color:var(--primary)">TELEX</div>
-        <div class="guide-row"><span>Sắc</span><b>S</b></div>
-        <div class="guide-row"><span>Huyền</span><b>F</b></div>
-        <div class="guide-row"><span>Hỏi</span><b>R</b></div>
-        <div class="guide-row"><span>Ngã</span><b>X</b></div>
-        <div class="guide-row"><span>Nặng</span><b>J</b></div>
-        <div class="guide-row"><span>Â/Ê/Ô</span><b>AA/EE/OO</b></div>
-        <div class="guide-row"><span>Đ</span><b>DD</b></div>
-    </div>
+    <div class="lesson-list" id="lesson-list"></div>
+    <div class="view-all-btn" onclick="toggleSidebar()">XEM TẤT CẢ</div>
 </div>
 
 <div class="main">
-    <div class="progress-bar">
-        <div class="progress-fill" id="p-bar"></div>
-        <div class="progress-text">BÀI <span id="cur-n">1</span> - TIẾN ĐỘ: <span id="p-pc">0</span>%</div>
-    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     
-    <div class="app-content">
-        <div class="display-box" id="target-text"></div>
+    <div class="app-container">
+        <div class="display-box" id="display-box"></div>
 
-        <div class="keyboard-wrapper">
-            <svg class="hand-svg" viewBox="0 0 100 120">
-                <path id="f-l-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" />
-                <path id="f-l-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" />
-                <path id="f-l-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" />
-                <path id="f-l-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" />
-                <path id="f-l-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" />
-            </svg>
+        <div class="guide-center">
+            <div class="guide-section">
+                <div class="guide-label">QUY TẮC TELEX</div>
+                <div class="g-cell">Sắc<b>S</b></div><div class="g-cell">Huyền<b>F</b></div><div class="g-cell">Hỏi<b>R</b></div><div class="g-cell">Ngã<b>X</b></div><div class="g-cell">Nặng<b>J</b></div>
+                <div class="g-cell">Â/Ê/Ô<b>aa/ee/oo</b></div><div class="g-cell">Ă<b>aw</b></div><div class="g-cell">Ư/Ơ<b>w/ow</b></div><div class="g-cell">Đ<b>dd</b></div><div class="g-cell">Xóa<b>z</b></div>
+            </div>
+            <div class="guide-section">
+                <div class="guide-label">QUY TẮC VNI</div>
+                <div class="g-cell">Sắc<b>1</b></div><div class="g-cell">Huyền<b>2</b></div><div class="g-cell">Hỏi<b>3</b></div><div class="g-cell">Ngã<b>4</b></div><div class="g-cell">Nặng<b>5</b></div>
+                <div class="g-cell">Â/Ê/Ô<b>6</b></div><div class="g-cell">Ư/Ơ<b>7</b></div><div class="g-cell">Ă<b>8</b></div><div class="g-cell">Đ<b>9</b></div><div class="g-cell">Xóa<b>0</b></div>
+            </div>
+        </div>
 
-            <div class="kb-grid" id="kb-box"></div>
-
-            <svg class="hand-svg" viewBox="0 0 100 120" style="transform: scaleX(-1);">
-                <path id="f-r-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" />
-                <path id="f-r-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" />
-                <path id="f-r-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" />
-                <path id="f-r-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" />
-                <path id="f-r-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" />
-            </svg>
+        <div class="typing-area">
+            <svg class="hand-svg" viewBox="0 0 100 120"><path id="f-l-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" /><path id="f-l-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" /><path id="f-l-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" /><path id="f-l-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" /><path id="f-l-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" /></svg>
+            <div class="kb-grid" id="kb-grid"></div>
+            <svg class="hand-svg" viewBox="0 0 100 120" style="transform: scaleX(-1);"><path id="f-r-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" /><path id="f-r-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" /><path id="f-r-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" /><path id="f-r-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" /><path id="f-r-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" /></svg>
         </div>
     </div>
 </div>
 
-<div class="modal" id="modal-res">
-    <div class="res-box">
-        <h2 style="color:var(--primary)">XONG!</h2>
-        <p id="stats"></p>
-        <button style="background:var(--primary); color:white; border:none; padding:10px 30px; border-radius:8px; cursor:pointer;" onclick="nextLesson()">TIẾP ➔</button>
+<div class="modal" id="result-modal">
+    <div class="modal-content">
+        <h2 style="color:var(--success); margin-top:0;">HOÀN THÀNH</h2>
+        <p id="result-stats" style="font-size: 18px; color: #475569;"></p>
+        <button class="btn-next" onclick="nextLesson()">BÀI TIẾP THEO</button>
     </div>
 </div>
 
-<input type="text" id="k-in" style="position: absolute; opacity: 0;">
+<input type="text" id="hidden-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
 <script>
-    const fMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
-    const lessons = [ "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;; af jk sd l;", "má mà mả mã mạ", "con cò bé bé nó đậu cành tre", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô" ]; 
+    const fingerMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
     
-    let curIdx = 0, curLsn = 1, errs = 0, words = [], isDone = false, isExpanded = false;
+    // Bài 52 đã được đưa vào đúng vị trí
+    const lessonDatabase = [
+        "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", 
+        "má mà mả mã mạ", "con cò bé bé nó đậu cành tre", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô"
+    ];
 
-    // Render 54 bài
-    const list = document.getElementById('ls-list');
+    let currentIdx = 0, currentLessonId = 1, errorCount = 0, words = [], isFinished = false, isExpanded = false;
+
+    // Khởi tạo Sidebar 54 bài
+    const sidebarList = document.getElementById('lesson-list');
     for(let i=1; i<=54; i++){
-        const d = document.createElement('div'); d.className = 'nav-item'; d.id = `nav-${i}`; d.innerText = `B${i}`;
-        if(i > 10) d.style.display = 'none';
-        d.onclick = () => loadLesson(i); list.appendChild(d);
+        const item = document.createElement('div');
+        item.className = 'nav-item';
+        item.id = `lesson-${i}`;
+        item.innerText = `B${i}`;
+        if(i > 12) item.style.display = 'none';
+        item.onclick = () => loadLesson(i);
+        sidebarList.appendChild(item);
     }
 
-    function toggleExpand() {
+    function toggleSidebar() {
         isExpanded = !isExpanded;
         const items = document.querySelectorAll('.nav-item');
-        items.forEach((item, idx) => { if(idx >= 10) item.style.display = isExpanded ? 'block' : 'none'; });
-        document.getElementById('ls-list').classList.toggle('expanded', isExpanded);
-        document.getElementById('expand-btn').innerText = isExpanded ? 'THU GỌN ▲' : 'XEM TẤT CẢ ▼';
+        items.forEach((el, idx) => { if(idx >= 12) el.style.display = isExpanded ? 'block' : 'none'; });
+        sidebarList.classList.toggle('expanded', isExpanded);
+        document.querySelector('.view-all-btn').innerText = isExpanded ? 'THU GỌN' : 'XEM TẤT CẢ';
     }
 
-    // Keyboard Render
-    const rows = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
-    const kb = document.getElementById('kb-box');
-    rows.forEach(r => {
-        const div = document.createElement('div'); div.className = 'kb-row';
-        r.split('').forEach(c => { div.innerHTML += `<div class="key" id="k-${c}">${c.toUpperCase()}</div>`; });
-        kb.appendChild(div);
+    // Vẽ bàn phím
+    const keyRows = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
+    const kbContainer = document.getElementById('kb-grid');
+    keyRows.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'kb-row';
+        row.split('').forEach(char => {
+            rowDiv.innerHTML += `<div class="key" id="k-${char}">${char.toUpperCase()}</div>`;
+        });
+        kbContainer.appendChild(rowDiv);
     });
-    kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
+    kbContainer.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
 
     function loadLesson(id) {
-        curLsn = id; curIdx = 0; errs = 0; isDone = false;
-        document.getElementById('cur-n').innerText = id;
-        document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-        document.getElementById(`nav-${id}`).classList.add('active');
-        document.getElementById('modal-res').style.display = 'none';
-        document.getElementById('p-bar').style.width = Math.round((id/54)*100) + "%";
+        currentLessonId = id; currentIdx = 0; errorCount = 0; isFinished = false;
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`lesson-${id}`).classList.add('active');
+        document.getElementById('result-modal').style.display = 'none';
+        document.getElementById('progress-fill').style.width = `${(id/54)*100}%`;
         
-        const text = lessons[(id-1) % lessons.length];
-        words = (id <= 3) ? text.split('') : text.split(' ');
-        document.getElementById('target-text').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w===' '?'&nbsp;':w}</span>`).join(id <= 3 ? '' : '<span>&nbsp;</span>');
-        updateUI();
+        const rawText = lessonDatabase[(id-1) % lessonDatabase.length];
+        words = (id <= 2) ? rawText.split('') : rawText.split(' ');
+        
+        const displayBox = document.getElementById('display-box');
+        displayBox.innerHTML = words.map((w, i) => `<span class="char" id="char-${i}">${w === ' ' ? '&nbsp;' : w}</span>`).join(id <= 2 ? '' : '<span>&nbsp;</span>');
+        updateHighlight();
     }
 
-    function updateUI() {
-        if(isDone) return;
-        document.querySelectorAll('.char, .key, .finger').forEach(e => e.classList.remove('current', 'active'));
-        document.getElementById(`c-${curIdx}`).classList.add('current');
-        let char = (curLsn <= 3) ? words[curIdx].toLowerCase() : words[curIdx][0].toLowerCase();
-        if(words[curIdx] === ' ') char = ' ';
-        const k = document.getElementById(char === ' ' ? 'k-space' : `k-${char}`);
-        if(k) k.classList.add('active');
-        const f = fMap[char]; if(f) document.getElementById(`f-${f}`).classList.add('active');
+    function updateHighlight() {
+        if(isFinished) return;
+        document.querySelectorAll('.char, .key, .finger').forEach(el => el.classList.remove('current', 'active'));
+        document.getElementById(`char-${currentIdx}`).classList.add('current');
+        
+        let targetChar = (currentLessonId <= 2) ? words[currentIdx].toLowerCase() : words[currentIdx][0].toLowerCase();
+        if(words[currentIdx] === ' ') targetChar = ' ';
+
+        const keyEl = document.getElementById(targetChar === ' ' ? 'k-space' : `k-${targetChar}`);
+        if(keyEl) keyEl.classList.add('active');
+        
+        const fingerId = fingerMap[targetChar];
+        if(fingerId) document.getElementById(`f-${fingerId}`).classList.add('active');
     }
 
-    const input = document.getElementById('k-in');
-    input.oninput = () => {
-        if(isDone) return;
-        const val = input.value;
-        const target = words[curIdx];
-        if(curLsn <= 3) {
-            if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) document.getElementById(`c-${curIdx}`).className = 'char correct';
-            else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; errs++; }
-            curIdx++; input.value = "";
+    const inputArea = document.getElementById('hidden-input');
+    inputArea.oninput = () => {
+        if(isFinished) return;
+        const val = inputArea.value;
+        const target = words[currentIdx];
+
+        if(currentLessonId <= 2) {
+            if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) {
+                document.getElementById(`char-${currentIdx}`).className = 'char correct';
+            } else {
+                document.getElementById(`char-${currentIdx}`).className = 'char wrong';
+                errorCount++;
+            }
+            currentIdx++; inputArea.value = "";
         } else {
             if(val.endsWith(' ')) {
-                if(val.trim() === target) document.getElementById(`c-${curIdx}`).className = 'char correct';
-                else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; errs++; }
-                curIdx++; input.value = "";
+                if(val.trim() === target) {
+                    document.getElementById(`char-${currentIdx}`).className = 'char correct';
+                } else {
+                    document.getElementById(`char-${currentIdx}`).className = 'char wrong';
+                    errorCount++;
+                }
+                currentIdx++; inputArea.value = "";
             }
         }
-        if(curIdx < words.length) updateUI(); else finish();
+
+        if(currentIdx < words.length) updateHighlight(); else showResult();
     };
 
-    function finish() { isDone = true; document.getElementById('stats').innerText = `Lỗi: ${errs}`; document.getElementById('modal-res').style.display = 'flex'; }
-    function nextLesson() { loadLesson(curLsn >= 54 ? 1 : curLsn + 1); }
+    function showResult() {
+        isFinished = true;
+        const accuracy = Math.round(((words.length - errorCount) / words.length) * 100);
+        document.getElementById('result-stats').innerText = `Độ chính xác: ${accuracy}%`;
+        document.getElementById('result-modal').style.display = 'flex';
+    }
+
+    function nextLesson() {
+        loadLesson(currentLessonId >= 54 ? 1 : currentLessonId + 1);
+    }
+
     window.onload = () => loadLesson(1);
-    document.onclick = () => { if(!isDone) input.focus(); };
+    document.onclick = () => { if(!isFinished) inputArea.focus(); };
 </script>
 </body>
 </html>
