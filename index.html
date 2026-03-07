@@ -3,197 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Luyện Gõ 10 Ngón + Hướng dẫn Telex/VNI</title>
+    <title>Luyện Gõ 10 Ngón - Smart Sidebar</title>
     <style>
-        :root { --bg: #f1f5f9; --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --sidebar-w: 70px; }
+        :root { --bg: #f1f5f9; --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --sidebar-w: 80px; }
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; border-right: 2px solid #cbd5e1; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .nav-item { padding: 15px 0; text-align: center; color: #64748b; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: bold; }
+        /* Sidebar thông minh */
+        .sidebar { 
+            width: var(--sidebar-w); 
+            height: 100vh; 
+            background: #fff; 
+            border-right: 2px solid #cbd5e1; 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0;
+            transition: 0.3s;
+        }
+        .lesson-list { flex: 1; overflow-y: hidden; display: flex; flex-direction: column; }
+        .lesson-list.expanded { overflow-y: auto; }
+        
+        .nav-item { padding: 12px 0; text-align: center; color: #64748b; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 12px; font-weight: bold; }
         .nav-item.active { background: var(--primary); color: white; }
+        
+        .view-all-btn { 
+            background: #e2e8f0; color: #1e293b; padding: 10px 0; text-align: center; 
+            font-size: 11px; font-weight: 900; cursor: pointer; border-top: 1px solid #cbd5e1;
+        }
+
+        /* Bảng hướng dẫn Telex/VNI mini trong Sidebar */
+        .mini-guide { padding: 10px 5px; background: #f8fafc; border-top: 2px solid #cbd5e1; font-size: 10px; }
+        .guide-row { display: flex; justify-content: space-between; margin-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
+        .guide-row b { color: var(--danger); }
 
         /* Main Area */
-        .main { flex: 1; display: flex; flex-direction: column; height: 100vh; }
-        .progress-bar { width: 100%; background: #94a3b8; height: 24px; position: relative; color: white; font-size: 12px; font-weight: bold; }
+        .main { flex: 1; display: flex; flex-direction: column; }
+        .progress-bar { width: 100%; background: #94a3b8; height: 20px; position: relative; color: white; font-size: 11px; font-weight: bold; }
         .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; position: absolute; }
-        .progress-text { width: 100%; text-align: center; z-index: 1; position: relative; line-height: 24px; }
+        .progress-text { width: 100%; text-align: center; z-index: 1; position: relative; line-height: 20px; }
 
-        .app-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px; }
+        .app-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 20px; }
 
-        /* Vùng hiển thị chữ */
-        .display-box { width: 100%; max-width: 900px; background: white; border-radius: 15px; padding: 30px; min-height: 140px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .char { font-family: 'Consolas', monospace; font-size: 34px; color: #94a3b8; border-bottom: 4px solid transparent; }
-        .char.current { color: #000; border-bottom-color: var(--primary); background: #dbeafe; }
-        .char.correct { color: #1e293b; opacity: 1; }
-        .char.wrong { color: white; background: var(--danger); border-radius: 6px; }
-
-        /* Tab Hướng Dẫn Telex/VNI */
-        .guide-container { width: 100%; max-width: 800px; background: #fff; border-radius: 12px; padding: 10px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .guide-tabs { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
-        .tab-btn { padding: 5px 20px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; }
-        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .guide-content { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; text-align: center; font-size: 13px; }
-        .guide-item { background: #f1f5f9; padding: 5px; border-radius: 6px; border: 1px dashed #cbd5e1; }
-        .guide-item b { color: var(--danger); font-size: 15px; }
+        .display-box { width: 100%; max-width: 850px; background: white; border-radius: 12px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #94a3b8; border-bottom: 3px solid transparent; }
+        .char.current { color: #000; border-bottom-color: var(--primary); background: #eff6ff; }
+        .char.correct { color: #1e293b; }
+        .char.wrong { color: white; background: var(--danger); border-radius: 4px; }
 
         /* Keyboard & Hands */
-        .keyboard-wrapper { display: flex; align-items: flex-end; gap: 20px; padding: 20px; background: #fff; border-radius: 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .hand-svg { width: 140px; height: 160px; }
+        .keyboard-wrapper { display: flex; align-items: flex-end; gap: 15px; padding: 20px; background: #fff; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+        .hand-svg { width: 130px; height: 160px; }
         .finger { fill: #f1f5f9; stroke: #64748b; stroke-width: 1.5; }
-        .finger.active { fill: var(--primary); stroke: var(--primary); }
-        .dot { fill: white; display: none; }
-        .dot.active { display: block; }
-        .kb-grid { display: flex; flex-direction: column; gap: 5px; background: #e2e8f0; padding: 10px; border-radius: 12px; }
+        .finger.active { fill: var(--primary); }
+        .kb-grid { display: flex; flex-direction: column; gap: 5px; background: #e2e8f0; padding: 8px; border-radius: 12px; }
         .kb-row { display: flex; gap: 5px; justify-content: center; }
-        .key { min-width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border-bottom: 4px solid #94a3b8; }
-        .key.active { background: var(--success); color: white; border-bottom: 1px solid #15803d; transform: translateY(3px); }
-        .key.space { width: 260px; }
+        .key { min-width: 38px; height: 38px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid #94a3b8; }
+        .key.active { background: var(--success); color: white; border-bottom: 1px solid #15803d; transform: translateY(2px); }
+        .key.space { width: 240px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .result-box { background: white; padding: 40px; border-radius: 24px; text-align: center; width: 320px; }
+        .res-box { background: white; padding: 30px; border-radius: 20px; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="sidebar" id="lesson-list"></div>
+<div class="sidebar">
+    <div class="lesson-list" id="ls-list">
+        </div>
+    <div class="view-all-btn" id="expand-btn" onclick="toggleExpand()">XEM TẤT CẢ ▼</div>
+    
+    <div class="mini-guide">
+        <div style="text-align:center; font-weight:bold; margin-bottom:5px; color:var(--primary)">TELEX</div>
+        <div class="guide-row"><span>Sắc</span><b>S</b></div>
+        <div class="guide-row"><span>Huyền</span><b>F</b></div>
+        <div class="guide-row"><span>Hỏi</span><b>R</b></div>
+        <div class="guide-row"><span>Ngã</span><b>X</b></div>
+        <div class="guide-row"><span>Nặng</span><b>J</b></div>
+        <div class="guide-row"><span>Â/Ê/Ô</span><b>AA/EE/OO</b></div>
+        <div class="guide-row"><span>Đ</span><b>DD</b></div>
+    </div>
+</div>
 
 <div class="main">
     <div class="progress-bar">
         <div class="progress-fill" id="p-bar"></div>
-        <div class="progress-text">BÀI <span id="curr-num">1</span>/54 - TIẾN ĐỘ: <span id="p-percent">0</span>%</div>
+        <div class="progress-text">BÀI <span id="cur-n">1</span> - TIẾN ĐỘ: <span id="p-pc">0</span>%</div>
     </div>
     
     <div class="app-content">
         <div class="display-box" id="target-text"></div>
 
-        <div class="guide-container">
-            <div class="guide-tabs">
-                <button class="tab-btn active" onclick="switchMode('telex')">HƯỚNG DẪN TELEX</button>
-                <button class="tab-btn" onclick="switchMode('vni')">HƯỚNG DẪN VNI</button>
-            </div>
-            <div class="guide-content" id="guide-info">
-                </div>
-        </div>
-
         <div class="keyboard-wrapper">
-            <svg class="hand-svg" viewBox="0 0 120 150">
-                <path id="f-left-5" class="finger" d="M10,95 C5,45 20,40 25,55 L30,95 Z" /><circle class="dot" id="d-left-5" cx="17" cy="50" r="4" />
-                <path id="f-left-4" class="finger" d="M32,85 C30,35 45,30 50,45 L50,90 Z" /><circle class="dot" id="d-left-4" cx="40" cy="37" r="4" />
-                <path id="f-left-3" class="finger" d="M52,80 C50,25 65,20 70,35 L70,85 Z" /><circle class="dot" id="d-left-3" cx="60" cy="27" r="4" />
-                <path id="f-left-2" class="finger" d="M72,85 C75,40 90,45 90,60 L85,100 Z" /><circle class="dot" id="d-left-2" cx="81" cy="53" r="4" />
-                <path id="f-left-1" class="finger" d="M90,110 C110,105 115,130 95,135 Z" /><circle class="dot" id="d-left-1" cx="102" cy="118" r="4" />
+            <svg class="hand-svg" viewBox="0 0 100 120">
+                <path id="f-l-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" />
+                <path id="f-l-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" />
+                <path id="f-l-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" />
+                <path id="f-l-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" />
+                <path id="f-l-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" />
             </svg>
 
-            <div class="kb-grid" id="kb-container"></div>
+            <div class="kb-grid" id="kb-box"></div>
 
-            <svg class="hand-svg" viewBox="0 0 120 150" style="transform: scaleX(-1);">
-                <path id="f-right-5" class="finger" d="M10,95 C5,45 20,40 25,55 L30,95 Z" /><circle class="dot" id="d-right-5" cx="17" cy="50" r="4" />
-                <path id="f-right-4" class="finger" d="M32,85 C30,35 45,30 50,45 L50,90 Z" /><circle class="dot" id="d-right-4" cx="40" cy="37" r="4" />
-                <path id="f-right-3" class="finger" d="M52,80 C50,25 65,20 70,35 L70,85 Z" /><circle class="dot" id="d-right-3" cx="60" cy="27" r="4" />
-                <path id="f-right-2" class="finger" d="M72,85 C75,40 90,45 90,60 L85,100 Z" /><circle class="dot" id="d-right-2" cx="81" cy="53" r="4" />
-                <path id="f-right-1" class="finger" d="M90,110 C110,105 115,130 95,135 Z" /><circle class="dot" id="d-right-1" cx="102" cy="118" r="4" />
+            <svg class="hand-svg" viewBox="0 0 100 120" style="transform: scaleX(-1);">
+                <path id="f-r-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" />
+                <path id="f-r-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" />
+                <path id="f-r-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" />
+                <path id="f-r-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" />
+                <path id="f-r-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" />
             </svg>
         </div>
     </div>
 </div>
 
 <div class="modal" id="modal-res">
-    <div class="result-box">
-        <h2 style="color: var(--primary)">KẾT QUẢ</h2>
-        <p id="stats" style="font-weight: bold;"></p>
-        <button style="background:var(--primary); color:white; border:none; padding:15px; width:100%; border-radius:10px; cursor:pointer;" onclick="nextLesson()">TIẾP TỤC</button>
+    <div class="res-box">
+        <h2 style="color:var(--primary)">XONG!</h2>
+        <p id="stats"></p>
+        <button style="background:var(--primary); color:white; border:none; padding:10px 30px; border-radius:8px; cursor:pointer;" onclick="nextLesson()">TIẾP ➔</button>
     </div>
 </div>
 
-<input type="text" id="k-input" style="position: absolute; opacity: 0;">
+<input type="text" id="k-in" style="position: absolute; opacity: 0;">
 
 <script>
-    const guideData = {
-        telex: [ {n:'Sắc', k:'S'}, {n:'Huyền', k:'F'}, {n:'Hỏi', k:'R'}, {n:'Ngã', k:'X'}, {n:'Nặng', k:'J'}, {n:'Â, Ê, Ô', k:'aa, ee, oo'}, {n:'Ă', k:'aw'}, {n:'Ư, Ơ', k:'w, ow'}, {n:'Đ', k:'dd'} ],
-        vni: [ {n:'Sắc', k:'1'}, {n:'Huyền', k:'2'}, {n:'Hỏi', k:'3'}, {n:'Ngã', k:'4'}, {n:'Nặng', k:'5'}, {n:'Â, Ê, Ô', k:'6'}, {n:'Ư, Ơ', k:'7'}, {n:'Ă', k:'8'}, {n:'Đ', k:'9'} ]
-    };
+    const fMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
+    const lessons = [ "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;; af jk sd l;", "má mà mả mã mạ", "con cò bé bé nó đậu cành tre", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô" ]; 
+    
+    let curIdx = 0, curLsn = 1, errs = 0, words = [], isDone = false, isExpanded = false;
 
-    function switchMode(mode) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(mode)));
-        const container = document.getElementById('guide-info');
-        container.innerHTML = guideData[mode].map(item => `<div class="guide-item">${item.n}<br><b>${item.k}</b></div>`).join('');
+    // Render 54 bài
+    const list = document.getElementById('ls-list');
+    for(let i=1; i<=54; i++){
+        const d = document.createElement('div'); d.className = 'nav-item'; d.id = `nav-${i}`; d.innerText = `B${i}`;
+        if(i > 10) d.style.display = 'none';
+        d.onclick = () => loadLesson(i); list.appendChild(d);
     }
 
-    const fingerMap = { '1':'left-5','q':'left-5','a':'left-5','z':'left-5','2':'left-4','w':'left-4','s':'left-4','x':'left-4','3':'left-3','e':'left-3','d':'left-3','c':'left-3','4':'left-2','r':'left-2','f':'left-2','v':'left-2','5':'left-2','t':'left-2','g':'left-2','b':'left-2','6':'right-2','y':'right-2','h':'right-2','n':'right-2','7':'right-2','u':'right-2','j':'right-2','m':'right-2','8':'right-3','i':'right-3','k':'right-3',',':'right-3','9':'right-4','o':'right-4','l':'right-4','.':'right-4','0':'right-5','p':'right-5',';':'right-5','/':'right-5',' ':'left-1' };
+    function toggleExpand() {
+        isExpanded = !isExpanded;
+        const items = document.querySelectorAll('.nav-item');
+        items.forEach((item, idx) => { if(idx >= 10) item.style.display = isExpanded ? 'block' : 'none'; });
+        document.getElementById('ls-list').classList.toggle('expanded', isExpanded);
+        document.getElementById('expand-btn').innerText = isExpanded ? 'THU GỌN ▲' : 'XEM TẤT CẢ ▼';
+    }
 
-    const lessons = [ "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", "má mà mả mã mạ cá cà cả mã mạ", "con cò bé bé nó đậu cành tre đi không hỏi mẹ", "học thầy không tày học bạn tiên học lễ hậu học văn", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", "uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây" ]; // Rút gọn cho code ngắn gọn
-
-    let curIdx = 0, curLsn = 1, errors = 0, words = [], isDone = false;
-
-    // Render Keyboard
-    const kbRows = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
-    const kb = document.getElementById('kb-container');
-    kbRows.forEach(r => {
+    // Keyboard Render
+    const rows = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
+    const kb = document.getElementById('kb-box');
+    rows.forEach(r => {
         const div = document.createElement('div'); div.className = 'kb-row';
         r.split('').forEach(c => { div.innerHTML += `<div class="key" id="k-${c}">${c.toUpperCase()}</div>`; });
         kb.appendChild(div);
     });
     kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
 
-    // Sidebar
-    const list = document.getElementById('lesson-list');
-    for(let i=1; i<=54; i++){
-        const item = document.createElement('div'); item.className = 'nav-item'; item.id = `nav-${i}`; item.innerText = `B${i}`;
-        item.onclick = () => loadLesson(i); list.appendChild(item);
-    }
-
     function loadLesson(id) {
-        curLsn = id; curIdx = 0; errors = 0; isDone = false;
-        document.getElementById('curr-num').innerText = id;
+        curLsn = id; curIdx = 0; errs = 0; isDone = false;
+        document.getElementById('cur-n').innerText = id;
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById(`nav-${id}`).classList.add('active');
         document.getElementById('modal-res').style.display = 'none';
-        
         document.getElementById('p-bar').style.width = Math.round((id/54)*100) + "%";
-        document.getElementById('p-percent').innerText = Math.round((id/54)*100);
-
+        
         const text = lessons[(id-1) % lessons.length];
-        words = (id <= 2) ? text.split('') : text.split(' ');
-        document.getElementById('target-text').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w===' '?'&nbsp;':w}</span>`).join(id <= 2 ? '' : '<span>&nbsp;</span>');
+        words = (id <= 3) ? text.split('') : text.split(' ');
+        document.getElementById('target-text').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w===' '?'&nbsp;':w}</span>`).join(id <= 3 ? '' : '<span>&nbsp;</span>');
         updateUI();
     }
 
     function updateUI() {
         if(isDone) return;
-        document.querySelectorAll('.char, .key, .finger, .dot').forEach(e => e.classList.remove('current', 'active'));
+        document.querySelectorAll('.char, .key, .finger').forEach(e => e.classList.remove('current', 'active'));
         document.getElementById(`c-${curIdx}`).classList.add('current');
-        let char = (curLsn <= 2) ? words[curIdx].toLowerCase() : words[curIdx][0].toLowerCase();
+        let char = (curLsn <= 3) ? words[curIdx].toLowerCase() : words[curIdx][0].toLowerCase();
         if(words[curIdx] === ' ') char = ' ';
         const k = document.getElementById(char === ' ' ? 'k-space' : `k-${char}`);
         if(k) k.classList.add('active');
-        const f = fingerMap[char];
-        if(f) { document.getElementById(`f-${f}`).classList.add('active'); document.getElementById(`d-${f}`).classList.add('active'); }
+        const f = fMap[char]; if(f) document.getElementById(`f-${f}`).classList.add('active');
     }
 
-    const input = document.getElementById('k-input');
+    const input = document.getElementById('k-in');
     input.oninput = () => {
         if(isDone) return;
         const val = input.value;
         const target = words[curIdx];
-        if(curLsn <= 2) {
+        if(curLsn <= 3) {
             if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) document.getElementById(`c-${curIdx}`).className = 'char correct';
-            else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; errors++; }
+            else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; errs++; }
             curIdx++; input.value = "";
         } else {
             if(val.endsWith(' ')) {
                 if(val.trim() === target) document.getElementById(`c-${curIdx}`).className = 'char correct';
-                else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; errors++; }
+                else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; errs++; }
                 curIdx++; input.value = "";
             }
         }
         if(curIdx < words.length) updateUI(); else finish();
     };
 
-    function finish() { isDone = true; document.getElementById('stats').innerText = `Lỗi: ${errors}`; document.getElementById('modal-res').style.display = 'flex'; }
+    function finish() { isDone = true; document.getElementById('stats').innerText = `Lỗi: ${errs}`; document.getElementById('modal-res').style.display = 'flex'; }
     function nextLesson() { loadLesson(curLsn >= 54 ? 1 : curLsn + 1); }
-    window.onload = () => { loadLesson(1); switchMode('telex'); };
+    window.onload = () => loadLesson(1);
     document.onclick = () => { if(!isDone) input.focus(); };
 </script>
 </body>
