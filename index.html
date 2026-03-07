@@ -7,9 +7,9 @@
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        .sidebar { width: 220px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
-        .sidebar-header { padding: 20px; font-weight: bold; color: var(--primary); border-bottom: 2px solid #eee; text-align: center; font-size: 18px; }
-        .nav-item { padding: 12px 20px; color: #444; cursor: pointer; border-left: 4px solid transparent; font-size: 13px; border-bottom: 1px solid #f9f9f9; }
+        .sidebar { width: 220px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; height: 100vh; }
+        .sidebar-header { padding: 20px; font-weight: bold; color: var(--primary); border-bottom: 2px solid #eee; text-align: center; font-size: 16px; position: sticky; top: 0; background: white; z-index: 5; }
+        .nav-item { padding: 12px 20px; color: #444; cursor: pointer; border-left: 4px solid transparent; font-size: 13px; border-bottom: 1px solid #f1f1f1; }
         .nav-item:hover { background: #f8f9fa; }
         .nav-item.active { background: #e7f1ff; border-left-color: var(--primary); font-weight: bold; color: var(--primary); }
 
@@ -17,24 +17,21 @@
         .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; padding-bottom: 250px; }
 
         .intro-section { width: 100%; max-width: 800px; text-align: center; margin-bottom: 15px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
-        .intro-section h2 { margin: 0; color: var(--dark); font-size: 22px; }
-        .intro-section p { font-size: 15px; color: #666; margin: 10px 0 0 0; }
-
         .note-box { width: 100%; max-width: 800px; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 14px; }
         .note-unikey { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .note-v { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; font-size: 22px !important; }
+        .note-v { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; font-size: 20px !important; }
 
-        .typing-box { width: 100%; max-width: 800px; text-align: center; margin: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 6px; }
-        .char { font-family: 'Consolas', monospace; font-size: 28px; color: #bbb; padding: 2px 5px; border-radius: 4px; }
+        .typing-box { width: 100%; max-width: 800px; text-align: center; margin: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 5px; }
+        .char { font-family: 'Consolas', monospace; font-size: 26px; color: #bbb; padding: 2px 4px; border-radius: 4px; }
         .char.current { color: #000; border-bottom: 4px solid var(--primary); background: #fffde7; }
         .char.correct { color: var(--success); }
         .char.wrong { color: white; background: var(--danger); }
 
-        .keyboard-wrapper { background: #dee2e6; padding: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #bbb; position: absolute; bottom: 0; left: 0; z-index: 10; }
-        .kb-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 6px; }
-        .key { width: 45px; height: 45px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 15px; }
+        .keyboard-wrapper { background: #dee2e6; padding: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #bbb; position: absolute; bottom: 0; left: 0; }
+        .kb-row { display: flex; gap: 5px; margin-bottom: 5px; }
+        .key { width: 42px; height: 42px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 14px; }
         .key.active { background: var(--success) !important; color: white; }
-        .key.space { width: 250px; }
+        .key.space { width: 240px; }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .result-box { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
@@ -51,8 +48,8 @@
     <div class="main">
         <div class="content-area">
             <div class="intro-section">
-                <h2>Hệ Thống Luyện Gõ 10 Ngón</h2>
-                <p>Hợp tác phát triển: <b>Hà Uy Long & AI Gemini</b></p>
+                <h2>Luyện Gõ 10 Ngón Chuyên Nghiệp</h2>
+                <p>Hợp tác: <b>Hà Uy Long & AI Gemini</b></p>
             </div>
             <div id="dynamic-note" class="note-box note-unikey">⚠️ LƯU Ý: CHUYỂN UNIKEY SANG TIẾNG ANH (CHỮ E)</div>
             <div class="typing-box" id="target-text"></div>
@@ -66,7 +63,7 @@
     <div class="modal" id="modal-res">
         <div class="result-box">
             <h2 id="modal-title">Hoàn thành!</h2>
-            <p id="stats-info" style="font-size: 20px; color: #555;"></p>
+            <p id="stats-info" style="font-size: 18px; color: #555;"></p>
             <button class="btn-next" id="btn-next-action" onclick="handleNextStep()">Bài tiếp theo ➔</button>
         </div>
     </div>
@@ -74,73 +71,74 @@
     <input type="text" id="keyboard-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
     <script>
+        // DANH SÁCH 60 BÀI ĐẦY ĐỦ - KHÔNG THIẾU
         const lessonContent = [
             "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 1
             "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", // 2
             "aa ss dd ff jj kk ll ;; af jk sd l;", // 3
             "gh gh gh gh ty ty ty ty ur ur ur ur", // 4
-            "má mà mả mã mạ cá cà cả mã mạ", // 5
-            "con cò bé bé nó đậu cành tre đi không hỏi mẹ", // 6
-            "học thầy không tày học bạn tiên học lễ hậu học văn", // 7
-            "uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây", // 8
-            "một cây làm chẳng nên non ba cây chụm lại nên hòn núi cao", // 9
-            "có công mài sắt có ngày nên kim kiên trì thành công", // 10
-            "kiến tha lâu cũng đầy tổ cần cù bù thông minh", // 11
-            "lá lành đùm lá rách anh em như thể tay chân", // 12
-            "bầu ơi thương lấy bí cùng tuy rằng khác giống nhưng chung một giàn", // 13
-            "đường đời nhiều ngã rẽ quan trọng là chọn đúng hướng đi", // 14
-            "thất bại là mẹ thành công chớ thấy sóng cả mà ngã tay chèo", // 15
-            "có chí thì nên gần mực thì đen gần đèn thì sáng", // 16
-            "đi một ngày đàng học một sàng khôn lời nói chẳng mất tiền mua", // 17
-            "lựa lời mà nói cho vừa lòng nhau kính trên nhường dưới", // 18
-            "rách lành đùm bọc dở hay đỡ đần một con ngựa đau cả tàu bỏ cỏ", // 19
-            "ăn trông nồi ngồi trông hướng học ăn học nói học gói học mở", // 20
-            "không có gì quý hơn độc lập tự do hạnh phúc muôn năm", // 21
-            "đoàn kết đoàn kết đại đoàn kết thành công thành công đại thành công", // 22
-            "kiên trì nhẫn nại là chìa khóa mở cửa tương lai", // 23
-            "đừng bao giờ từ bỏ ước mơ hãy tin vào bản thân mình", // 24
-            "hãy sống như hôm nay là ngày cuối cùng bạn được sống", // 25
-            "tương lai nằm trong tay bạn hãy nỗ lực ngay hôm nay", // 26
-            "sách là kho tàng tri thức vô tận của nhân loại", // 27
-            "đọc muôn quyển sách đi muôn dặm đường mở mang kiến thức", // 28
-            "sức khỏe là vàng hãy chăm sóc bản thân mỗi ngày", // 29
-            "thời gian là tiền bạc đừng lãng phí từng giây phút quý giá", // 30
-            "lòng tốt là ngôn ngữ chung mà ai cũng có thể hiểu", // 31
-            "sống chậm lại để cảm nhận vẻ đẹp thế giới xung quanh", // 32
-            "mọi khó khăn chỉ là thử thách giúp bạn trưởng thành hơn", // 33
-            "vượt qua chính mình là chiến thắng hiển hách nhất", // 34
-            "hãy luôn mỉm cười với cuộc sống dù có chuyện gì xảy ra", // 35
-            "gieo nhân nào gặt quả nấy hãy sống tử tế với mọi người", // 36
-            "trung thực là đức tính quý giá nhất của mỗi con người", // 37
-            "khiêm tốn bao nhiêu cũng chưa đủ tự phụ một chút là thừa", // 38
-            "hành trình vạn dặm bắt đầu từ những bước chân nhỏ nhất", // 39
-            "ngọc bất trác bất thành khí nhân bất học bất tri lý", // 40
-            "có nuôi con mới biết lòng cha mẹ ơn nghĩa sinh thành", // 41
-            "cây có cội nước có nguồn luôn nhớ về cội nguồn", // 42
-            "lá rụng về cội tình yêu quê hương luôn cháy bỏng", // 43
-            "trâu ta ăn cỏ đồng ta dù trong dù đục ao nhà vẫn hơn", // 44
-            "tốt gỗ hơn tốt nước sơn cái nết đánh chết cái đẹp", // 45
-            "đói cho sạch rách cho thơm giữ gìn phẩm giá con người", // 46
-            "giấy rách phải giữ lấy lề lòng tự trọng là trên hết", // 47
-            "gần bùn mà chẳng hôi tanh mùi bùn giữ tâm trong sáng", // 48
-            "một chữ cũng là thầy nửa chữ cũng là thầy tôn sư trọng đạo", // 49
-            "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", // 50
-            "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy", // 51
-            "kỷ luật là sức mạnh của tập thể và của sự thành công", // 52
-            "tự do của bạn kết thúc nơi tự do người khác bắt đầu", // 53
-            "kiến thức là sức mạnh nhưng hành động mới tạo kết quả", // 54
-            "hãy học lắng nghe để thấu hiểu và sẻ chia nhiều hơn nữa", // 55
-            "sáng tạo là chìa khóa để giải quyết mọi vấn đề khó khăn", // 56
-            "lòng biết ơn giúp chúng ta trân trọng cuộc sống này", // 57
-            "sự im lặng đôi khi là câu trả lời sâu sắc nhất", // 58
-            "đỉnh núi cao nhất luôn nằm ở phía trước hãy nỗ lực leo", // 59
-            "chúc mừng bạn hoàn thành 60 bài tập cùng hà uy long và ai gemini" // 60
+            "bài 5 má mà mả mã mạ cá cà cả mã mạ", // 5
+            "bài 6 con cò bé bé nó đậu cành tre", // 6
+            "bài 7 học thầy không tày học bạn", // 7
+            "bài 8 uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây", // 8
+            "bài 9 một cây làm chẳng nên non ba cây chụm lại nên hòn núi cao", // 9
+            "bài 10 có công mài sắt có ngày nên kim", // 10
+            "bài 11 kiến tha lâu cũng đầy tổ", // 11
+            "bài 12 lá lành đùm lá rách anh em như thể tay chân", // 12
+            "bài 13 bầu ơi thương lấy bí cùng tuy rằng khác giống nhưng chung một giàn", // 13
+            "bài 14 đường đời nhiều ngã rẽ quan trọng là chọn đúng hướng", // 14
+            "bài 15 thất bại là mẹ thành công", // 15
+            "bài 16 có chí thì nên gần mực thì đen gần đèn thì sáng", // 16
+            "bài 17 đi một ngày đàng học một sàng khôn", // 17
+            "bài 18 lựa lời mà nói cho vừa lòng nhau", // 18
+            "bài 19 rách lành đùm bọc dở hay đỡ đần", // 19
+            "bài 20 ăn trông nồi ngồi trông hướng học ăn học nói học gói học mở", // 20
+            "bài 21 không có gì quý hơn độc lập tự do hạnh phúc", // 21
+            "bài 22 đoàn kết đoàn kết đại đoàn kết", // 22
+            "bài 23 kiên trì nhẫn nại là chìa khóa thành công", // 23
+            "bài 24 đừng bao giờ từ bỏ ước mơ của bạn", // 24
+            "bài 25 hãy sống như hôm nay là ngày cuối cùng", // 25
+            "bài 26 tương lai nằm trong tay bạn", // 26
+            "bài 27 sách là kho tàng tri thức vô tận", // 27
+            "bài 28 đọc muôn quyển sách đi muôn dặm đường", // 28
+            "bài 29 sức khỏe là vàng hãy bảo vệ nó", // 29
+            "bài 30 thời gian là tiền bạc đừng lãng phí", // 30
+            "bài 31 lòng tốt là ngôn ngữ ai cũng hiểu", // 31
+            "bài 32 sống chậm lại để yêu thương nhiều hơn", // 32
+            "bài 33 khó khăn chỉ là thử thách bản lĩnh", // 33
+            "bài 34 vượt qua chính mình là chiến thắng lớn nhất", // 34
+            "bài 35 nụ cười là liều thuốc bổ cho tâm hồn", // 35
+            "bài 36 gieo nhân nào gặt quả nấy", // 36
+            "bài 37 trung thực là đức tính quý giá", // 37
+            "bài 38 khiêm tốn bao nhiêu cũng chưa đủ", // 38
+            "bài 39 hành trình vạn dặm bắt đầu từ một bước chân", // 39
+            "bài 40 ngọc bất trác bất thành khí nhân bất học bất tri lý", // 40
+            "bài 41 ơn cha nặng lắm ai ơi nghĩa mẹ bằng trời", // 41
+            "bài 42 cây có cội nước có nguồn", // 42
+            "bài 43 lá rụng về cội tình quê hương", // 43
+            "bài 44 ao nhà vẫn hơn dù trong dù đục", // 44
+            "bài 45 tốt gỗ hơn tốt nước sơn", // 45
+            "bài 46 đói cho sạch rách cho thơm", // 46
+            "bài 47 giấy rách phải giữ lấy lề", // 47
+            "bài 48 gần bùn mà chẳng hôi tanh mùi bùn", // 48
+            "bài 49 một chữ cũng là thầy nửa chữ cũng là thầy", // 49
+            "bài 50 không thầy đố mày làm nên", // 50
+            "bài 51 tôn sư trọng đạo là truyền thống tốt đẹp", // 51
+            "bài 52 kỷ luật là sức mạnh tập thể", // 52
+            "bài 53 tự do phải đi đôi với trách nhiệm", // 53
+            "bài 54 kiến thức là sức mạnh hành động tạo kết quả", // 54
+            "bài 55 học cách lắng nghe để thấu hiểu", // 55
+            "bài 56 sáng tạo là chìa khóa giải quyết vấn đề", // 56
+            "bài 57 lòng biết ơn làm cuộc sống ý nghĩa", // 57
+            "bài 58 sự im lặng đôi khi là câu trả lời tốt nhất", // 58
+            "bài 59 hãy luôn nỗ lực vì mục tiêu phía trước", // 59
+            "bài 60 hoàn thành xuất sắc cùng hà uy long và ai gemini" // 60
         ];
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
         const list = document.getElementById('lesson-list');
 
-        // Render Sidebar
+        // Tạo Sidebar đúng 60 mục
         for(let i=1; i<=60; i++) {
             const div = document.createElement('div');
             div.className = 'nav-item'; div.id = `nav-${i}`;
@@ -173,7 +171,7 @@
                 noteEl.className = "note-box note-unikey";
             }
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(document.getElementById(`nav-${id}`)) document.getElementById(`nav-${id}`).classList.add('active');
+            document.getElementById(`nav-${id}`).classList.add('active');
             document.getElementById('modal-res').style.display = 'none';
             const display = document.getElementById('target-text');
             if (id >= 5) {
@@ -209,8 +207,7 @@
                 const charEl = document.getElementById(`char-${currentIdx}`);
                 if (typedWord === wordsArray[currentIdx]) charEl.className = 'char correct';
                 else { charEl.className = 'char wrong'; errors++; }
-                currentIdx++;
-                e.target.value = "";
+                currentIdx++; e.target.value = "";
                 if (currentIdx < wordsArray.length) updateState(); else finish();
             }
         };
@@ -221,8 +218,7 @@
                 const target = wordsArray[currentIdx];
                 const charEl = document.getElementById(`char-${currentIdx}`);
                 if(typed === target || (target === ' ' && typed === ' ')) {
-                    charEl.className = 'char correct';
-                    currentIdx++;
+                    charEl.className = 'char correct'; currentIdx++;
                 } else { charEl.className = 'char wrong'; errors++; }
                 if(currentIdx < wordsArray.length) updateState(); else finish();
                 e.target.value = "";
@@ -235,9 +231,9 @@
             const btn = document.getElementById('btn-next-action');
             if (currentLesson === 60) {
                 document.getElementById('modal-title').innerText = "🏆 TUYỆT VỜI!";
-                btn.innerText = "Luyện lại bài 1 ↺";
+                btn.innerText = "Quay lại Bài 1 ↺";
             } else {
-                document.getElementById('modal-title').innerText = "Xong bài " + currentLesson;
+                document.getElementById('modal-title').innerText = "Xong Bài " + currentLesson;
                 btn.innerText = "Bài tiếp theo ➔";
             }
             document.getElementById('modal-res').style.display = 'flex';
