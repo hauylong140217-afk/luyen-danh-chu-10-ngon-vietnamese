@@ -2,502 +2,340 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luyện Gõ 10 Ngón Pro - Kỷ Luật Thép</title>
+    <title>Luyện đánh chữ 10 ngón</title>
     <style>
         :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --text-main: #f8fafc;
-            --text-dim: #64748b;
-            --primary: #3b82f6;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --sidebar-w: 100px;
+            --bg: #050505; --panel: #111; --accent: #00f2ff;
+            --success: #00ff88; --danger: #ff0044; --text: #e0e0e0;
         }
-
-        * { box-sizing: border-box; transition: all 0.2s ease; }
+        * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; }
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            background: var(--bg);
-            color: var(--text-main);
-            overflow: hidden;
+            font-family: 'Fira Code', monospace; background: var(--bg);
+            color: var(--text); display: flex; height: 100vh;
         }
 
-        /* Sidebar Style */
-        .sidebar {
-            width: var(--sidebar-w);
-            height: 100vh;
-            background: var(--panel);
-            border-right: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-        }
-        .sb-header {
-            padding: 20px 0;
-            text-align: center;
-            font-size: 10px;
-            font-weight: 900;
-            background: #0ea5e9;
-            color: white;
-            letter-spacing: 1px;
-        }
-        .lesson-list {
-            flex: 1;
-            overflow-y: auto;
-            scrollbar-width: thin;
-        }
-        .nav-item {
-            padding: 15px 0;
-            text-align: center;
-            color: var(--text-dim);
-            cursor: pointer;
-            border-bottom: 1px solid #334155;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .nav-item:hover { background: #334155; color: white; }
-        .nav-item.active {
-            background: var(--primary);
-            color: white;
-            border-left: 4px solid #fff;
-        }
+        /* ARCHITECTURE: LAYOUT OVERVIEW */
+        .sidebar { width: 300px; background: var(--panel); border-right: 1px solid #222; display: flex; flex-direction: column; }
+        .viewport { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        
+        /* HEATMAP & STATS SYSTEM */
+        .dashboard { height: 120px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-around; padding: 0 50px; background: rgba(0,0,0,0.5); }
+        .stat-box { position: relative; text-align: center; }
+        .stat-box canvas { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); opacity: 0.3; }
+        .stat-val { font-size: 32px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+        .stat-lbl { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Main Layout */
-        .main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        /* TYPING ENGINE VISUALS */
+        .engine-room { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 50px; }
+        .text-stream {
+            width: 80%; max-width: 1100px; padding: 60px; background: #0a0a0a;
+            border-radius: 4px; border: 1px solid #1a1a1a; position: relative;
         }
-        .top-bar {
-            height: 5px;
-            width: 100%;
-            background: #334155;
-        }
-        #progress {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #22c55e);
-            width: 0%;
-        }
+        .word-node { display: inline-flex; margin-right: 15px; margin-bottom: 10px; transition: 0.3s; }
+        .char-node { font-size: 42px; color: #333; position: relative; transition: 0.1s; }
+        .char-node.active { color: #fff; text-shadow: 0 0 15px #fff; }
+        .char-node.active::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .char-node.passed { color: #666; }
+        .char-node.error { color: #fff; background: var(--danger); box-shadow: 0 0 20px var(--danger); border-radius: 2px; }
 
-        .content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            gap: 30px;
-        }
-
-        /* Header Info */
-        .header-box { text-align: center; }
-        .header-box h1 { margin: 0; font-size: 28px; letter-spacing: -1px; }
-        .tagline { color: var(--primary); font-weight: 700; font-size: 12px; text-transform: uppercase; margin-top: 5px; }
-
-        /* Area Gõ */
-        .typing-area {
-            width: 100%;
-            max-width: 900px;
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            border: 1px solid #334155;
-            position: relative;
-        }
-        .display-box {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            min-height: 100px;
-        }
-        .char {
-            font-family: 'JetBrains Mono', 'Consolas', monospace;
-            font-size: 32px;
-            color: #475569;
-            border-bottom: 3px solid transparent;
-            padding: 0 2px;
-        }
-        .char.current {
-            color: var(--text-main);
-            border-bottom-color: var(--primary);
-            background: rgba(59, 130, 246, 0.1);
-        }
-        .char.correct { color: #e2e8f0; }
-        .char.wrong {
-            background: var(--danger);
-            color: white;
-            border-radius: 4px;
-            animation: shake 0.2s ease-in-out;
-        }
-
-        /* Keyboard Visualization */
-        .kb-wrapper {
-            background: #000;
-            padding: 20px;
-            border-radius: 24px;
-            border: 4px solid #334155;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-        .hand { width: 80px; height: 100px; opacity: 0.8; }
-        .finger { fill: #334155; stroke: #475569; }
-        .finger.active { fill: var(--primary); stroke: #fff; }
-
-        .keys-grid { display: flex; flex-direction: column; gap: 6px; }
-        .row { display: flex; gap: 6px; justify-content: center; }
+        /* VIRTUAL MECHANICAL KEYBOARD */
+        .mech-kb { background: #000; padding: 30px; border-radius: 8px; border: 2px solid #111; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        .kb-row { display: flex; gap: 10px; margin-bottom: 10px; }
         .key {
-            width: 42px;
-            height: 42px;
-            background: #1e293b;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            color: #94a3b8;
-            border: 1px solid #334155;
-            border-bottom: 4px solid #0f172a;
+            width: 55px; height: 55px; background: #0f0f0f; border: 1px solid #222;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #444; border-radius: 4px;
+            transition: 0.05s; position: relative; border-bottom: 4px solid #000;
         }
-        .key.active {
-            background: var(--success);
-            color: white;
-            border-bottom-width: 1px;
-            transform: translateY(3px);
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
-        }
-        .key.wrong-key {
-            background: var(--danger) !important;
-            color: white !important;
-            border-bottom-width: 1px !important;
-            transform: translateY(3px) !important;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8) !important;
-        }
-        .key.space { width: 220px; }
+        .key.pressed { background: var(--accent); color: #000; transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 0 20px var(--accent); }
+        .key.error-flash { background: var(--danger) !important; color: #fff !important; transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 0 30px var(--danger); }
+        .key.space { width: 350px; }
 
-        /* Guide Info */
-        .info-panel {
-            width: 100%;
-            max-width: 900px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 15px;
-        }
-        #unikey-status {
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-        .telex-info {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 14px;
-        }
-        .telex-info b { color: var(--danger); font-size: 18px; margin-left: 5px; }
-
-        /* Modal Result */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.95);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .result-card {
-            background: var(--panel);
-            padding: 50px;
-            border-radius: 30px;
-            text-align: center;
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 50px rgba(59, 130, 246, 0.3);
-        }
-        .btn-next {
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+        /* OVERLAYS */
+        .matrix-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.05; pointer-events: none; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="sb-header">LEVELS</div>
-    <div class="lesson-list" id="lesson-list"></div>
-</div>
+<aside class="sidebar" id="sidebar">
+    <div style="padding:30px; border-bottom:1px solid #222; text-align:center;">
+        <h2 style="font-size:16px; letter-spacing:4px; color:var(--accent)">SYSTEM v4.0</h2>
+    </div>
+    <div id="lesson-grid" style="flex:1; overflow-y:auto; padding:10px;"></div>
+</aside>
 
-<div class="main-container">
-    <div class="top-bar"><div id="progress"></div></div>
+<main class="viewport">
+    <canvas id="matrix" class="matrix-bg"></canvas>
     
-    <div class="content">
-        <div class="header-box">
-            <h1>luyện gõ 10 ngón</h1>
-            <div class="tagline">tác giả: hà uy long • kỷ luật thép</div>
-        </div>
-
-        <div class="typing-area">
-            <div class="display-box" id="display-box"></div>
-        </div>
-
-        <div class="info-panel">
-            <div id="unikey-status"></div>
-            <div class="telex-info">
-                <span>sắc:<b>s</b></span>
-                <span>huyền:<b>f</b></span>
-                <span>hỏi:<b>r</b></span>
-                <span>ngã:<b>x</b></span>
-                <span>nặng:<b>j</b></span>
-            </div>
-        </div>
-
-        <div class="kb-wrapper">
-            <svg class="hand" viewBox="0 0 100 120">
-                <path id="f-l-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" />
-                <path id="f-l-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" />
-                <path id="f-l-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" />
-                <path id="f-l-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" />
-                <path id="f-l-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" />
-            </svg>
-
-            <div class="keys-grid" id="keys-grid"></div>
-
-            <svg class="hand" viewBox="0 0 100 120" style="transform: scaleX(-1);">
-                <path id="f-r-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" />
-                <path id="f-r-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" />
-                <path id="f-r-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" />
-                <path id="f-r-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" />
-                <path id="f-r-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" />
-            </svg>
-        </div>
+    <div class="dashboard">
+        <div class="stat-box"><span class="stat-val" id="wpm-display">00</span><br><span class="stat-lbl">WPM Speed</span></div>
+        <div class="stat-box"><span class="stat-val" id="acc-display">0%</span><br><span class="stat-lbl">Accuracy</span></div>
+        <div class="stat-box"><span class="stat-val" id="streak-display">0</span><br><span class="stat-lbl">Best Streak</span></div>
     </div>
-</div>
 
-<div class="modal" id="modal">
-    <div class="result-card">
-        <h1 id="res-title">HOÀN THÀNH!</h1>
-        <div style="font-size: 24px; margin: 20px 0;">
-            Độ chính xác: <span id="res-acc" style="color: var(--success); font-weight: 900;"></span><br>
-            Số lỗi: <span id="res-err" style="color: var(--danger); font-weight: 900;"></span>
-        </div>
-        <button class="btn-next" onclick="nextLesson()">BÀI TIẾP THEO ➔</button>
+    <div class="engine-room">
+        <div id="mode-indicator" style="font-size:12px; color:var(--accent); font-weight:bold;">INITIALIZING...</div>
+        
+        <div class="text-stream" id="text-stream"></div>
+
+        <div class="mech-kb" id="keyboard"></div>
     </div>
-</div>
+</main>
 
-<input type="text" id="hidden-input" style="position:fixed; top:-100px;">
+<input type="text" id="core-input" style="position:fixed; top:-1000px" autocomplete="off">
 
 <script>
-    /* DATA MODULE */
-    const FINGER_MAP = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
-    
-    const SENTENCES = [
-        "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
-        "có công mài sắt có ngày nên kim", "học đi đôi với hành", "tiên học lễ hậu học văn",
-        "ăn quả nhớ kẻ trồng cây", "uống nước nhớ nguồn", "lá lành đùm lá rách",
-        "bầu ơi thương lấy bí cùng", "một cây làm chẳng nên non", "có chí thì nên",
-        "tốt gỗ hơn tốt nước sơn", "đói cho sạch rách cho thơm", "thương người như thể thương thân",
-        "kiến tha lâu cũng đầy tổ", "hầy không tày học bạn", "không thầy đố mày làm nên",
-        "công cha như núi thái sơn", "nghĩa mẹ như nước trong nguồn", "gần mực thì đen gần đèn thì sáng",
-        "ăn chậm nhai kỹ", "học một biết mười", "thời gian là vàng bạc", "lời chào cao hơn mâm cỗ",
-        "một con ngựa đau cả tàu bỏ cỏ", "đoàn kết là sức mạnh", "sức khỏe là vốn quý nhất",
-        "đi một ngày đàng học một sàng khôn", "cái nết đánh chết cái đẹp", "chậm mà chắc",
-        "nhập gia tùy tục", "nói đi đôi với làm", "tấc đất tấc vàng", "chân cứng đá mềm",
-        "lửa thử vàng gian nan thử sức", "gieo gió gặt bão", "kính trên nhường dưới",
-        "uống nước nhớ người đào giếng", "luyện tay mỗi ngày", "kỹ năng gõ mười ngón",
-        "kiên trì sẽ thành công", "làm việc có kế hoạch", "đam mê dẫn lối", "tập trung là chìa khóa",
-        "sáng tạo không ngừng", "hành trình vạn dặm bắt đầu từ bước chân", "thất bại là mẹ thành công",
-        "đừng bao giờ bỏ cuộc", "vượt qua giới hạn bản thân", "không thầy đố mày làm nên công ơn giáo dưỡng",
-        "tri thức là sức mạnh", "đường tuy ngắn không đi không đến việc nhỏ không làm không xong"
-    ];
+/** * TYPING ENGINE ARCHITECTURE - 10,000 LINE SCALE
+ * Logic được thiết kế theo dạng Module hóa (Module-based Logic)
+ */
 
-    /* APP STATE */
-    let currentLesson = 1;
-    let charIndex = 0;
-    let errors = 0;
-    let words = [];
+class TypingEngine {
+    constructor() {
+        this.data = [
+            "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
+            "có công mài sắt có ngày nên kim", "học đi đôi với hành", "tiên học lễ hậu học văn",
+            "ăn quả nhớ kẻ trồng cây", "uống nước nhớ nguồn", "lá lành đùm lá rách",
+            "bầu ơi thương lấy bí cùng", "một cây làm chẳng nên non", "có chí thì nên",
+            "tốt gỗ hơn tốt nước sơn", "đói cho sạch rách cho thơm", "thương người như thể thương thân",
+            "kiến tha lâu cũng đầy tổ", "hầy không tày học bạn", "không thầy đố mày làm nên",
+            "công cha như núi thái sơn", "nghĩa mẹ như nước trong nguồn", "gần mực thì đen gần đèn thì sáng",
+            "ăn chậm nhai kỹ", "học một biết mười", "thời gian là vàng bạc", "lời chào cao hơn mâm cỗ",
+            "một con ngựa đau cả tàu bỏ cỏ", "đoàn kết là sức mạnh", "sức khỏe là vốn quý nhất",
+            "đi một ngày đàng học một sàng khôn", "cái nết đánh chết cái đẹp", "chậm mà chắc",
+            "nhập gia tùy tục", "nói đi đôi với làm", "tấc đất tấc vàng", "chân cứng đá mềm",
+            "lửa thử vàng gian nan thử sức", "gieo gió gặt bão", "kính trên nhường dưới",
+            "uống nước nhớ người đào giếng", "luyện tay mỗi ngày", "kỹ năng gõ mười ngón",
+            "kiên trì sẽ thành công", "làm việc có kế hoạch", "đam mê dẫn lối", "tập trung là chìa khóa",
+            "sáng tạo không ngừng", "hành trình vạn dặm bắt đầu từ bước chân", "thất bại là mẹ thành công",
+            "đừng bao giờ bỏ cuộc", "vượt qua giới hạn bản thân", "không thầy đố mày làm nên công ơn",
+            "tri thức là sức mạnh", "đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong"
+        ];
+        this.currentLesson = 1;
+        this.words = [];
+        this.wordIndex = 0;
+        this.errors = 0;
+        this.isCompiling = false;
+        this.startTime = null;
+        this.streak = 0;
+        this.maxStreak = 0;
+        
+        this.init();
+    }
 
-    /* INITIALIZATION */
-    function init() {
-        // Build Sidebar
-        const list = document.getElementById('lesson-list');
-        for(let i=1; i<=54; i++) {
-            const item = document.createElement('div');
-            item.className = 'nav-item';
-            item.id = `lesson-${i}`;
-            item.innerText = `BÀI ${i}`;
-            item.onclick = () => loadLesson(i);
-            list.appendChild(item);
-        }
+    init() {
+        this.renderKeyboard();
+        this.renderLessons();
+        this.loadLesson(1);
+        this.bindEvents();
+        this.initMatrix();
+    }
 
-        // Build Keyboard
-        const kbGrid = document.getElementById('keys-grid');
-        const layouts = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
-        layouts.forEach(rowStr => {
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'row';
-            rowStr.split('').forEach(key => {
-                rowDiv.innerHTML += `<div class="key" id="key-${key}">${key.toUpperCase()}</div>`;
-            });
-            kbGrid.appendChild(rowDiv);
+    renderLessons() {
+        const grid = document.getElementById('lesson-grid');
+        this.data.forEach((_, i) => {
+            const btn = document.createElement('div');
+            btn.style = `padding:15px; margin-bottom:5px; background:#1a1a1a; cursor:pointer; font-size:12px; border-left:2px solid transparent`;
+            btn.innerText = `LEVEL ${String(i+1).padStart(2, '0')}`;
+            btn.onclick = () => this.loadLesson(i+1);
+            btn.id = `ls-btn-${i+1}`;
+            grid.appendChild(btn);
         });
-        kbGrid.innerHTML += `<div class="row"><div class="key space" id="key-space">SPACE</div></div>`;
-
-        loadLesson(1);
-        document.body.onclick = () => document.getElementById('hidden-input').focus();
     }
 
-    /* CORE LOGIC */
-    function loadLesson(id) {
-        currentLesson = id;
-        charIndex = 0;
-        errors = 0;
-        
-        // UI Reset
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(`lesson-${id}`).classList.add('active');
-        document.getElementById('modal').style.display = 'none';
-        document.getElementById('progress').style.width = `${(id/54)*100}%`;
-        
-        const status = document.getElementById('unikey-status');
-        if(id <= 4) {
-            status.innerText = "Chế độ: TIẾNG ANH (OFF UNIKEY)";
-            status.className = "note-e";
-            status.style.background = "#ef4444";
-        } else {
-            status.innerText = "Chế độ: TIẾNG VIỆT (ON UNIKEY)";
-            status.className = "note-v";
-            status.style.background = "#22c55e";
-        }
-
-        const rawText = SENTENCES[id-1].toLowerCase();
-        words = (id <= 4) ? rawText.split('') : rawText.split(' ');
-        
-        const display = document.getElementById('display-box');
-        display.innerHTML = words.map((w, i) => 
-            `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`
-        ).join(id <= 4 ? '' : '<span>&nbsp;</span>');
-
-        updateHighlights();
+    renderKeyboard() {
+        const layout = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
+        const kb = document.getElementById('keyboard');
+        layout.forEach(row => {
+            const rDiv = document.createElement('div'); rDiv.className = 'kb-row';
+            row.split('').forEach(key => {
+                rDiv.innerHTML += `<div class="key" id="k-${key}">${key.toUpperCase()}</div>`;
+            });
+            kb.appendChild(rDiv);
+        });
+        kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE DISCIPLINE</div></div>`;
     }
 
-    function updateHighlights() {
-        document.querySelectorAll('.char, .key, .finger').forEach(el => el.classList.remove('current', 'active'));
+    loadLesson(id) {
+        this.currentLesson = id;
+        this.wordIndex = 0;
+        this.errors = 0;
+        this.startTime = null;
+        this.streak = 0;
         
-        const curChar = document.getElementById(`c-${charIndex}`);
-        if(curChar) curChar.classList.add('current');
+        document.querySelectorAll('[id^="ls-btn-"]').forEach(el => el.style.borderColor = 'transparent');
+        document.getElementById(`ls-btn-${id}`).style.borderColor = 'var(--accent)';
         
-        let targetKey = "";
-        if(currentLesson <= 4) {
-            targetKey = words[charIndex].toLowerCase();
-        } else {
-            targetKey = words[charIndex] ? words[charIndex][0].toLowerCase() : "";
-        }
+        const raw = this.data[id-1].toLowerCase();
+        this.words = (id <= 4) ? raw.split('') : raw.split(' ');
         
-        if(words[charIndex] === ' ') targetKey = ' ';
-        
-        const keyEl = document.getElementById(targetKey === ' ' ? 'key-space' : `key-${targetKey}`);
-        if(keyEl) keyEl.classList.add('active');
-        
-        const fingerId = FINGER_MAP[targetKey];
-        if(fingerId) document.getElementById(`f-${fingerId}`).classList.add('active');
+        const stream = document.getElementById('text-stream');
+        stream.innerHTML = this.words.map((w, i) => {
+            if(id <= 4) return `<span class="char-node" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`;
+            return `<div class="word-node" id="w-${i}">${w.split('').map((c, ci) => `<span class="char-node" id="c-${i}-${ci}">${c}</span>`).join('')}</div>`;
+        }).join(id <= 4 ? '' : '<span>&nbsp;</span>');
+
+        document.getElementById('mode-indicator').innerText = id <= 4 ? "MODE: ALPHA-LATIN (OFF UNIKEY)" : "MODE: VIETNAMESE TELEX (ON UNIKEY)";
+        this.updateHighlights();
     }
 
-    const input = document.getElementById('hidden-input');
-    
-    // CẤM SỬA TUYỆT ĐỐI (BACKSPACE)
-    input.onkeydown = (e) => {
-        if(e.key === 'Backspace') {
-            e.preventDefault();
-            return false;
-        }
-    };
-
-    input.oninput = (e) => {
-        const val = input.value;
-        if(!val) return;
-        const target = words[charIndex];
-
-        if(currentLesson <= 4) {
-            const typed = val.slice(-1);
-            const charEl = document.getElementById(`c-${charIndex}`);
-            
-            if(typed === target) {
-                charEl.className = 'char correct';
-            } else {
-                charEl.className = 'char wrong';
-                errors++;
-                triggerKeyDanger(typed);
+    bindEvents() {
+        const input = document.getElementById('core-input');
+        
+        input.addEventListener('compositionstart', () => { this.isCompiling = true; });
+        input.addEventListener('compositionend', () => { this.isCompiling = false; });
+        
+        input.onkeydown = (e) => {
+            if(e.key === 'Backspace') {
+                this.shakeScreen();
+                e.preventDefault();
+                return false;
             }
-            charIndex++;
-            input.value = "";
-        } else {
-            // FIX LỖI BÀI 5+: Kiểm tra sau phím Space
-            if(val.endsWith(' ')) {
-                const typedWord = val.trim();
-                const charEl = document.getElementById(`c-${charIndex}`);
-                if(typedWord === target) {
-                    charEl.className = 'char correct';
+        };
+
+        input.oninput = (e) => {
+            if(this.isCompiling) return;
+            if(!this.startTime) this.startTime = new Date();
+            
+            const val = input.value;
+            if(!val) return;
+
+            const target = this.words[this.wordIndex];
+
+            if(this.currentLesson <= 4) {
+                const typed = val.slice(-1);
+                const el = document.getElementById(`c-${this.wordIndex}`);
+                if(typed === target) {
+                    el.className = 'char-node passed';
+                    this.streak++;
+                    this.triggerKeyEffect(typed, true);
                 } else {
-                    charEl.className = 'char wrong';
-                    errors++;
+                    el.className = 'char-node error';
+                    this.errors++;
+                    this.streak = 0;
+                    this.triggerKeyEffect(typed, false);
                 }
-                charIndex++;
+                this.wordIndex++;
                 input.value = "";
-            } else return;
+                this.processStep();
+            } else {
+                if(val.endsWith(' ')) {
+                    const typedWord = val.trim();
+                    const wEl = document.getElementById(`w-${this.wordIndex}`);
+                    if(typedWord === target) {
+                        wEl.querySelectorAll('.char-node').forEach(n => n.className = 'char-node passed');
+                        this.streak += target.length;
+                    } else {
+                        wEl.querySelectorAll('.char-node').forEach(n => n.className = 'char-node error');
+                        this.errors++;
+                        this.streak = 0;
+                    }
+                    this.wordIndex++;
+                    input.value = "";
+                    this.processStep();
+                }
+            }
+        };
+
+        document.body.onclick = () => input.focus();
+    }
+
+    processStep() {
+        this.updateStats();
+        if(this.wordIndex >= this.words.length) {
+            this.showReport();
+        } else {
+            this.updateHighlights();
         }
+    }
 
-        if(charIndex < words.length) updateHighlights(); else showModal();
-    };
+    updateHighlights() {
+        document.querySelectorAll('.char-node').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.key').forEach(k => k.classList.remove('pressed'));
+        
+        let targetChar = "";
+        if(this.currentLesson <= 4) {
+            const next = document.getElementById(`c-${this.wordIndex}`);
+            if(next) { next.classList.add('active'); targetChar = this.words[this.wordIndex]; }
+        } else {
+            const nextW = document.getElementById(`w-${this.wordIndex}`);
+            if(nextW) { 
+                nextW.querySelector('.char-node').classList.add('active');
+                targetChar = this.words[this.wordIndex][0];
+            }
+        }
+        const key = document.getElementById(targetChar === ' ' ? 'k-space' : `k-${targetChar}`);
+        if(key) key.classList.add('pressed');
+    }
 
-    function triggerKeyDanger(key) {
-        const id = key === ' ' ? 'key-space' : `key-${key.toLowerCase()}`;
+    updateStats() {
+        if(!this.startTime) return;
+        const time = (new Date() - this.startTime) / 60000;
+        const wpm = Math.round((this.wordIndex / 5) / time) || 0;
+        const acc = Math.round(((this.wordIndex - this.errors) / this.wordIndex) * 100) || 100;
+        
+        if(this.streak > this.maxStreak) this.maxStreak = this.streak;
+        
+        document.getElementById('wpm-display').innerText = String(wpm).padStart(2, '0');
+        document.getElementById('acc-display').innerText = acc + "%";
+        document.getElementById('streak-display').innerText = this.maxStreak;
+    }
+
+    triggerKeyEffect(key, success) {
+        const id = key === ' ' ? 'k-space' : `k-${key.toLowerCase()}`;
         const el = document.getElementById(id);
         if(el) {
-            el.classList.add('wrong-key');
-            setTimeout(() => el.classList.remove('wrong-key'), 600); // 0.6 giây như bạn yêu cầu
+            const cls = success ? 'pressed' : 'error-flash';
+            el.classList.add(cls);
+            setTimeout(() => el.classList.remove(cls), 600);
         }
     }
 
-    function showModal() {
-        const acc = Math.round(((words.length - errors) / words.length) * 100);
-        document.getElementById('res-acc').innerText = acc + "%";
-        document.getElementById('res-err').innerText = errors;
-        document.getElementById('modal').style.display = 'flex';
+    shakeScreen() {
+        const vp = document.querySelector('.viewport');
+        vp.style.animation = 'shake 0.1s 3';
+        setTimeout(() => vp.style.animation = '', 300);
     }
 
-    function nextLesson() {
-        loadLesson(currentLesson >= 54 ? 1 : currentLesson + 1);
+    initMatrix() {
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const drops = Array(Math.floor(canvas.width/20)).fill(1);
+        
+        setInterval(() => {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00f2ff";
+            drops.forEach((y, i) => {
+                const text = chars[Math.floor(Math.random()*chars.length)];
+                ctx.fillText(text, i*20, y*20);
+                if(y*20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }, 50);
     }
 
-    window.onload = init;
+    showReport() {
+        alert(`HOÀN THÀNH LEVEL ${this.currentLesson}\nLỗi: ${this.errors}\nChuỗi gõ liên tiếp tốt nhất: ${this.maxStreak}`);
+        this.loadLesson(this.currentLesson + 1);
+    }
+}
+
+// KHỞI CHẠY HỆ THỐNG
+window.onload = () => new TypingEngine();
 </script>
+
+<style>
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    40% { transform: translate(3px, 2px) rotate(0deg); }
+    60% { transform: translate(-3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    100% { transform: translate(1px, -2px) rotate(0deg); }
+}
+</style>
 </body>
 </html>
