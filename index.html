@@ -22,7 +22,12 @@
         .progress-bar { width: 100%; height: 6px; background: #e2e8f0; }
         .p-fill { height: 100%; background: var(--success); width: 0%; transition: 0.4s; }
         
-        .app-body { flex: 1; width: 95%; max-width: 900px; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 10px 0; }
+        /* PHẦN GIỚI THIỆU MỚI */
+        .intro-header { text-align: center; padding: 20px 0 10px 0; }
+        .intro-header h1 { margin: 0; font-size: 24px; color: #1e293b; text-transform: uppercase; letter-spacing: 1px; }
+        .intro-header p { margin: 5px 0 0 0; font-size: 14px; color: #64748b; }
+
+        .app-body { flex: 1; width: 95%; max-width: 900px; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 5px 0 15px 0; }
 
         .display-box { width: 100%; background: white; border-radius: 15px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .char { font-family: 'Consolas', monospace; font-size: 30px; color: #cbd5e1; border-bottom: 3px solid transparent; white-space: nowrap; }
@@ -30,7 +35,6 @@
         .char.correct { color: #1e293b; opacity: 1; }
         .char.wrong { color: white; background: var(--danger); border-radius: 4px; }
 
-        /* Hướng dẫn phím dấu trung tâm */
         .guide-center { 
             width: 100%; max-width: 800px; background: #ffffff; border-radius: 12px; 
             padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
@@ -41,7 +45,10 @@
         .g-cell { font-size: 10px; text-align: center; background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #f1f5f9; }
         .g-cell b { display: block; color: var(--danger); font-size: 13px; }
 
-        /* Keyboard & Hands */
+        #unikey-note { width: 100%; text-align: center; font-weight: 800; font-size: 14px; padding: 8px; border-radius: 5px; margin-top: 5px; transition: 0.3s; }
+        .note-e { color: var(--danger); background: #fee2e2; border: 1px solid var(--danger); }
+        .note-v { color: var(--success); background: #dcfce7; border: 1px solid var(--success); }
+
         .kb-area { display: flex; align-items: flex-end; gap: 20px; padding: 15px; background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; }
         .hand-svg { width: 120px; height: 140px; }
         .finger { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
@@ -53,9 +60,10 @@
         .key.space { width: 220px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .modal-box { background: white; padding: 30px; border-radius: 15px; text-align: center; min-width: 350px; border: 3px solid var(--primary); }
-        .score-info { margin: 20px 0; font-size: 18px; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; text-align: center; min-width: 380px; border: 3px solid var(--primary); }
+        .score-info { margin: 20px 0; font-size: 18px; line-height: 1.6; }
         .rank-khen { font-size: 22px; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
+        .btn-next { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -67,20 +75,29 @@
 
 <div class="main">
     <div class="progress-bar"><div class="p-fill" id="p-fill"></div></div>
+    
+    <div class="intro-header">
+        <h1>Luyện Gõ 10 Ngón</h1>
+        <p>Cải thiện tốc độ, sự chính xác và rèn luyện tư duy thông qua 54 bài tập ý nghĩa.</p>
+    </div>
+
     <div class="app-body">
         <div class="display-box" id="display-box"></div>
 
-        <div class="guide-center">
-            <div class="g-grid">
-                <div class="g-title">TELEX</div>
-                <div class="g-cell">Sắc<b>S</b></div><div class="g-cell">Huyền<b>F</b></div><div class="g-cell">Hỏi<b>R</b></div><div class="g-cell">Ngã<b>X</b></div><div class="g-cell">Nặng<b>J</b></div>
-                <div class="g-cell">Â/Ê/Ô<b>aa/ee</b></div><div class="g-cell">Ă<b>aw</b></div><div class="g-cell">Ư/Ơ<b>w/ow</b></div><div class="g-cell">Đ<b>dd</b></div><div class="g-cell">Xóa<b>z</b></div>
+        <div style="width: 100%; max-width: 800px;">
+            <div class="guide-center">
+                <div class="g-grid">
+                    <div class="g-title">TELEX</div>
+                    <div class="g-cell">Sắc<b>S</b></div><div class="g-cell">Huyền<b>F</b></div><div class="g-cell">Hỏi<b>R</b></div><div class="g-cell">Ngã<b>X</b></div><div class="g-cell">Nặng<b>J</b></div>
+                    <div class="g-cell">Â/Ê/Ô<b>aa/ee</b></div><div class="g-cell">Ă<b>aw</b></div><div class="g-cell">Ư/Ơ<b>w/ow</b></div><div class="g-cell">Đ<b>dd</b></div><div class="g-cell">Xóa<b>z</b></div>
+                </div>
+                <div class="g-grid">
+                    <div class="g-title">VNI</div>
+                    <div class="g-cell">Sắc<b>1</b></div><div class="g-cell">Huyền<b>2</b></div><div class="g-cell">Hỏi<b>3</b></div><div class="g-cell">Ngã<b>4</b></div><div class="g-cell">Nặng<b>5</b></div>
+                    <div class="g-cell">Â/Ê/Ô<b>6</b></div><div class="g-cell">Ư/Ơ<b>7</b></div><div class="g-cell">Ă<b>8</b></div><div class="g-cell">Đ<b>9</b></div><div class="g-cell">Xóa<b>0</b></div>
+                </div>
             </div>
-            <div class="g-grid">
-                <div class="g-title">VNI</div>
-                <div class="g-cell">Sắc<b>1</b></div><div class="g-cell">Huyền<b>2</b></div><div class="g-cell">Hỏi<b>3</b></div><div class="g-cell">Ngã<b>4</b></div><div class="g-cell">Nặng<b>5</b></div>
-                <div class="g-cell">Â/Ê/Ô<b>6</b></div><div class="g-cell">Ư/Ơ<b>7</b></div><div class="g-cell">Ă<b>8</b></div><div class="g-cell">Đ<b>9</b></div><div class="g-cell">Xóa<b>0</b></div>
-            </div>
+            <div id="unikey-note"></div>
         </div>
 
         <div class="kb-area">
@@ -93,13 +110,13 @@
 
 <div class="modal" id="modal">
     <div class="modal-box">
-        <div id="rank-emoji" style="font-size: 50px;">🏆</div>
-        <div class="rank-khen" id="rank-khen">QUÁ ĐỈNH BẠN ƠI!</div>
+        <div id="rank-emoji" style="font-size: 60px; margin-bottom: 10px;">🏆</div>
+        <div class="rank-khen" id="rank-khen">HOÀN THÀNH BÀI TẬP!</div>
         <div class="score-info">
-            Độ chính xác: <b id="score-pc">100%</b><br>
-            Số lỗi: <b id="score-err">0</b>
+            Độ chính xác: <b id="score-pc" style="color: var(--primary);">100%</b><br>
+            Số lỗi mắc phải: <b id="score-err" style="color: var(--danger);">0</b>
         </div>
-        <button onclick="nextL()" style="padding: 10px 20px; cursor:pointer;">TIẾP TỤC ➔</button>
+        <button class="btn-next" onclick="nextL()">TIẾP TỤC ➔</button>
     </div>
 </div>
 
@@ -108,24 +125,7 @@
 <script>
     const fMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
     
-    const sentenceDB = [
-        "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
-        "Có công mài sắt có ngày nên kim", "Học đi đôi với hành", "Tiên học lễ hậu học văn", "Ăn quả nhớ kẻ trồng cây",
-        "Uống nước nhớ nguồn", "Lá lành đùm lá rách", "Bầu ơi thương lấy bí cùng", "Một cây làm chẳng nên non",
-        "Có chí thì nên", "Tốt gỗ hơn tốt nước sơn", "Đói cho sạch rách cho thơm", "Thương người như thể thương thân",
-        "Kiến tha lâu cũng đầy tổ", "Học thầy không tày học bạn", "Không thầy đố mày làm nên", "Công cha như núi Thái Sơn",
-        "Nghĩa mẹ như nước trong nguồn", "Gần mực thì đen gần đèn thì sáng", "Ăn chậm nhai kỹ", "Học một biết mười",
-        "Thời gian là vàng bạc", "Lời chào cao hơn mâm cỗ", "Một con ngựa đau cả tàu bỏ cỏ", "Đoàn kết là sức mạnh",
-        "Sức khỏe là vốn quý nhất", "Đi một ngày đàng học một sàng khôn", "Cái nết đánh chết cái đẹp", "Chậm mà chắc",
-        "Nhập gia tùy tục", "Nói đi đôi với làm", "Tấc đất tấc vàng", "Chân cứng đá mềm",
-        "Lửa thử vàng gian nan thử sức", "Gieo gió gặt bão", "Kính trên nhường dưới", "Uống nước nhớ người đào giếng",
-        "Luyện tay mỗi ngày", "Kỹ năng gõ mười ngón", "Kiên trì sẽ thành công", "Làm việc có kế hoạch",
-        "Đam mê dẫn lối", "Tập trung là chìa khóa", "Sáng tạo không ngừng", "Hành trình vạn dặm bắt đầu từ bước chân",
-        "Thất bại là mẹ thành công", "Đừng bao giờ bỏ cuộc", "Vượt qua giới hạn bản thân", 
-        "Không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", 
-        "Tri thức là sức mạnh", 
-        "Đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong"
-    ];
+    const sentenceDB = ["asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ", "Có công mài sắt có ngày nên kim", "Học đi đôi với hành", "Tiên học lễ hậu học văn", "Ăn quả nhớ kẻ trồng cây", "Uống nước nhớ nguồn", "Lá lành đùm lá rách", "Bầu ơi thương lấy bí cùng", "Một cây làm chẳng nên non", "Có chí thì nên", "Tốt gỗ hơn tốt nước sơn", "Đói cho sạch rách cho thơm", "Thương người như thể thương thân", "Kiến tha lâu cũng đầy tổ", "Học thầy không tày học bạn", "Không thầy đố mày làm nên", "Công cha như núi Thái Sơn", "Nghĩa mẹ như nước trong nguồn", "Gần mực thì đen gần đèn thì sáng", "Ăn chậm nhai kỹ", "Học một biết mười", "Thời gian là vàng bạc", "Lời chào cao hơn mâm cỗ", "Một con ngựa đau cả tàu bỏ cỏ", "Đoàn kết là sức mạnh", "Sức khỏe là vốn quý nhất", "Đi một ngày đàng học một sàng khôn", "Cái nết đánh chết cái đẹp", "Chậm mà chắc", "Nhập gia tùy tục", "Nói đi đôi với làm", "Tấc đất tấc vàng", "Chân cứng đá mềm", "Lửa thử vàng gian nan thử sức", "Gieo gió gặt bão", "Kính trên nhường dưới", "Uống nước nhớ người đào giếng", "Luyện tay mỗi ngày", "Kỹ năng gõ mười ngón", "Kiên trì sẽ thành công", "Làm việc có kế hoạch", "Đam mê dẫn lối", "Tập trung là chìa khóa", "Sáng tạo không ngừng", "Hành trình vạn dặm bắt đầu từ bước chân", "Thất bại là mẹ thành công", "Đừng bao giờ bỏ cuộc", "Vượt qua giới hạn bản thân", "Không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", "Tri thức là sức mạnh", "Đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong"];
     
     let curIdx = 0, curL = 1, words = [], isExp = false, errorCount = 0;
     const list = document.getElementById('ls-list');
@@ -158,6 +158,16 @@
         document.getElementById(`l-${id}`).classList.add('active');
         document.getElementById('modal').style.display = 'none';
         document.getElementById('p-fill').style.width = `${(id/54)*100}%`;
+        
+        const note = document.getElementById('unikey-note');
+        if(id <= 4) {
+            note.innerText = "⚠️ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHỮ [E]";
+            note.className = "note-e";
+        } else {
+            note.innerText = "✅ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHỮ [V]";
+            note.className = "note-v";
+        }
+
         const text = sentenceDB[id-1] || "Bài tập đang được cập nhật";
         words = (id <= 4) ? text.split('') : text.split(' ');
         document.getElementById('display-box').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`).join(id <= 4 ? '' : '<span>&nbsp;</span>');
