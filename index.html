@@ -5,53 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Luyện Gõ Pro - Hà Uy Long</title>
     <style>
-        :root { --bg: #d1d9e6; --primary: #4a90e2; --success: #2ecc71; --danger: #e74c3c; }
+        :root { --bg: #d1d9e6; --primary: #4a90e2; --success: #2ecc71; --danger: #e74c3c; --key-bg: #ffffff; }
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; color: #333; }
         
-        /* Sidebar nhỏ gọn */
+        /* Sidebar */
         .sidebar { width: 50px; background: #fff; border-right: 1px solid #aaa; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .nav-item { padding: 8px 0; text-align: center; color: #555; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; font-weight: bold; }
+        .nav-item { padding: 10px 0; text-align: center; color: #718096; cursor: pointer; border-bottom: 1px solid #edf2f7; font-size: 11px; font-weight: bold; }
         .nav-item.active { background: var(--primary); color: white; }
 
-        /* Main Area - Đẩy lên trên cùng */
+        /* Main Area */
         .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
         
+        /* Progress Bar */
         .progress-bar-container { width: 100%; background: #bbb; height: 18px; display: flex; align-items: center; position: relative; color: #fff; font-size: 10px; font-weight: bold; }
         .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; position: absolute; }
         .progress-text { width: 100%; text-align: center; z-index: 1; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
 
         /* Vùng nội dung chính */
-        .app-container { width: 100%; max-width: 950px; padding: 5px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .app-container { width: 100%; max-width: 1000px; padding: 5px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
 
-        .lesson-title { font-size: 14px; font-weight: bold; margin: 2px 0; color: #333; }
+        .lesson-title { font-size: 16px; font-weight: bold; margin: 2px 0; color: #1a202c; text-transform: uppercase; }
         
-        /* Vùng hiển thị chữ gõ */
-        .display-box { width: 100%; background: white; border: 2px solid #999; border-radius: 5px; padding: 10px; min-height: 80px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; }
-        .char { font-family: 'Consolas', monospace; font-size: 26px; color: #333; opacity: 0.3; }
-        .char.current { opacity: 1; border-bottom: 3px solid var(--primary); background: #f0f7ff; }
+        /* Vùng gõ chữ */
+        .display-box { width: 95%; background: white; border: 2px solid #999; border-radius: 8px; padding: 15px; min-height: 90px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .char { font-family: 'Consolas', monospace; font-size: 26px; color: #333; opacity: 0.3; padding: 0 2px; }
+        .char.current { opacity: 1; border-bottom: 3px solid var(--primary); background: #f0f7ff; color: #000; }
         .char.correct { color: #000; opacity: 1; }
         .char.wrong { color: white; background: var(--danger); opacity: 1; border-radius: 3px; }
 
         /* Bàn phím & Bàn tay */
-        .keyboard-wrapper { display: flex; align-items: center; gap: 10px; background: #eee; padding: 10px; border-radius: 10px; border: 1px solid #aaa; margin-top: 5px; }
+        .keyboard-wrapper { display: flex; align-items: flex-end; gap: 10px; background: #eee; padding: 15px; border-radius: 12px; border: 1px solid #aaa; margin-top: 5px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         
-        .hand-svg { width: 90px; height: 90px; fill: none; stroke: #333; stroke-width: 1.5; }
-        .finger-dot { fill: var(--success); display: none; }
+        /* Tay SVG được vẽ lại - Chân thực hơn */
+        .hand-svg { width: 110px; height: 140px; fill: none; stroke: #555; stroke-width: 1.2; }
+        .hand-path { fill: #e0e0e0; stroke: #888; } /* Màu da bàn tay */
+        .finger-dot { fill: var(--success); display: none; stroke: none;}
         .finger-dot.active { display: block; }
 
-        .kb-grid { display: flex; flex-direction: column; gap: 3px; }
-        .kb-row { display: flex; gap: 3px; justify-content: center; }
-        .key { min-width: 34px; height: 34px; background: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border-bottom: 3px solid #bbb; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .kb-grid { display: flex; flex-direction: column; gap: 4px; background: #bbb; padding: 6px; border-radius: 8px; }
+        .kb-row { display: flex; gap: 4px; justify-content: center; }
+        .key { min-width: 38px; height: 38px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 4px solid #b8c2cc; color: #4a5568; transition: 0.1s; }
         .key.active { background: var(--success); color: white; border-bottom: 1px solid #27ae60; transform: translateY(2px); }
         
         /* Độ rộng phím đặc biệt */
-        .key.tab { width: 50px; } .key.caps { width: 58px; } .key.shift { width: 75px; } .key.enter { width: 70px; } .key.space { width: 220px; } .key.back { width: 60px; }
+        .key.tab { width: 55px; } .key.caps { width: 65px; } .key.shift { width: 85px; } .key.enter { width: 80px; } .key.space { width: 240px; } .key.back { width: 65px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .result-box { background: white; padding: 20px; border-radius: 10px; text-align: center; width: 250px; border: 3px solid var(--primary); }
+        .result-box { background: white; padding: 25px; border-radius: 15px; text-align: center; width: 280px; border: 4px solid var(--primary); }
 
-        @media (max-width: 768px) { .keyboard-wrapper { flex-direction: column; } .hand-svg { display: none; } }
+        @media (max-width: 768px) { .keyboard-wrapper { display: none; } .char { font-size: 20px; } }
     </style>
 </head>
 <body>
@@ -61,19 +64,19 @@
 <div class="main">
     <div class="progress-bar-container">
         <div class="progress-fill" id="p-bar"></div>
-        <div class="progress-text">TIẾN ĐỘ: <span id="p-percent">0</span>%</div>
+        <div class="progress-text">TIẾN ĐỘ LUYỆN TẬP: <span id="p-percent">0</span>%</div>
     </div>
     
     <div class="app-container">
         <div class="lesson-title" id="title">BÀI 1</div>
-        <div id="note" style="font-size: 10px; font-weight: bold; color: #666; background: #fff3cd; padding: 2px 10px; border-radius: 10px;">UNIKEY: E</div>
+        <div id="note" style="font-size: 11px; font-weight: bold; color: #666; background: #fff3cd; padding: 3px 12px; border-radius: 10px;">UNIKEY: E</div>
 
         <div class="display-box" id="target-text"></div>
 
         <div class="keyboard-wrapper">
-            <svg class="hand-svg" viewBox="0 0 100 100">
-                <path d="M10,80 Q10,40 20,35 T35,20 T50,15 T65,20 T80,40 L75,80" />
-                <circle id="dot-left-5" class="finger-dot" cx="20" cy="35" r="5" /> <circle id="dot-left-4" class="finger-dot" cx="35" cy="20" r="5" /> <circle id="dot-left-3" class="finger-dot" cx="50" cy="15" r="5" /> <circle id="dot-left-2" class="finger-dot" cx="65" cy="20" r="5" /> <circle id="dot-left-1" class="finger-dot" cx="85" cy="60" r="6" /> </svg>
+            <svg class="hand-svg" viewBox="0 0 100 130">
+                <path class="hand-path" d="M10,120 C10,90 15,80 18,75 C18,70 15,45 18,40 C22,33 28,33 32,40 C35,48 33,70 33,75 C35,70 33,30 38,25 C43,18 50,18 53,25 C56,33 55,70 55,75 C58,70 58,25 63,22 C68,18 75,18 78,25 C81,33 79,75 79,80 C82,75 83,40 88,38 C93,35 98,38 100,45 C100,55 98,90 95,100 C90,115 80,125 60,130 C40,135 15,130 10,120 Z" />
+                <circle id="dot-left-5" class="finger-dot" cx="22" cy="45" r="5" /> <circle id="dot-left-4" class="finger-dot" cx="42" cy="30" r="5" /> <circle id="dot-left-3" class="finger-dot" cx="65" cy="28" r="5" /> <circle id="dot-left-2" class="finger-dot" cx="88" cy="45" r="5" /> <circle id="dot-left-1" class="finger-dot" cx="85" cy="110" r="6" /> </svg>
 
             <div class="kb-grid">
                 <div class="kb-row">
@@ -93,18 +96,18 @@
                 </div>
             </div>
 
-            <svg class="hand-svg" viewBox="0 0 100 100" style="transform: scaleX(-1);">
-                <path d="M10,80 Q10,40 20,35 T35,20 T50,15 T65,20 T80,40 L75,80" />
-                <circle id="dot-right-5" class="finger-dot" cx="20" cy="35" r="5" /> <circle id="dot-right-4" class="finger-dot" cx="35" cy="20" r="5" /> <circle id="dot-right-3" class="finger-dot" cx="50" cy="15" r="5" /> <circle id="dot-right-2" class="finger-dot" cx="65" cy="20" r="5" /> <circle id="dot-right-1" class="finger-dot" cx="85" cy="60" r="6" /> </svg>
+            <svg class="hand-svg" viewBox="0 0 100 130" style="transform: scaleX(-1);">
+                <path class="hand-path" d="M10,120 C10,90 15,80 18,75 C18,70 15,45 18,40 C22,33 28,33 32,40 C35,48 33,70 33,75 C35,70 33,30 38,25 C43,18 50,18 53,25 C56,33 55,70 55,75 C58,70 58,25 63,22 C68,18 75,18 78,25 C81,33 79,75 79,80 C82,75 83,40 88,38 C93,35 98,38 100,45 C100,55 98,90 95,100 C90,115 80,125 60,130 C40,135 15,130 10,120 Z" />
+                <circle id="dot-right-5" class="finger-dot" cx="22" cy="45" r="5" /> <circle id="dot-right-4" class="finger-dot" cx="42" cy="30" r="5" /> <circle id="dot-right-3" class="finger-dot" cx="65" cy="28" r="5" /> <circle id="dot-right-2" class="finger-dot" cx="88" cy="45" r="5" /> <circle id="dot-right-1" class="finger-dot" cx="85" cy="110" r="6" /> </svg>
         </div>
     </div>
 </div>
 
 <div class="modal" id="modal-res">
     <div class="result-box">
-        <h3>XONG!</h3>
-        <p id="stats" style="font-weight:bold;"></p>
-        <button style="background:var(--primary); color:white; border:none; padding:10px; width:100%; border-radius:5px; cursor:pointer;" onclick="handleNext()">Tiếp tục ➔</button>
+        <h3 style="color: var(--primary); margin: 0 0 10px;">HOÀN THÀNH!</h3>
+        <p id="stats" style="font-weight:bold; font-size: 14px; margin: 0 0 15px;"></p>
+        <button style="background:var(--primary); color:white; border:none; padding:12px; width:100%; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="handleNext()">Tiếp tục ➔</button>
     </div>
 </div>
 
@@ -143,23 +146,15 @@
         let percent = id >= 52 ? 100 : Math.round(id / 52 * 100);
         document.getElementById('p-bar').style.width = percent + "%";
         document.getElementById('p-percent').innerText = percent;
-        
         const n = document.getElementById('note');
         if(id >= 5 && id <= 52) { n.innerText = "UNIKEY: V"; } else { n.innerText = "UNIKEY: E"; }
-        
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById(`n-${id}`).classList.add('active');
         document.getElementById('modal-res').style.display = 'none';
-
         const display = document.getElementById('target-text');
         const text = lessonData[id-1];
-        if(id >= 5 && id <= 52) { 
-            words = text.split(' '); 
-            display.innerHTML = words.map((w,i)=>`<span class="char" id="c-${i}">${w}</span>`).join('<span>&nbsp;</span>'); 
-        } else { 
-            words = text.split(''); 
-            display.innerHTML = words.map((x,i)=>`<span class="char" id="c-${i}">${x===' '?'&nbsp;':x}</span>`).join(''); 
-        }
+        if(id >= 5 && id <= 52) { words = text.split(' '); display.innerHTML = words.map((w,i)=>`<span class="char" id="c-${i}">${w}</span>`).join('<span>&nbsp;</span>'); }
+        else { words = text.split(''); display.innerHTML = words.map((x,i)=>`<span class="char" id="c-${i}">${x===' '?'&nbsp;':x}</span>`).join(''); }
         update(); 
     }
 
@@ -168,7 +163,6 @@
         document.querySelectorAll('.char, .key, .finger-dot').forEach(e => e.classList.remove('current', 'active'));
         const active = document.getElementById(`c-${currentIdx}`);
         if(active) active.classList.add('current');
-        
         let charToType = (currentLesson >= 5 && currentLesson <= 52) ? words[currentIdx][0].toLowerCase() : words[currentIdx].toLowerCase();
         const key = document.getElementById(charToType === ' ' ? 'k-space' : `k-${charToType}`);
         if(key) key.classList.add('active');
@@ -198,7 +192,7 @@
     function finish() {
         isFinished = true;
         const acc = Math.round(((words.length - errors)/words.length)*100);
-        document.getElementById('stats').innerText = `Chính xác: ${acc}% - Lỗi: ${errors}`;
+        document.getElementById('stats').innerHTML = `Chính xác: ${acc}% - Lỗi: ${errors}`;
         document.getElementById('modal-res').style.display = 'flex';
     }
 
