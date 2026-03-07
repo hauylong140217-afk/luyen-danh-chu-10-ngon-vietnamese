@@ -9,7 +9,6 @@
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        /* Sidebar */
         .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; border-right: 2px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; }
         .view-all-btn { background: #1e293b; color: white; text-align: center; padding: 12px 0; font-size: 10px; font-weight: 800; cursor: pointer; }
         .lesson-list { flex: 1; overflow-y: hidden; }
@@ -17,7 +16,6 @@
         .nav-item { padding: 12px 0; text-align: center; color: #64748b; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 12px; font-weight: bold; }
         .nav-item.active { background: var(--primary); color: white; }
 
-        /* Main Area */
         .main { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .progress-bar { width: 100%; height: 6px; background: #e2e8f0; }
         .p-fill { height: 100%; background: var(--success); width: 0%; transition: 0.4s; }
@@ -30,9 +28,9 @@
         .app-body { flex: 1; width: 95%; max-width: 900px; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 5px 0 15px 0; }
 
         .display-box { width: 100%; background: white; border-radius: 15px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #cbd5e1; border-bottom: 3px solid transparent; white-space: nowrap; }
+        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #cbd5e1; border-bottom: 3px solid transparent; white-space: nowrap; transition: 0.2s; }
         .char.current { color: #1e293b; border-bottom-color: var(--primary); background: #eff6ff; }
-        .char.correct { color: #1e293b; opacity: 1; }
+        .char.correct { color: #1e293b; opacity: 1; background: transparent; }
         .char.wrong { color: white; background: var(--danger); border-radius: 4px; }
 
         .guide-center { 
@@ -55,12 +53,9 @@
         .finger.active { fill: var(--primary); stroke: var(--primary); }
         .kb-grid { display: flex; flex-direction: column; gap: 4px; background: #f1f5f9; padding: 6px; border-radius: 10px; }
         .kb-row { display: flex; gap: 4px; justify-content: center; }
-        .key { min-width: 38px; height: 38px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid #cbd5e1; transition: background 0.1s; }
+        .key { min-width: 38px; height: 38px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid #cbd5e1; }
         .key.active { background: var(--success); color: white; border-bottom-width: 1px; transform: translateY(2px); }
-        
-        /* Hiệu ứng đỏ cho phím bấm sai */
         .key.wrong-key { background: var(--danger) !important; color: white !important; border-bottom-color: #b91c1c !important; }
-        
         .key.space { width: 220px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
@@ -79,31 +74,14 @@
 
 <div class="main">
     <div class="progress-bar"><div class="p-fill" id="p-fill"></div></div>
-    
     <div class="intro-header">
         <h1>Luyện Gõ 10 Ngón</h1>
-        <p>Cải thiện tốc độ, sự chính xác và rèn luyện tư duy thông qua 54 bài tập ý nghĩa.</p>
         <div class="author">Tác giả: HÀ UY LONG</div>
     </div>
 
     <div class="app-body">
         <div class="display-box" id="display-box"></div>
-
-        <div style="width: 100%; max-width: 800px;">
-            <div class="guide-center">
-                <div class="g-grid">
-                    <div class="g-title">TELEX</div>
-                    <div class="g-cell">Sắc<b>S</b></div><div class="g-cell">Huyền<b>F</b></div><div class="g-cell">Hỏi<b>R</b></div><div class="g-cell">Ngã<b>X</b></div><div class="g-cell">Nặng<b>J</b></div>
-                    <div class="g-cell">Â/Ê/Ô<b>aa/ee</b></div><div class="g-cell">Ă<b>aw</b></div><div class="g-cell">Ư/Ơ<b>w/ow</b></div><div class="g-cell">Đ<b>dd</b></div><div class="g-cell">Xóa<b>z</b></div>
-                </div>
-                <div class="g-grid">
-                    <div class="g-title">VNI</div>
-                    <div class="g-cell">Sắc<b>1</b></div><div class="g-cell">Huyền<b>2</b></div><div class="g-cell">Hỏi<b>3</b></div><div class="g-cell">Ngã<b>4</b></div><div class="g-cell">Nặng<b>5</b></div>
-                    <div class="g-cell">Â/Ê/Ô<b>6</b></div><div class="g-cell">Ư/Ơ<b>7</b></div><div class="g-cell">Ă<b>8</b></div><div class="g-cell">Đ<b>9</b></div><div class="g-cell">Xóa<b>0</b></div>
-                </div>
-            </div>
-            <div id="unikey-note"></div>
-        </div>
+        <div id="unikey-note"></div>
 
         <div class="kb-area">
             <svg class="hand-svg" viewBox="0 0 100 120"><path id="f-l-5" class="finger" d="M10,80 C5,40 15,35 25,45 L25,80 Z" /><path id="f-l-4" class="finger" d="M28,75 C25,25 35,20 45,30 L45,75 Z" /><path id="f-l-3" class="finger" d="M48,70 C45,15 55,10 65,25 L65,75 Z" /><path id="f-l-2" class="finger" d="M68,75 C70,30 80,35 85,55 L80,85 Z" /><path id="f-l-1" class="finger" d="M85,90 C100,85 100,105 85,115 Z" /></svg>
@@ -115,12 +93,9 @@
 
 <div class="modal" id="modal">
     <div class="modal-box">
-        <div id="rank-emoji" style="font-size: 60px; margin-bottom: 10px;">🏆</div>
-        <div class="rank-khen" id="rank-khen">HOÀN THÀNH BÀI TẬP!</div>
-        <div class="score-info">
-            Độ chính xác: <b id="score-pc" style="color: var(--primary);">100%</b><br>
-            Số lỗi mắc phải: <b id="score-err" style="color: var(--danger);">0</b>
-        </div>
+        <div id="rank-emoji" style="font-size: 60px;">🏆</div>
+        <div class="rank-khen" id="rank-khen"></div>
+        <div class="score-info">Độ chính xác: <b id="score-pc"></b><br>Lỗi: <b id="score-err"></b></div>
         <button class="btn-next" onclick="nextL()">TIẾP TỤC ➔</button>
     </div>
 </div>
@@ -129,7 +104,6 @@
 
 <script>
     const fMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
-    
     const sentenceDB = ["asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ", "Có công mài sắt có ngày nên kim", "Học đi đôi với hành", "Tiên học lễ hậu học văn", "Ăn quả nhớ kẻ trồng cây", "Uống nước nhớ nguồn", "Lá lành đùm lá rách", "Bầu ơi thương lấy bí cùng", "Một cây làm chẳng nên non", "Có chí thì nên", "Tốt gỗ hơn tốt nước sơn", "Đói cho sạch rách cho thơm", "Thương người như thể thương thân", "Kiến tha lâu cũng đầy tổ", "Hầy không tày học bạn", "Không thầy đố mày làm nên", "Công cha như núi Thái Sơn", "Nghĩa mẹ như nước trong nguồn", "Gần mực thì đen gần đèn thì sáng", "Ăn chậm nhai kỹ", "Học một biết mười", "Thời gian là vàng bạc", "Lời chào cao hơn mâm cỗ", "Một con ngựa đau cả tàu bỏ cỏ", "Đoàn kết là sức mạnh", "Sức khỏe là vốn quý nhất", "Đi một ngày đàng học một sàng khôn", "Cái nết đánh chết cái đẹp", "Chậm mà chắc", "Nhập gia tùy tục", "Nói đi đôi với làm", "Tấc đất tấc vàng", "Chân cứng đá mềm", "Lửa thử vàng gian nan thử sức", "Gieo gió gặt bão", "Kính trên nhường dưới", "Uống nước nhớ người đào giếng", "Luyện tay mỗi ngày", "Kỹ năng gõ mười ngón", "Kiên trì sẽ thành công", "Làm việc có kế hoạch", "Đam mê dẫn lối", "Tập trung là chìa khóa", "Sáng tạo không ngừng", "Hành trình vạn dặm bắt đầu từ bước chân", "Thất bại là mẹ thành công", "Đừng bao giờ bỏ cuộc", "Vượt qua giới hạn bản thân", "Không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", "Tri thức là sức mạnh", "Đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong"];
     
     let curIdx = 0, curL = 1, words = [], isExp = false, errorCount = 0;
@@ -163,27 +137,19 @@
         document.getElementById(`l-nav-${id}`).classList.add('active');
         document.getElementById('modal').style.display = 'none';
         document.getElementById('p-fill').style.width = `${(id/54)*100}%`;
-        
         const note = document.getElementById('unikey-note');
-        if(id <= 4) {
-            note.innerText = "⚠️ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHỮ [E]";
-            note.className = "note-e";
-        } else {
-            note.innerText = "✅ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHỮ [V]";
-            note.className = "note-v";
-        }
-
-        const text = sentenceDB[id-1] || "Bài tập đang được cập nhật";
+        if(id <= 4) { note.innerText = "⚠️ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHỮ [E]"; note.className = "note-e"; }
+        else { note.innerText = "✅ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHỮ [V]"; note.className = "note-v"; }
+        const text = sentenceDB[id-1] || "Trống";
         words = (id <= 4) ? text.split('') : text.split(' ');
         document.getElementById('display-box').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`).join(id <= 4 ? '' : '<span>&nbsp;</span>');
         updateH();
     }
 
     function updateH() {
-        document.querySelectorAll('.char, .key, .finger').forEach(el => el.classList.remove('current', 'active'));
+        document.querySelectorAll('.char, .key, .finger').forEach(el => el.classList.remove('current', 'active', 'wrong-key'));
         const curCharEl = document.getElementById(`c-${curIdx}`);
         if(curCharEl) curCharEl.classList.add('current');
-        
         let char = (curL <= 4) ? words[curIdx].toLowerCase() : (words[curIdx] ? words[curIdx][0].toLowerCase() : "");
         if(words[curIdx] === ' ') char = ' ';
         const k = document.getElementById(char === ' ' ? 'k-space' : `k-${char}`);
@@ -192,29 +158,51 @@
     }
 
     const input = document.getElementById('in');
+    
+    // Xử lý phím xóa Backspace
+    input.onkeydown = (e) => {
+        if(e.key === 'Backspace' && curIdx > 0) {
+            // Chỉ cho phép xóa nếu không phải xóa qua dấu cách (với bài > 4)
+            if(curL <= 4 || (curL > 4 && words[curIdx-1] !== ' ')) {
+                // Kiểm tra xem ký tự trước đó có bị sai không, nếu có thì trừ lỗi đi khi sửa
+                const prevEl = document.getElementById(`c-${curIdx-1}`);
+                if(prevEl.classList.contains('wrong')) errorCount = Math.max(0, errorCount - 1);
+                
+                curIdx--;
+                prevEl.className = 'char';
+                updateH();
+            }
+        }
+    }
+
     input.oninput = () => {
         const val = input.value;
         const target = words[curIdx];
-        if(curL <= 4) {
-            const charTyped = val.slice(-1).toLowerCase();
-            const charTarget = target.toLowerCase();
+        if(!val) return;
 
-            if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) {
+        if(curL <= 4) {
+            const charTyped = val.slice(-1);
+            const charTarget = target;
+
+            if(charTyped === charTarget) {
                 document.getElementById(`c-${curIdx}`).className = 'char correct';
+                curIdx++;
+                input.value = "";
+                updateH();
             } else {
+                // SAI: Hiện đỏ chữ và đỏ phím ảo (không tự mất đỏ phím cho đến khi gõ đúng)
                 document.getElementById(`c-${curIdx}`).className = 'char wrong';
                 errorCount++;
+                input.value = "";
                 
-                // HIỆN ĐỎ PHÍM BẤM SAI TRÊN BÀN PHÍM ẢO
-                const wrongKeyId = charTyped === ' ' ? 'k-space' : `k-${charTyped}`;
+                // Cập nhật phím sai trên bàn phím ảo
+                const wrongKeyId = charTyped === ' ' ? 'k-space' : `k-${charTyped.toLowerCase()}`;
                 const wrongKeyEl = document.getElementById(wrongKeyId);
-                if(wrongKeyEl) {
-                    wrongKeyEl.classList.add('wrong-key');
-                    setTimeout(() => wrongKeyEl.classList.remove('wrong-key'), 300);
-                }
+                document.querySelectorAll('.key').forEach(k => k.classList.remove('wrong-key'));
+                if(wrongKeyEl) wrongKeyEl.classList.add('wrong-key');
             }
-            curIdx++; input.value = "";
         } else {
+            // Bài 5-54: Gõ theo cụm từ
             if(val.endsWith(' ')) {
                 if(val.trim() === target) {
                     document.getElementById(`c-${curIdx}`).className = 'char correct';
@@ -222,25 +210,19 @@
                     document.getElementById(`c-${curIdx}`).className = 'char wrong';
                     errorCount++;
                 }
-                curIdx++; input.value = "";
+                curIdx++;
+                input.value = "";
+                updateH();
             }
         }
-        if(curIdx < words.length) updateH(); else showResult();
+        if(curIdx >= words.length) showResult();
     };
 
     function showResult() {
         const accuracy = Math.round(((words.length - errorCount) / words.length) * 100);
         document.getElementById('score-pc').innerText = accuracy + "%";
         document.getElementById('score-err').innerText = errorCount;
-        
-        let khen = "", emoji = "";
-        if(accuracy >= 95) { khen = "QUÁ ĐỈNH BẠN ƠI!"; emoji = "🥇"; }
-        else if(accuracy >= 80) { khen = "RẤT TỐT, CỐ LÊN!"; emoji = "🥈"; }
-        else if(accuracy >= 50) { khen = "TẠM ĐƯỢC, RÈN THÊM NHÉ!"; emoji = "🥉"; }
-        else { khen = "BẠN CẦN TẬP TRUNG HƠN!"; emoji = "💪"; }
-        
-        document.getElementById('rank-khen').innerText = khen;
-        document.getElementById('rank-emoji').innerText = emoji;
+        document.getElementById('rank-khen').innerText = accuracy >= 90 ? "XUẤT SẮC!" : "CỐ GẮNG LÊN!";
         document.getElementById('modal').style.display = 'flex';
     }
 
