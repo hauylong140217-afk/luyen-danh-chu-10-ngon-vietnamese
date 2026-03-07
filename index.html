@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luyện Gõ 10 Ngón - Hướng Dẫn Trung Tâm</title>
+    <title>Luyện Gõ 10 Ngón - 54 Bài Tập Ý Nghĩa</title>
     <style>
-        :root { --bg: #f8fafc; --primary: #2563eb; --success: #16a34a; --danger: #ef4444; --sidebar-w: 80px; }
+        :root { --bg: #f8fafc; --primary: #2563eb; --success: #16a34a; --danger: #ef4444; --sidebar-w: 85px; }
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        /* Sidebar có nút Xem Tất Cả */
+        /* Sidebar */
         .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; border-right: 2px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; }
+        .view-all-btn { background: #1e293b; color: white; text-align: center; padding: 12px 0; font-size: 10px; font-weight: 800; cursor: pointer; }
         .lesson-list { flex: 1; overflow-y: hidden; }
         .lesson-list.expanded { overflow-y: auto; }
         .nav-item { padding: 12px 0; text-align: center; color: #64748b; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 12px; font-weight: bold; }
         .nav-item.active { background: var(--primary); color: white; }
-        .view-all-btn { background: #334155; color: white; text-align: center; padding: 10px 0; font-size: 10px; font-weight: 800; cursor: pointer; }
 
+        /* Main Area */
         .main { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .progress-bar { width: 100%; height: 6px; background: #e2e8f0; }
-        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
+        .p-fill { height: 100%; background: var(--success); width: 0%; transition: 0.4s; }
         
         .app-body { flex: 1; width: 95%; max-width: 900px; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 10px 0; }
 
-        /* Vùng hiển thị chữ */
-        .display-box { width: 100%; background: white; border-radius: 15px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .char { font-family: 'Consolas', monospace; font-size: 32px; color: #cbd5e1; border-bottom: 4px solid transparent; }
+        .display-box { width: 100%; background: white; border-radius: 15px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #cbd5e1; border-bottom: 3px solid transparent; white-space: nowrap; }
         .char.current { color: #1e293b; border-bottom-color: var(--primary); background: #eff6ff; }
         .char.correct { color: #1e293b; opacity: 1; }
         .char.wrong { color: white; background: var(--danger); border-radius: 4px; }
 
-        /* HƯỚNG DẪN DẤU RA GIỮA MÀN HÌNH */
-        .guide-box { 
-            width: 100%; max-width: 750px; background: #fff; border-radius: 12px; 
+        /* Hướng dẫn phím dấu trung tâm */
+        .guide-center { 
+            width: 100%; max-width: 800px; background: #ffffff; border-radius: 12px; 
             padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #cbd5e1; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .guide-title { grid-column: span 5; font-size: 11px; font-weight: bold; color: var(--primary); border-bottom: 1px solid #f1f5f9; margin-bottom: 5px; text-align: center; }
-        .guide-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
-        .g-cell { font-size: 10px; text-align: center; background: #f8fafc; padding: 4px; border-radius: 4px; border: 1px solid #f1f5f9; }
+        .g-title { grid-column: span 5; font-size: 11px; font-weight: bold; color: var(--primary); border-bottom: 1px solid #f1f5f9; margin-bottom: 5px; text-align: center; }
+        .g-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+        .g-cell { font-size: 10px; text-align: center; background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #f1f5f9; }
         .g-cell b { display: block; color: var(--danger); font-size: 13px; }
 
-        /* Bàn phím & Tay */
+        /* Keyboard & Hands */
         .kb-area { display: flex; align-items: flex-end; gap: 20px; padding: 15px; background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; }
         .hand-svg { width: 120px; height: 140px; }
         .finger { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
@@ -49,33 +49,33 @@
         .kb-grid { display: flex; flex-direction: column; gap: 4px; background: #f1f5f9; padding: 6px; border-radius: 10px; }
         .kb-row { display: flex; gap: 4px; justify-content: center; }
         .key { min-width: 38px; height: 38px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid #cbd5e1; }
-        .key.active { background: var(--success); color: white; border-bottom: 1px solid #15803d; transform: translateY(2px); }
+        .key.active { background: var(--success); color: white; border-bottom-width: 1px; transform: translateY(2px); }
         .key.space { width: 220px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .modal-box { background: white; padding: 30px; border-radius: 15px; text-align: center; width: 300px; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="view-all-btn" onclick="toggleSidebar()">XEM TẤT CẢ</div>
-    <div class="lesson-list" id="lesson-list"></div>
+    <div class="lesson-list" id="ls-list"></div>
 </div>
 
 <div class="main">
-    <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
+    <div class="progress-bar"><div class="p-fill" id="p-fill"></div></div>
     <div class="app-body">
         <div class="display-box" id="display-box"></div>
 
-        <div class="guide-box">
-            <div class="guide-grid">
-                <div class="guide-title">QUY TẮC TELEX</div>
+        <div class="guide-center">
+            <div class="g-grid">
+                <div class="g-title">TELEX</div>
                 <div class="g-cell">Sắc<b>S</b></div><div class="g-cell">Huyền<b>F</b></div><div class="g-cell">Hỏi<b>R</b></div><div class="g-cell">Ngã<b>X</b></div><div class="g-cell">Nặng<b>J</b></div>
                 <div class="g-cell">Â/Ê/Ô<b>aa/ee</b></div><div class="g-cell">Ă<b>aw</b></div><div class="g-cell">Ư/Ơ<b>w/ow</b></div><div class="g-cell">Đ<b>dd</b></div><div class="g-cell">Xóa<b>z</b></div>
             </div>
-            <div class="guide-grid">
-                <div class="guide-title">QUY TẮC VNI</div>
+            <div class="g-grid">
+                <div class="g-title">VNI</div>
                 <div class="g-cell">Sắc<b>1</b></div><div class="g-cell">Huyền<b>2</b></div><div class="g-cell">Hỏi<b>3</b></div><div class="g-cell">Ngã<b>4</b></div><div class="g-cell">Nặng<b>5</b></div>
                 <div class="g-cell">Â/Ê/Ô<b>6</b></div><div class="g-cell">Ư/Ơ<b>7</b></div><div class="g-cell">Ă<b>8</b></div><div class="g-cell">Đ<b>9</b></div><div class="g-cell">Xóa<b>0</b></div>
             </div>
@@ -89,16 +89,34 @@
     </div>
 </div>
 
-<div class="modal" id="modal"><div class="modal-box"><h3>HOÀN THÀNH</h3><p id="stat"></p><button onclick="nextL()">TIẾP THEO</button></div></div>
+<div class="modal" id="modal"><div class="modal-box"><h3>BÀI TIẾP THEO</h3><button onclick="nextL()">TIẾP TỤC ➔</button></div></div>
 <input type="text" id="in" style="position: absolute; opacity: 0;" autocomplete="off">
 
 <script>
     const fMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
-    const db = [ "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl;", "má mà mả mã mạ", "con cò bé bé nó đậu cành tre", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô" ];
     
-    let curIdx = 0, curL = 1, err = 0, words = [], isExp = false;
-
-    const list = document.getElementById('lesson-list');
+    // Tự động tạo 54 câu khác nhau
+    const sentenceDB = [
+        "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
+        "Có công mài sắt có ngày nên kim", "Học đi đôi với hành", "Tiên học lễ hậu học văn", "Ăn quả nhớ kẻ trồng cây",
+        "Uống nước nhớ nguồn", "Lá lành đùm lá rách", "Bầu ơi thương lấy bí cùng", "Một cây làm chẳng nên non",
+        "Có chí thì nên", "Tốt gỗ hơn tốt nước sơn", "Đói cho sạch rách cho thơm", "Thương người như thể thương thân",
+        "Kiến tha lâu cũng đầy tổ", "Học thầy không tày học bạn", "Không thầy đố mày làm nên", "Công cha như núi Thái Sơn",
+        "Nghĩa mẹ như nước trong nguồn", "Gần mực thì đen gần đèn thì sáng", "Ăn chậm nhai kỹ", "Học một biết mười",
+        "Thời gian là vàng bạc", "Lời chào cao hơn mâm cỗ", "Một con ngựa đau cả tàu bỏ cỏ", "Đoàn kết là sức mạnh",
+        "Sức khỏe là vốn quý nhất", "Đi một ngày đàng học một sàng khôn", "Cái nết đánh chết cái đẹp", "Chậm mà chắc",
+        "Nhập gia tùy tục", "Nói đi đôi với làm", "Tấc đất tấc vàng", "Chân cứng đá mềm",
+        "Lửa thử vàng gian nan thử sức", "Gieo gió gặt bão", "Kính trên nhường dưới", "Uống nước nhớ người đào giếng",
+        "Luyện tay mỗi ngày", "Kỹ năng gõ mười ngón", "Kiên trì sẽ thành công", "Làm việc có kế hoạch",
+        "Đam mê dẫn lối", "Tập trung là chìa khóa", "Sáng tạo không ngừng", "Hành trình vạn dặm bắt đầu từ bước chân",
+        "Thất bại là mẹ thành công", "Đừng bao giờ bỏ cuộc", "Vượt qua giới hạn bản thân", 
+        "Không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", // Bài 52
+        "Tri thức là sức mạnh", 
+        "Đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong" // Bài 54
+    ];
+    
+    let curIdx = 0, curL = 1, words = [], isExp = false;
+    const list = document.getElementById('ls-list');
     for(let i=1; i<=54; i++){
         const item = document.createElement('div');
         item.className = 'nav-item'; item.id = `l-${i}`; item.innerText = `B${i}`;
@@ -110,6 +128,7 @@
         isExp = !isExp;
         document.querySelectorAll('.nav-item').forEach((el, idx) => { if(idx >= 10) el.style.display = isExp ? 'block' : 'none'; });
         list.classList.toggle('expanded', isExp);
+        document.querySelector('.view-all-btn').innerText = isExp ? 'THU GỌN' : 'XEM TẤT CẢ';
     }
 
     const rows = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
@@ -122,21 +141,21 @@
     kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
 
     function loadL(id) {
-        curL = id; curIdx = 0; err = 0;
+        curL = id; curIdx = 0;
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`l-${id}`).classList.add('active');
         document.getElementById('modal').style.display = 'none';
         document.getElementById('p-fill').style.width = `${(id/54)*100}%`;
-        const text = db[(id-1) % db.length];
-        words = (id <= 2) ? text.split('') : text.split(' ');
-        document.getElementById('display-box').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`).join(id <= 2 ? '' : '<span>&nbsp;</span>');
+        const text = sentenceDB[id-1] || "Bài tập đang được cập nhật";
+        words = (id <= 4) ? text.split('') : text.split(' ');
+        document.getElementById('display-box').innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`).join(id <= 4 ? '' : '<span>&nbsp;</span>');
         updateH();
     }
 
     function updateH() {
         document.querySelectorAll('.char, .key, .finger').forEach(el => el.classList.remove('current', 'active'));
         document.getElementById(`c-${curIdx}`).classList.add('current');
-        let char = (curL <= 2) ? words[curIdx].toLowerCase() : words[curIdx][0].toLowerCase();
+        let char = (curL <= 4) ? words[curIdx].toLowerCase() : words[curIdx][0].toLowerCase();
         if(words[curIdx] === ' ') char = ' ';
         const k = document.getElementById(char === ' ' ? 'k-space' : `k-${char}`);
         if(k) k.classList.add('active');
@@ -147,18 +166,18 @@
     input.oninput = () => {
         const val = input.value;
         const target = words[curIdx];
-        if(curL <= 2) {
+        if(curL <= 4) {
             if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) document.getElementById(`c-${curIdx}`).className = 'char correct';
-            else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; err++; }
+            else document.getElementById(`c-${curIdx}`).className = 'char wrong';
             curIdx++; input.value = "";
         } else {
             if(val.endsWith(' ')) {
                 if(val.trim() === target) document.getElementById(`c-${curIdx}`).className = 'char correct';
-                else { document.getElementById(`c-${curIdx}`).className = 'char wrong'; err++; }
+                else document.getElementById(`c-${curIdx}`).className = 'char wrong';
                 curIdx++; input.value = "";
             }
         }
-        if(curIdx < words.length) updateH(); else { document.getElementById('modal').style.display = 'flex'; }
+        if(curIdx < words.length) updateH(); else document.getElementById('modal').style.display = 'flex';
     };
 
     function nextL() { loadL(curL >= 54 ? 1 : curL + 1); }
