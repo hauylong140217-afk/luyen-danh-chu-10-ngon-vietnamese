@@ -2,77 +2,61 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Typing Master - High Contrast Edition</title>
+    <title>Hệ Thống Luyện Gõ 10 Ngón Tiếng Việt</title>
     <style>
         :root {
-            /* Tự động đảo màu theo hệ thống */
-            --bg: #ffffff; --panel: #f1f5f9; --text: #0f172a;
-            --primary: #0ea5e9; --sub-text: #64748b;
-            --key-bg: #e2e8f0; --key-text: #1e293b;
+            --bg: #ffffff; --panel: #f8fafc; --text: #1e293b;
+            --primary: #0284c7; --success: #22c55e; --danger: #ef4444;
+            --kb-key: #f1f5f9; --key-text: #475569;
         }
-
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #020617; --panel: #1e293b; --text: #f8fafc;
-                --primary: #38bdf8; --sub-text: #94a3b8;
-                --key-bg: #334155; --key-text: #f8fafc;
+                --bg: #0f172a; --panel: #1e293b; --text: #f8fafc;
+                --kb-key: #334155; --key-text: #f8fafc;
             }
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'JetBrains Mono', 'Consolas', monospace;
-            background: var(--bg); color: var(--text);
-            display: flex; height: 100vh; transition: 0.3s;
-        }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
         /* SIDEBAR */
-        .sidebar { width: 250px; background: var(--panel); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .ls-list { flex: 1; overflow-y: auto; padding: 15px; }
-        .ls-item {
-            padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer;
-            font-size: 14px; color: var(--sub-text); border: 1px solid transparent;
-        }
-        .ls-item.active { background: var(--primary); color: #fff; font-weight: bold; }
+        .sidebar { width: 280px; background: var(--panel); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .intro-box { padding: 15px; font-size: 12px; line-height: 1.4; border-bottom: 1px solid rgba(0,0,0,0.1); background: rgba(2, 132, 199, 0.1); }
+        .ls-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .ls-item { padding: 10px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; border: 1px solid transparent; }
+        .ls-item.active { background: var(--primary); color: white; }
 
-        /* MAIN AREA */
+        /* MAIN */
         .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .stats { height: 60px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.1); }
-
-        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
+        .stats { height: 50px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.05); font-weight: bold; }
         
-        /* CHỮ PHẢI THẬT RÕ */
-        .display-area {
-            width: 90%; max-width: 900px; padding: 50px; border-radius: 20px;
-            background: var(--panel); display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        .typing-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 30px; }
+        .display-box { 
+            width: 90%; max-width: 800px; background: var(--panel); padding: 40px; border-radius: 15px; 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .word { font-size: 42px; font-weight: 700; color: var(--sub-text); border-bottom: 5px solid transparent; }
-        .word.active { color: var(--text); border-bottom-color: var(--primary); }
-        .word.ok { color: #22c55e; }
-        .word.err { color: #fff; background: #ef4444; border-radius: 6px; }
+        .char { font-size: 36px; font-weight: bold; color: #94a3b8; border-bottom: 4px solid transparent; }
+        .char.active { color: var(--text); border-bottom-color: var(--primary); }
+        .char.ok { color: var(--success); }
+        .char.err { background: var(--danger); color: white; border-radius: 4px; }
 
-        /* ĐÔI TAY VÀ BÀN PHÍM */
-        .hands-wrap { display: flex; align-items: flex-end; gap: 40px; }
-        .hand-svg { width: 160px; height: 160px; fill: none; stroke: var(--sub-text); stroke-width: 1.5; opacity: 0.4; }
-        .hand-svg.active { opacity: 1; stroke: var(--primary); filter: drop-shadow(0 0 8px var(--primary)); }
-        .finger.hit { fill: var(--primary); stroke: var(--primary); }
+        /* HÀNG PHÍM & TAY */
+        .kb-container { display: flex; align-items: flex-end; gap: 30px; }
+        .hand { width: 140px; height: 140px; fill: none; stroke: currentColor; stroke-width: 1.5; opacity: 0.2; }
+        .hand.active { opacity: 1; color: var(--primary); }
+        .finger.active { fill: var(--primary); }
 
-        .kb { display: flex; flex-direction: column; gap: 5px; padding: 15px; background: rgba(0,0,0,0.1); border-radius: 12px; }
-        .kb-row { display: flex; gap: 5px; justify-content: center; }
-        .key {
-            width: 48px; height: 48px; background: var(--key-bg); color: var(--key-text);
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 14px; border-bottom: 4px solid rgba(0,0,0,0.2);
-        }
-        .key.active { background: var(--primary); color: #fff; transform: translateY(3px); border-bottom: none; }
+        .keyboard { background: rgba(0,0,0,0.1); padding: 10px; border-radius: 10px; }
+        .kb-row { display: flex; gap: 4px; margin-bottom: 4px; justify-content: center; }
+        .key { width: 42px; height: 42px; background: var(--kb-key); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid rgba(0,0,0,0.2); }
+        .key.active { background: var(--primary); color: white; transform: translateY(2px); border-bottom: 0; }
 
         /* BẢNG ĐIỂM */
-        #overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.85);
-            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
-        }
-        .score-card { background: var(--panel); padding: 50px; border-radius: 24px; text-align: center; color: var(--text); border: 2px solid var(--primary); }
+        #result-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .result-card { background: var(--bg); padding: 40px; border-radius: 20px; text-align: center; border: 2px solid var(--primary); }
+        
+        /* HƯỚNG DẪN BỘ GÕ */
+        .guide-table { width: 100%; font-size: 11px; margin-top: 10px; border-collapse: collapse; }
+        .guide-table td { border: 1px solid rgba(0,0,0,0.1); padding: 3px; }
 
         #hidden-input { position: fixed; top: -100px; }
     </style>
@@ -80,40 +64,53 @@
 <body>
 
 <div class="sidebar">
-    <div style="padding:20px; font-weight:bold; color:var(--primary)">TYPING MASTER</div>
+    <div class="intro-box">
+        <strong>Giới thiệu:</strong> Hệ thống luyện 10 ngón chuẩn tiếng Việt. Hãy đặt tay đúng vị trí phím xuất phát (ASDF - JKL;).
+        <table class="guide-table">
+            <tr><td>Dấu</td><td>Sắc</td><td>Huyền</td><td>Hỏi</td><td>Ngã</td><td>Nặng</td></tr>
+            <tr><td><strong>Telex</strong></td><td>s</td><td>f</td><td>r</td><td>x</td><td>j</td></tr>
+            <tr><td><strong>VNI</strong></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+        </table>
+    </div>
     <div class="ls-list" id="ls-list"></div>
 </div>
 
 <div class="main">
     <div class="stats">
-        <div>Tốc độ: <span id="wpm-val" style="color:var(--primary); font-weight:bold">0</span> WPM</div>
-        <div>Chính xác: <span id="acc-val" style="color:var(--primary); font-weight:bold">0%</span></div>
+        <div>BÀI: <span id="cur-lesson-name">1</span></div>
+        <div>WPM: <span id="wpm">0</span></div>
+        <div>CHÍNH XÁC: <span id="acc">0%</span></div>
     </div>
 
-    <div class="content">
-        <div class="display-area" id="display"></div>
+    <div class="typing-zone">
+        <div class="display-box" id="display"></div>
+        
+        <div class="kb-container">
+            <svg id="hand-l" class="hand" viewBox="0 0 100 100">
+                <path class="finger" id="f-l5" d="M10,60 Q5,30 15,30 T25,60" />
+                <path class="finger" id="f-l4" d="M25,50 Q20,15 35,15 T45,50" />
+                <path class="finger" id="f-l3" d="M45,40 Q45,5 55,5 T65,40" />
+                <path class="finger" id="f-l2" d="M65,50 Q75,15 85,20 T80,55" />
+                <path class="finger" id="f-l1" d="M80,80 Q95,75 90,95" />
+            </svg>
 
-        <div class="hands-wrap">
-            <svg class="hand-svg" id="hand-l" viewBox="0 0 100 100">
-                <path d="M10,60 Q5,30 15,30 T25,60" id="f-l5" class="finger"/> <path d="M25,50 Q20,15 35,15 T45,50" id="f-l4" class="finger"/> <path d="M45,40 Q45,5 55,5 T65,40" id="f-l3" class="finger"/>   <path d="M65,50 Q75,15 85,20 T80,55" id="f-l2" class="finger"/> <path d="M80,80 Q95,75 90,95" id="f-l1" class="finger"/>        </svg>
+            <div class="keyboard" id="keyboard"></div>
 
-            <div class="kb" id="kb"></div>
-
-            <svg class="hand-svg" id="hand-r" viewBox="0 0 100 100">
-                <path d="M90,60 Q95,30 85,30 T75,60" id="f-r5" class="finger"/>
-                <path d="M75,50 Q80,15 65,15 T55,50" id="f-r4" class="finger"/>
-                <path d="M55,40 Q55,5 45,5 T35,40" id="f-r3" class="finger"/>
-                <path d="M35,50 Q25,15 15,20 T20,55" id="f-r2" class="finger"/>
-                <path d="M20,80 Q5,75 10,95" id="f-r1" class="finger"/>
+            <svg id="hand-r" class="hand" viewBox="0 0 100 100">
+                <path class="finger" id="f-r5" d="M90,60 Q95,30 85,30 T75,60" />
+                <path class="finger" id="f-r4" d="M75,50 Q80,15 65,15 T55,50" />
+                <path class="finger" id="f-r3" d="M55,40 Q55,5 45,5 T35,40" />
+                <path class="finger" id="f-r2" d="M35,50 Q25,15 15,20 T20,55" />
+                <path class="finger" id="f-r1" d="M20,80 Q5,75 10,95" />
             </svg>
         </div>
     </div>
 
-    <div id="overlay">
-        <div class="score-card">
-            <h1 style="margin-bottom:20px">KẾT QUẢ</h1>
-            <div id="final-stats" style="font-size: 24px; margin-bottom:30px"></div>
-            <button onclick="nextL()" style="padding:15px 30px; cursor:pointer; background:var(--primary); border:none; border-radius:8px; color:#fff; font-weight:bold">BÀI TIẾP THEO ➔</button>
+    <div id="result-overlay">
+        <div class="result-card">
+            <h2 style="color:var(--primary)">HOÀN THÀNH!</h2>
+            <div id="final-stats" style="margin: 20px 0; font-size: 20px;"></div>
+            <button onclick="nextLesson()" style="padding:10px 25px; cursor:pointer; background:var(--primary); color:white; border:none; border-radius:5px;">BÀI TIẾP THEO</button>
         </div>
     </div>
 </div>
@@ -121,89 +118,138 @@
 <input type="text" id="hidden-input" autofocus>
 
 <script>
-    const LESSONS = ["asdf jkl; asdf jkl;", "má mà mả mã mạ", "có công mài sắt có ngày nên kim", "uống nước nhớ nguồn"];
-    const KB_LAYOUT = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
-    const F_MAP = {
+    const DATA = [
+        "asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;;", "asdfasdf jkl;jkl;", "fj f d s a j k l ;",
+        "má mà mả mã mạ", "con cò có cái cổ cong cong", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây",
+        "lá lành đùm lá rách", "tiên học lễ hậu học văn", "có chí thì nên", "tốt gỗ hơn tốt nước sơn",
+        "đói cho sạch rách cho thơm", "kiến tha lâu cũng đầy tổ", "không thầy đố mày làm nên",
+        "học thầy không tày học bạn", "công cha như núi thái sơn", "nghĩa mẹ như nước trong nguồn chảy ra",
+        "gần mực thì đen gần đèn thì sáng", "ăn chậm nhai kỹ", "học một biết mười", "thời gian là vàng bạc",
+        "lời chào cao hơn mâm cỗ", "đoàn kết là sức mạnh", "sức khỏe là vốn quý nhất", "cái nết đánh chết cái đẹp",
+        "chậm mà chắc", "nhập gia tùy tục", "nói đi đôi với làm", "tấc đất tấc vàng", "chân cứng đá mềm",
+        "gieo gió gặt bão", "kính trên nhường dưới", "uống nước nhớ người đào giếng", "luyện tay mỗi ngày",
+        "kỹ năng gõ mười ngón", "kiên trì sẽ thành công", "làm việc có kế hoạch", "đam mê dẫn lối",
+        "tập trung là chìa khóa", "sáng tạo không ngừng", "thất bại là mẹ thành công", "vượt qua giới hạn bản thân",
+        "tri thức là sức mạnh", "đường tuy ngắn không đi không đến", "việc tuy nhỏ không làm không xong",
+        "một con ngựa đau cả tàu bỏ cỏ", "mùa xuân là tết trồng cây", "không có việc gì khó", "chỉ sợ lòng không bền",
+        "đào núi và lấp biển", "quyết chí ắt làm nên", "vì lợi ích mười năm trồng cây", "vì lợi ích trăm năm trồng người"
+    ];
+
+    const KB_MAP = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
+    const FINGER_MAP = {
         'q':'f-l5','a':'f-l5','z':'f-l5','w':'f-l4','s':'f-l4','x':'f-l4','e':'f-l3','d':'f-l3','c':'f-l3','r':'f-l2','f':'f-l2','v':'f-l2','t':'f-l2','g':'f-l2','b':'f-l2',
         'y':'f-r2','h':'f-r2','n':'f-r2','u':'f-r2','j':'f-r2','m':'f-r2','i':'f-r3','k':'f-r3',',':'f-r3','o':'f-r4','l':'f-r4','.':'f-r4','p':'f-r5',';':'f-r5',' ':'f-r1'
     };
 
-    let curL = 0, words = [], curIdx = 0, errs = 0, start = null, isIME = false;
+    let curL = 1, chars = [], curIdx = 0, errors = 0, startTime = null, isIME = false;
 
     function init() {
         const list = document.getElementById('ls-list');
-        LESSONS.forEach((l, i) => list.innerHTML += `<div class="ls-item" id="ls-${i}" onclick="loadL(${i})">Level ${i+1}</div>`);
-        
-        const kb = document.getElementById('kb');
-        KB_LAYOUT.forEach(row => {
+        DATA.forEach((d, i) => {
+            list.innerHTML += `<div class="ls-item" id="ls-${i+1}" onclick="loadLesson(${i+1})">Bài ${i+1}: ${d.substring(0,12)}...</div>`;
+        });
+
+        const kb = document.getElementById('keyboard');
+        KB_MAP.forEach(row => {
             const r = document.createElement('div'); r.className = 'kb-row';
             row.split('').forEach(k => r.innerHTML += `<div class="key" id="k-${k}">${k.toUpperCase()}</div>`);
             kb.appendChild(r);
         });
-        kb.innerHTML += `<div class="kb-row"><div class="key" id="k-space" style="width:300px">SPACE</div></div>`;
+        kb.innerHTML += `<div class="kb-row"><div class="key" id="k-space" style="width:250px">SPACE</div></div>`;
 
-        loadL(0);
+        loadLesson(1);
         setupInput();
     }
 
-    function setupInput() {
-        const inp = document.getElementById('hidden-input');
-        inp.addEventListener('compositionstart', () => isIME = true);
-        inp.addEventListener('compositionend', () => isIME = false);
-
-        inp.oninput = () => {
-            if (isIME) return;
-            if (!start) start = new Date();
-            const val = inp.value;
-            const target = words[curIdx].normalize('NFC');
-
-            if (val.endsWith(' ') || (curIdx === words.length-1 && val.normalize('NFC') === target)) {
-                const typed = val.trim().normalize('NFC');
-                const el = document.getElementById(`w-${curIdx}`);
-                if (typed === target) el.className = 'word ok';
-                else { el.className = 'word err'; errs++; }
-                curIdx++; inp.value = "";
-                if (curIdx >= words.length) finish();
-                else updateUI();
-            }
-        };
-        document.body.onclick = () => inp.focus();
-    }
-
-    function loadL(idx) {
-        curL = idx; curIdx = 0; errs = 0; start = null;
-        document.getElementById('overlay').style.display = 'none';
+    function loadLesson(id) {
+        curL = id; curIdx = 0; errors = 0; startTime = null;
+        document.getElementById('result-overlay').style.display = 'none';
         document.querySelectorAll('.ls-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`ls-${idx}`).classList.add('active');
-        words = LESSONS[idx].split(' ');
-        document.getElementById('display').innerHTML = words.map((w, i) => `<span class="word" id="w-${i}">${w}</span>`).join(' ');
+        document.getElementById(`ls-${id}`).classList.add('active');
+        document.getElementById('cur-lesson-name').innerText = id;
+
+        chars = DATA[id-1].split('');
+        const disp = document.getElementById('display');
+        disp.innerHTML = chars.map((c, i) => `<span class="char" id="c-${i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
         updateUI();
     }
 
+    function setupInput() {
+        const input = document.getElementById('hidden-input');
+        input.addEventListener('compositionstart', () => isIME = true);
+        input.addEventListener('compositionend', () => { 
+            isIME = false; 
+            // Xử lý sau khi kết thúc gõ tiếng Việt (Telex/VNI)
+            handleInput(input.value.normalize('NFC'));
+            input.value = "";
+        });
+
+        input.oninput = (e) => {
+            if (isIME) return;
+            // Nếu là bài 1-4, gõ chữ nào ăn chữ đó ngay
+            if (curL <= 4) {
+                handleInput(input.value);
+                input.value = "";
+            } else if (input.value.endsWith(' ')) {
+                handleInput(input.value.trim().normalize('NFC') + ' ');
+                input.value = "";
+            }
+        };
+        document.body.onclick = () => input.focus();
+    }
+
+    function handleInput(typed) {
+        if (!startTime) startTime = new Date();
+        const typedArr = typed.split('');
+        
+        typedArr.forEach(char => {
+            if (curIdx >= chars.length) return;
+            const target = chars[curIdx].normalize('NFC');
+            const el = document.getElementById(`c-${curIdx}`);
+
+            if (char === target) {
+                el.className = 'char ok';
+            } else {
+                el.className = 'char err';
+                errors++;
+            }
+            curIdx++;
+        });
+
+        if (curIdx >= chars.length) showResult();
+        else updateUI();
+    }
+
     function updateUI() {
-        document.querySelectorAll('.word, .key, .finger, .hand-svg').forEach(el => el.classList.remove('active', 'hit'));
-        const wEl = document.getElementById(`w-${curIdx}`);
-        if (!wEl) return;
-        wEl.classList.add('active');
+        document.querySelectorAll('.char, .key, .finger, .hand').forEach(el => el.classList.remove('active'));
+        const targetEl = document.getElementById(`c-${curIdx}`);
+        if (!targetEl) return;
+        targetEl.classList.add('active');
 
-        const char = words[curIdx][0].toLowerCase();
-        const kEl = document.getElementById(char === ' ' ? 'k-space' : `k-${char}`);
-        if (kEl) kEl.classList.add('active');
+        const nextChar = chars[curIdx].toLowerCase();
+        const keyEl = document.getElementById(nextChar === ' ' ? 'k-space' : `k-${nextChar}`);
+        if (keyEl) keyEl.classList.add('active');
 
-        const fId = F_MAP[char];
-        if (fId) {
-            document.getElementById(fId).classList.add('hit');
-            document.getElementById(fId.startsWith('f-l') ? 'hand-l' : 'hand-r').classList.add('active');
+        const fingerId = FINGER_MAP[nextChar];
+        if (fingerId) {
+            document.getElementById(fingerId).classList.add('active');
+            document.getElementById(fingerId.startsWith('f-l') ? 'hand-l' : 'hand-r').classList.add('active');
+        }
+
+        if (startTime) {
+            const min = (new Date() - startTime) / 60000;
+            document.getElementById('wpm').innerText = Math.round((curIdx / 5) / min) || 0;
+            document.getElementById('acc').innerText = Math.round(((curIdx - errors) / (curIdx || 1)) * 100) + "%";
         }
     }
 
-    function finish() {
-        const acc = Math.round(((words.length - errs) / words.length) * 100);
-        document.getElementById('final-stats').innerHTML = `Độ chính xác: ${acc}%`;
-        document.getElementById('overlay').style.display = 'flex';
+    function showResult() {
+        const acc = Math.round(((chars.length - errors) / chars.length) * 100);
+        document.getElementById('final-stats').innerHTML = `Tốc độ: ${document.getElementById('wpm').innerText} WPM<br>Chính xác: ${acc}%`;
+        document.getElementById('result-overlay').style.display = 'flex';
     }
 
-    function nextL() { loadL((curL + 1) % LESSONS.length); }
+    function nextLesson() { loadLesson(curL < 54 ? curL + 1 : 1); }
 
     window.onload = init;
 </script>
