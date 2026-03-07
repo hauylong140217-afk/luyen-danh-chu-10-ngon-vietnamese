@@ -7,12 +7,14 @@
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
+        /* Sidebar */
         .sidebar { width: 200px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
         .sidebar-header { padding: 15px; font-weight: bold; color: var(--primary); border-bottom: 1px solid #eee; text-align: center; }
         .nav-item { padding: 10px 20px; color: #444; cursor: pointer; border-left: 4px solid transparent; font-size: 14px; }
         .nav-item:hover { background: #f8f9fa; }
         .nav-item.active { background: #e7f1ff; border-left-color: var(--primary); font-weight: bold; color: var(--primary); }
 
+        /* Main Content */
         .main { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
         .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 15px; padding-bottom: 250px; }
 
@@ -30,12 +32,14 @@
         .char.correct { color: var(--success); }
         .char.wrong { color: var(--danger); background: #ffebee; }
 
+        /* Keyboard */
         .keyboard-wrapper { background: #dee2e6; padding: 15px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #bbb; position: absolute; bottom: 0; left: 0; z-index: 10; }
         .kb-row { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
         .key { width: 40px; height: 40px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #bbb; font-size: 14px; }
         .key.active { background: var(--success) !important; color: white; }
         .key.space { width: 220px; }
 
+        /* Modal */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .result-box { background: white; padding: 30px; border-radius: 12px; text-align: center; }
         .btn-next { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 15px; }
@@ -44,15 +48,15 @@
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-header">LỘ TRÌNH 60 BÀI</div>
+        <div class="sidebar-header" id="sidebar-title">LỘ TRÌNH 60 BÀI</div>
         <div id="lesson-list"></div>
     </div>
 
     <div class="main">
-        <div class="content-area" id="scroll-area">
+        <div class="content-area">
             <div class="intro-section">
-                <h2>Hệ Thống Luyện Gõ 10 Ngón Chuyên Nghiệp</h2>
-                <p>Phát triển bởi: <b>Hà Uy Long & AI Gemini</b></p>
+                <h2>Hệ Thống Luyện Gõ 10 Ngón</h2>
+                <p>Hợp tác phát triển: <b>Hà Uy Long & AI Gemini</b></p>
             </div>
 
             <div id="dynamic-note" class="note-box note-unikey">⚠️ LƯU Ý: HÃY CHUYỂN UNIKEY SANG CHẾ ĐỘ TIẾNG ANH (CHỮ E)</div>
@@ -78,26 +82,33 @@
     <input type="text" id="keyboard-input" style="position: absolute; opacity: 0;">
 
     <script>
+        // TRONG CODE CÓ 62 BÀI ĐỂ DỰ PHÒNG LOGIC
         const lessons = {
             1: "aaaa ssss dddd ffff jjjj kkkk llll ;;;;",
             2: "asdf jkl; asdf jkl; asdf jkl; asdf jkl;",
             3: "aa ss dd ff jj kk ll ;; af jk sd l;",
             4: "gh gh gh gh ty ty ty ty ur ur ur ur",
             5: "má mà mả mã mạ cá cà cả mã mạ má mà mả mã mạ",
-            // ... (Tiếp tục các câu từ 6-59 như cũ)
+            // ... (Điền tiếp các bài 6-59 bằng các câu ý nghĩa)
             59: "sự kiên nhẫn là yếu tố cốt lõi giúp bạn vượt qua mọi rào cản để chạm đến đích đến cuối cùng",
+            // BÀI 60: BÀI KẾT THÚC HIỂN THỊ
             60: "chúc mừng bạn đã hoàn thành xuất sắc sáu mươi bài luyện tập luyện gõ mười ngón chuyên nghiệp cùng hà uy long và ai gemini",
-            61: "bài ẩn dự phòng 1", // Có trong code
-            62: "bài ẩn dự phòng 2"  // Có trong code
+            61: "đây là bài ẩn dự phòng số một của hệ thống",
+            62: "đây là bài ẩn dự phòng số hai của hệ thống"
         };
 
-        // Hàm điền nội dung mẫu cho các bài thiếu từ 6 đến 58
-        const sampleQuotes = ["con cò bé bé nó đậu cành tre", "học thầy không tày học bạn", "ăn quả nhớ kẻ trồng cây"];
-        for(let i=6; i<=58; i++) { if(!lessons[i]) lessons[i] = sampleQuotes[i % 3] + " bài số " + i; }
+        // Điền mẫu cho các bài 6-58 để đảm bảo dữ liệu đầy đủ
+        const sampleTexts = [
+            "con cò bé bé nó đậu cành tre đi không hỏi mẹ",
+            "học thầy không tày học bạn tiên học lễ hậu học văn",
+            "ăn quả nhớ kẻ trồng cây uống nước nhớ nguồn",
+            "một cây làm chẳng nên non ba cây chụm lại nên hòn núi cao"
+        ];
+        for(let i=6; i<=58; i++) { if(!lessons[i]) lessons[i] = sampleTexts[i % 4]; }
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
 
-        // SIDEBAR CHỈ HIỆN 60 BÀI
+        // TRÊN MÀN HÌNH CHỈ HIỂN THỊ 60 BÀI
         const list = document.getElementById('lesson-list');
         for(let i=1; i<=60; i++) {
             const div = document.createElement('div');
@@ -107,6 +118,7 @@
             list.appendChild(div);
         }
 
+        // Tạo bàn phím ảo
         const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
         rows.forEach((str, idx) => {
             const container = document.getElementById(`r${idx+1}`);
@@ -120,7 +132,7 @@
 
         function loadLesson(id) {
             currentLesson = id;
-            let rawText = lessons[id] || "Dữ liệu đang cập nhật...";
+            let rawText = lessons[id] || "Đang tải...";
             currentIdx = 0; errors = 0;
             
             const noteEl = document.getElementById('dynamic-note');
@@ -194,9 +206,11 @@
             const accuracy = Math.round(((wordsArray.length - errors) / wordsArray.length) * 100);
             document.getElementById('stats-info').innerHTML = `Độ chính xác: <b>${accuracy}%</b> | Lỗi: <b>${errors}</b>`;
             const btn = document.getElementById('btn-next-action');
+            
+            // LOGIC KẾT THÚC TẠI BÀI 60
             if (currentLesson === 60) {
-                document.getElementById('modal-title').innerText = "🏆 HOÀN THÀNH!";
-                btn.innerText = "Luyện lại từ đầu ↺";
+                document.getElementById('modal-title').innerText = "🏆 XUẤT SẮC!";
+                btn.innerText = "Quay về bài 1 ↺";
             } else {
                 document.getElementById('modal-title').innerText = "Xong bài " + currentLesson;
                 btn.innerText = "Tiếp theo ➔";
@@ -205,7 +219,7 @@
         }
 
         function handleNextStep() {
-            // Giới hạn chỉ đến bài 60 là quay vòng
+            // Screen chỉ cho phép đi đến bài 60 rồi quay lại 1
             if (currentLesson >= 60) loadLesson(1); else loadLesson(currentLesson + 1);
         }
 
