@@ -7,12 +7,14 @@
         :root { --bg: #f0f2f5; --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #343a40; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
+        /* Sidebar */
         .sidebar { width: 220px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
         .sidebar-header { padding: 20px; font-weight: bold; color: var(--primary); border-bottom: 2px solid #eee; text-align: center; font-size: 18px; }
         .nav-item { padding: 12px 20px; color: #444; cursor: pointer; border-left: 4px solid transparent; font-size: 14px; border-bottom: 1px solid #f9f9f9; }
         .nav-item:hover { background: #f8f9fa; }
         .nav-item.active { background: #e7f1ff; border-left-color: var(--primary); font-weight: bold; color: var(--primary); }
 
+        /* Main Content */
         .main { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
         .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; padding-bottom: 250px; }
 
@@ -25,17 +27,19 @@
         .note-v { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; font-size: 22px !important; }
 
         .typing-box { width: 100%; max-width: 800px; text-align: center; margin: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 6px; }
-        .char { font-family: 'Consolas', 'Courier New', monospace; font-size: 30px; color: #bbb; padding: 2px 5px; border-radius: 4px; transition: all 0.1s; }
+        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #bbb; padding: 2px 5px; border-radius: 4px; }
         .char.current { color: #000; border-bottom: 4px solid var(--primary); background: #fffde7; }
         .char.correct { color: var(--success); }
         .char.wrong { color: white; background: var(--danger); }
 
+        /* Keyboard */
         .keyboard-wrapper { background: #dee2e6; padding: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #bbb; position: absolute; bottom: 0; left: 0; z-index: 10; }
         .kb-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 6px; }
-        .key { width: 45px; height: 45px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 15px; box-shadow: 0 2px 0 #bbb; }
-        .key.active { background: var(--success) !important; color: white; transform: translateY(2px); box-shadow: none; }
+        .key { width: 45px; height: 45px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 15px; }
+        .key.active { background: var(--success) !important; color: white; }
         .key.space { width: 250px; }
 
+        /* Result Modal */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .result-box { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
         .btn-next { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; width: 100%; }
@@ -52,7 +56,7 @@
         <div class="content-area">
             <div class="intro-section">
                 <h2>Hệ Thống Luyện Gõ 10 Ngón</h2>
-                <p>Tác giả: <b>Hà Uy Long & AI Gemini</b></p>
+                <p>Hợp tác phát triển: <b>Hà Uy Long & AI Gemini</b></p>
             </div>
 
             <div id="dynamic-note" class="note-box note-unikey">⚠️ LƯU Ý: CHUYỂN UNIKEY SANG TIẾNG ANH (CHỮ E)</div>
@@ -71,59 +75,55 @@
         <div class="result-box">
             <h2 id="modal-title">Hoàn thành!</h2>
             <p id="stats-info" style="font-size: 20px; color: #555;"></p>
-            <button class="btn-next" id="btn-next-action" onclick="handleNextStep()">Tiếp theo ➔</button>
+            <button class="btn-next" id="btn-next-action" onclick="handleNextStep()">Bài tiếp theo ➔</button>
         </div>
     </div>
 
     <input type="text" id="keyboard-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
     <script>
-        // TRONG CODE: ĐỦ 62 BÀI
+        // DỮ LIỆU CHỐT ĐÚNG 60 BÀI
         const lessons = {};
         
-        // Bài 1-4: Luyện phím cơ bản
+        // Bài 1-4: Cơ bản
         lessons[1] = "aaaa ssss dddd ffff jjjj kkkk llll ;;;;";
         lessons[2] = "asdf jkl; asdf jkl; asdf jkl; asdf jkl;";
         lessons[3] = "aa ss dd ff jj kk ll ;; af jk sd l;";
         lessons[4] = "gh gh gh gh ty ty ty ty ur ur ur ur";
         
-        // Bài 5-59: Nội dung tiếng Việt (Đã điền đầy đủ để không bị mất bài)
+        // Nội dung luyện tập từ bài 5-59
         const vietTexts = [
             "má mà mả mã mạ cá cà cả mã mạ", "con cò bé bé nó đậu cành tre", "học thầy không tày học bạn",
             "tiên học lễ hậu học văn", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây",
             "một cây làm chẳng nên non", "ba cây chụm lại nên hòn núi cao", "có công mài sắt có ngày nên kim",
             "kiến tha lâu cũng đầy tổ", "lá lành đùm lá rách", "bầu ơi thương lấy bí cùng",
-            "tuy rằng khác giống nhưng chung một giàn", "đường đời nhiều ngã rẽ quan trọng là chọn đúng",
-            "thất bại là mẹ thành công", "chớ thấy sóng cả mà ngã tay chèo", "có chí thì nên",
+            "tuy rằng khác giống nhưng chung một giàn", "thất bại là mẹ thành công", "có chí thì nên",
             "gần mực thì đen gần đèn thì sáng", "đi một ngày đàng học một sàng khôn", "lời nói chẳng mất tiền mua",
-            "lựa lời mà nói cho vừa lòng nhau", "anh em như thể tay chân", "rách lành đùm bọc dở hay đỡ đần",
-            "một con ngựa đau cả tàu bỏ cỏ", "ăn trông nồi ngồi trông hướng", "không có gì quý hơn độc lập tự do",
-            "đoàn kết đoàn kết đại đoàn kết", "thành công thành công đại thành công", "kiên trì nhẫn nại là chìa khóa",
-            "đừng bao giờ từ bỏ ước mơ của mình", "hãy sống như hôm nay là ngày cuối cùng", "tương lai nằm trong tay bạn",
-            "sách là kho tàng tri thức vô tận", "đọc muôn quyển sách đi muôn dặm đường", "sức khỏe là vàng",
-            "thời gian là tiền bạc", "lòng tốt là ngôn ngữ chung của thế giới", "sống chậm lại để cảm nhận nhiều hơn",
-            "mọi khó khăn chỉ là thử thách", "vượt qua chính mình là chiến thắng hiển hách nhất", "hãy luôn mỉm cười với cuộc sống",
-            "gieo nhân nào gặt quả nấy", "trung thực là đức tính quý giá nhất", "khiêm tốn bao nhiêu cũng chưa đủ",
-            "tự phụ bấy nhiêu cũng là quá thừa", "hãy làm việc khi người khác đang ngủ", "học tập khi người khác đang chơi",
-            "tiết kiệm khi người khác đang lãng phí", "và bạn sẽ có thứ họ chỉ dám mơ", "cuộc sống là một hành trình dài",
-            "hãy tận hưởng từng khoảnh khắc", "biết ơn những gì mình đang có", "giúp đỡ mọi người là niềm hạnh phúc",
-            "chúc bạn một ngày tốt lành và đầy năng lượng", "sự kiên trì sẽ đưa bạn đến đích"
+            "lựa lời mà nói cho vừa lòng nhau", "anh em như thể tay chân", "một con ngựa đau cả tàu bỏ cỏ",
+            "ăn trông nồi ngồi trông hướng", "không có gì quý hơn độc lập tự do", "đoàn kết đoàn kết đại đoàn kết",
+            "kiên trì nhẫn nại là chìa khóa", "tương lai nằm trong tay bạn", "sách là kho tàng tri thức vô tận",
+            "sức khỏe là vàng", "thời gian là tiền bạc", "mọi khó khăn chỉ là thử thách",
+            "hãy luôn mỉm cười với cuộc sống", "gieo nhân nào gặt quả nấy", "trung thực là đức tính quý giá nhất",
+            "khiêm tốn bao nhiêu cũng chưa đủ", "tự phụ bấy nhiêu cũng là quá thừa", "hành trình vạn dặm bắt đầu từ một bước chân",
+            "ngọc bất trác bất thành khí", "nhân bất học bất tri lý", "ăn quả nhớ kẻ trồng cây",
+            "có nuôi con mới biết lòng cha mẹ", "cây có cội nước có nguồn", "uống nước nhớ nguồn",
+            "lá rụng về cội", "trâu ta ăn cỏ đồng ta", "tốt gỗ hơn tốt nước sơn",
+            "đói cho sạch rách cho thơm", "giấy rách phải giữ lấy lề", "gần bùn mà chẳng hôi tanh mùi bùn",
+            "một chữ cũng là thầy nửa chữ cũng là thầy", "không thầy đố mày làm nên", "muốn sang thì bắc cầu kiều",
+            "muốn con hay chữ phải yêu lấy thầy", "tôn sư trọng đạo", "uống nước nhớ nguồn",
+            "ăn quả nhớ kẻ trồng cây"
         ];
         
         for(let i=5; i<=59; i++) {
             lessons[i] = vietTexts[i-5] || `Bài luyện tập thực hành số ${i}`;
         }
 
-        // BÀI 60: BÀI KẾT THÚC TRÊN MÀN HÌNH
+        // BÀI 60: KẾT THÚC
         lessons[60] = "chúc mừng bạn đã hoàn thành xuất sắc sáu mươi bài luyện tập luyện gõ mười ngón cùng hà uy long và ai gemini";
-        
-        // BÀI 61 & 62: BÀI ẨN TRONG CODE
-        lessons[61] = "bài ẩn dự phòng hệ thống một";
-        lessons[62] = "bài ẩn dự phòng hệ thống hai";
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
 
-        // TRÊN MÀN HÌNH (SCREEN): CHỈ HIỂN THỊ ĐẾN BÀI 60
+        // Sidebar chỉ vẽ đúng 60 bài
         const list = document.getElementById('lesson-list');
         for(let i=1; i<=60; i++) {
             const div = document.createElement('div');
@@ -133,7 +133,6 @@
             list.appendChild(div);
         }
 
-        // Bàn phím ảo
         const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
         rows.forEach((str, idx) => {
             const container = document.getElementById(`r${idx+1}`);
