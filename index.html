@@ -74,71 +74,74 @@
     <input type="text" id="keyboard-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
     <script>
-        const lessons = {
-            1: "aaaa ssss dddd ffff jjjj kkkk llll ;;;;",
-            2: "asdf jkl; asdf jkl; asdf jkl; asdf jkl;",
-            3: "aa ss dd ff jj kk ll ;; af jk sd l;",
-            4: "gh gh gh gh ty ty ty ty ur ur ur ur",
-            5: "má mà mả mã mạ cá cà cả mã mạ",
-            6: "con cò bé bé nó đậu cành tre đi không hỏi mẹ",
-            7: "học thầy không tày học bạn tiên học lễ hậu học văn",
-            8: "uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây",
-            9: "một cây làm chẳng nên non ba cây chụm lại nên hòn núi cao",
-            10: "có công mài sắt có ngày nên kim kiên trì sẽ thành công",
-            11: "kiến tha lâu cũng đầy tổ cần cù bù thông minh",
-            12: "lá lành đùm lá rách anh em như thể tay chân",
-            13: "bầu ơi thương lấy bí cùng tuy rằng khác giống nhưng chung một giàn",
-            14: "đường đời nhiều ngã rẽ quan trọng là bạn chọn đúng hướng đi",
-            15: "thất bại là mẹ thành công chớ thấy sóng cả mà ngã tay chèo",
-            16: "có chí thì nên gần mực thì đen gần đèn thì sáng",
-            17: "đi một ngày đàng học một sàng khôn lời nói chẳng mất tiền mua",
-            18: "lựa lời mà nói cho vừa lòng nhau kính trên nhường dưới",
-            19: "rách lành đùm bọc dở hay đỡ đần một con ngựa đau cả tàu bỏ cỏ",
-            20: "ăn trông nồi ngồi trông hướng học ăn học nói học gói học mở",
-            21: "không có gì quý hơn độc lập tự do hạnh phúc muôn năm",
-            22: "đoàn kết đoàn kết đại đoàn kết thành công thành công đại thành công",
-            23: "kiên trì nhẫn nại là chìa khóa mở cánh cửa tương lai",
-            24: "đừng bao giờ từ bỏ ước mơ hãy luôn tin tưởng vào bản thân",
-            25: "hãy sống như hôm nay là ngày cuối cùng bạn được sống",
-            26: "tương lai nằm trong tay bạn hãy nỗ lực ngay từ hôm nay",
-            27: "sách là kho tàng tri thức vô tận của nhân loại",
-            28: "đọc muôn quyển sách đi muôn dặm đường mở mang kiến thức",
-            29: "sức khỏe là vàng hãy chăm sóc bản thân mỗi ngày",
-            30: "thời gian là tiền bạc đừng lãng phí từng giây phút quý giá",
-            31: "lòng tốt là ngôn ngữ chung mà ai cũng có thể hiểu",
-            32: "sống chậm lại để cảm nhận vẻ đẹp của thế giới xung quanh",
-            33: "mọi khó khăn chỉ là thử thách giúp bạn trưởng thành hơn",
-            34: "vượt qua chính mình là chiến thắng hiển hách nhất",
-            35: "hãy luôn mỉm cười với cuộc sống dù có chuyện gì xảy ra",
-            36: "gieo nhân nào gặt quả nấy hãy sống tử tế với mọi người",
-            37: "trung thực là đức tính quý giá nhất của mỗi con người",
-            38: "khiêm tốn bao nhiêu cũng chưa đủ tự phụ một chút cũng là thừa",
-            39: "hành trình vạn dặm bắt đầu từ những bước chân nhỏ nhất",
-            40: "ngọc bất trác bất thành khí nhân bất học bất tri lý",
-            41: "có nuôi con mới biết lòng cha mẹ ơn nghĩa sinh thành",
-            42: "cây có cội nước có nguồn luôn ghi nhớ về cội nguồn",
-            43: "lá rụng về cội tình yêu quê hương luôn cháy bỏng",
-            44: "trâu ta ăn cỏ đồng ta dù trong dù đục ao nhà vẫn hơn",
-            45: "tốt gỗ hơn tốt nước sơn cái nết đánh chết cái đẹp",
-            46: "đói cho sạch rách cho thơm giữ gìn phẩm giá con người",
-            47: "giấy rách phải giữ lấy lề lòng tự trọng là trên hết",
-            48: "gần bùn mà chẳng hôi tanh mùi bùn giữ tâm trong sáng",
-            49: "một chữ cũng là thầy nửa chữ cũng là thầy tôn sư trọng đạo",
-            50: "không thầy đố mày làm nên công ơn giáo dưỡng của thầy cô",
-            51: "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy",
-            52: "kỷ luật là sức mạnh của quân đội và của sự thành công",
-            53: "tự do của bạn kết thúc nơi tự do của người khác bắt đầu",
-            54: "kiến thức là sức mạnh nhưng hành động mới tạo ra kết quả",
-            55: "hãy học cách lắng nghe để thấu hiểu và sẻ chia nhiều hơn",
-            56: "sáng tạo là chìa khóa để giải quyết mọi vấn đề phức tạp",
-            57: "lòng biết ơn giúp chúng ta trân trọng những gì đang có",
-            58: "sự im lặng đôi khi là câu trả lời tốt đẹp nhất",
-            59: "đỉnh núi cao nhất luôn nằm ở phía trước hãy tiếp tục leo",
-            60: "chúc mừng bạn đã hoàn thành xuất sắc sáu mươi bài luyện tập cùng hà uy long và ai gemini"
-        };
+        // Danh sách nội dung cho đúng 60 bài học
+        const lessonContent = [
+            "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 1
+            "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", // 2
+            "aa ss dd ff jj kk ll ;; af jk sd l;", // 3
+            "gh gh gh gh ty ty ty ty ur ur ur ur", // 4
+            "má mà mả mã mạ cá cà cả mã mạ", // 5
+            "con cò bé bé nó đậu cành tre đi không hỏi mẹ", // 6
+            "học thầy không tày học bạn tiên học lễ hậu học văn", // 7
+            "uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây", // 8
+            "một cây làm chẳng nên non ba cây chụm lại nên hòn núi cao", // 9
+            "có công mài sắt có ngày nên kim kiên trì thành công", // 10
+            "kiến tha lâu cũng đầy tổ cần cù bù thông minh", // 11
+            "lá lành đùm lá rách anh em như thể tay chân", // 12
+            "bầu ơi thương lấy bí cùng tuy rằng khác giống nhưng chung một giàn", // 13
+            "đường đời nhiều ngã rẽ quan trọng là chọn đúng hướng đi", // 14
+            "thất bại là mẹ thành công chớ thấy sóng cả mà ngã tay chèo", // 15
+            "có chí thì nên gần mực thì đen gần đèn thì sáng", // 16
+            "đi một ngày đàng học một sàng khôn lời nói chẳng mất tiền mua", // 17
+            "lựa lời mà nói cho vừa lòng nhau kính trên nhường dưới", // 18
+            "rách lành đùm bọc dở hay đỡ đần một con ngựa đau cả tàu bỏ cỏ", // 19
+            "ăn trông nồi ngồi trông hướng học ăn học nói học gói học mở", // 20
+            "không có gì quý hơn độc lập tự do hạnh phúc muôn năm", // 21
+            "đoàn kết đoàn kết đại đoàn kết thành công thành công đại thành công", // 22
+            "kiên trì nhẫn nại là chìa khóa mở cửa tương lai", // 23
+            "đừng bao giờ từ bỏ ước mơ hãy tin vào bản thân mình", // 24
+            "hãy sống như hôm nay là ngày cuối cùng bạn được sống", // 25
+            "tương lai nằm trong tay bạn hãy nỗ lực ngay hôm nay", // 26
+            "sách là kho tàng tri thức vô tận của nhân loại", // 27
+            "đọc muôn quyển sách đi muôn dặm đường mở mang kiến thức", // 28
+            "sức khỏe là vàng hãy chăm sóc bản thân mỗi ngày", // 29
+            "thời gian là tiền bạc đừng lãng phí từng giây phút quý giá", // 30
+            "lòng tốt là ngôn ngữ chung mà ai cũng có thể hiểu", // 31
+            "sống chậm lại để cảm nhận vẻ đẹp thế giới xung quanh", // 32
+            "mọi khó khăn chỉ là thử thách giúp bạn trưởng thành hơn", // 33
+            "vượt qua chính mình là chiến thắng hiển hách nhất", // 34
+            "hãy luôn mỉm cười với cuộc sống dù có chuyện gì xảy ra", // 35
+            "gieo nhân nào gặt quả nấy hãy sống tử tế với mọi người", // 36
+            "trung thực là đức tính quý giá nhất của mỗi con người", // 37
+            "khiêm tốn bao nhiêu cũng chưa đủ tự phụ một chút cũng là thừa", // 38
+            "hành trình vạn dặm bắt đầu từ những bước chân nhỏ nhất", // 39
+            "ngọc bất trác bất thành khí nhân bất học bất tri lý", // 40
+            "có nuôi con mới biết lòng cha mẹ ơn nghĩa sinh thành", // 41
+            "cây có cội nước có nguồn luôn nhớ về cội nguồn", // 42
+            "lá rụng về cội tình yêu quê hương luôn cháy bỏng", // 43
+            "trâu ta ăn cỏ đồng ta dù trong dù đục ao nhà vẫn hơn", // 44
+            "tốt gỗ hơn tốt nước sơn cái nết đánh chết cái đẹp", // 45
+            "đói cho sạch rách cho thơm giữ gìn phẩm giá con người", // 46
+            "giấy rách phải giữ lấy lề lòng tự trọng là trên hết", // 47
+            "gần bùn mà chẳng hôi tanh mùi bùn giữ tâm trong sáng", // 48
+            "một chữ cũng là thầy nửa chữ cũng là thầy tôn sư trọng đạo", // 49
+            "không thầy đố mày làm nên công ơn giáo dưỡng của thầy cô", // 50
+            "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy", // 51
+            "kỷ luật là sức mạnh của quân đội và của thành công", // 52
+            "tự do của bạn kết thúc nơi tự do người khác bắt đầu", // 53
+            "kiến thức là sức mạnh nhưng hành động mới tạo kết quả", // 54
+            "hãy học lắng nghe để thấu hiểu và sẻ chia nhiều hơn", // 55
+            "sáng tạo là chìa khóa để giải quyết mọi vấn đề phức tạp", // 56
+            "lòng biết ơn giúp chúng ta trân trọng những gì đang có", // 57
+            "sự im lặng đôi khi là câu trả lời tốt đẹp nhất", // 58
+            "đỉnh núi cao nhất luôn nằm ở phía trước hãy tiếp tục leo", // 59
+            "chúc mừng bạn hoàn thành 60 bài tập cùng hà uy long và ai gemini" // 60
+        ];
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
         const list = document.getElementById('lesson-list');
+
+        // Tạo Sidebar đúng 60 bài
         for(let i=1; i<=60; i++) {
             const div = document.createElement('div');
             div.className = 'nav-item'; div.id = `nav-${i}`;
@@ -147,6 +150,7 @@
             list.appendChild(div);
         }
 
+        // Tạo bàn phím
         const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
         rows.forEach((str, idx) => {
             const container = document.getElementById(`r${idx+1}`);
@@ -160,7 +164,7 @@
 
         function loadLesson(id) {
             currentLesson = id;
-            let rawText = lessons[id];
+            let rawText = lessonContent[id - 1]; // Truy cập index mảng (0-59)
             currentIdx = 0; errors = 0;
             const noteEl = document.getElementById('dynamic-note');
             if (id >= 5) {
