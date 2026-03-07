@@ -5,49 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Luyện Gõ 10 Ngón Pro - Hà Uy Long</title>
     <style>
-        :root { --bg: #e2e8f0; --primary: #2563eb; --success: #16a34a; --danger: #dc2626; }
+        :root { --bg: #e2e8f0; --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --sidebar-w: 70px; }
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        /* Sidebar - Danh sách bài tập */
-        .sidebar { width: 60px; background: #fff; border-right: 1px solid #cbd5e1; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .nav-item { padding: 12px 0; text-align: center; color: #475569; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 12px; font-weight: bold; }
-        .nav-item.active { background: var(--primary); color: white; }
+        /* Slidebar kéo Full màn hình */
+        .sidebar { 
+            width: var(--sidebar-w); 
+            height: 100vh; 
+            background: #ffffff; 
+            border-right: 2px solid #cbd5e1; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+            flex-shrink: 0; 
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        /* Tùy chỉnh thanh cuộn cho đẹp */
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* Main Area */
-        .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .nav-item { padding: 15px 0; text-align: center; color: #475569; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        .nav-item:hover { background: #f8fafc; color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; border-bottom: 1px solid var(--primary); }
+
+        /* Vùng chính */
+        .main { flex: 1; display: flex; flex-direction: column; height: 100vh; }
         
-        .progress-bar-container { width: 100%; background: #94a3b8; height: 22px; position: relative; color: white; font-size: 11px; font-weight: bold; }
+        .progress-bar-container { width: 100%; background: #94a3b8; height: 24px; position: relative; color: white; font-size: 12px; font-weight: bold; flex-shrink: 0; }
         .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; position: absolute; }
-        .progress-text { width: 100%; text-align: center; z-index: 1; position: relative; line-height: 22px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .progress-text { width: 100%; text-align: center; z-index: 1; position: relative; line-height: 24px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
 
-        .app-container { width: 98%; max-width: 1050px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .app-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 10px; overflow: hidden; }
 
         /* Vùng hiển thị chữ */
-        .display-box { width: 100%; background: white; border: 2px solid #475569; border-radius: 12px; padding: 20px; min-height: 110px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .char { font-family: 'Consolas', 'Courier New', monospace; font-size: 30px; color: #94a3b8; border-bottom: 4px solid transparent; }
-        .char.current { color: #000; border-bottom-color: var(--primary); background: #dbeafe; }
+        .display-box { width: 95%; max-width: 900px; background: white; border: 2px solid #475569; border-radius: 15px; padding: 25px; min-height: 120px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .char { font-family: 'Consolas', monospace; font-size: 32px; color: #94a3b8; border-bottom: 4px solid transparent; }
+        .char.current { color: #000; border-bottom-color: var(--primary); background: #dbeafe; animation: blink 1s infinite; }
+        @keyframes blink { 50% { border-bottom-color: transparent; } }
         .char.correct { color: #1e293b; opacity: 1; }
-        .char.wrong { color: white; background: var(--danger); border-radius: 4px; }
+        .char.wrong { color: white; background: var(--danger); border-radius: 6px; }
 
         /* Bàn phím & Bàn tay */
-        .keyboard-wrapper { display: flex; align-items: flex-end; gap: 20px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 5px; }
+        .keyboard-wrapper { display: flex; align-items: flex-end; gap: 20px; background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #cbd5e1; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         
-        /* Vẽ lại 10 ngón tay tách biệt */
-        .hand-svg { width: 140px; height: 170px; }
+        .hand-svg { width: 150px; height: 180px; }
         .finger { fill: #f1f5f9; stroke: #64748b; stroke-width: 1.5; transition: 0.2s; }
         .finger.active { fill: var(--primary); stroke: var(--primary); }
         .dot { fill: white; display: none; }
         .dot.active { display: block; }
 
-        .kb-grid { display: flex; flex-direction: column; gap: 5px; background: #cbd5e1; padding: 8px; border-radius: 12px; }
-        .kb-row { display: flex; gap: 5px; justify-content: center; }
-        .key { min-width: 42px; height: 42px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border-bottom: 5px solid #94a3b8; color: #1e293b; }
+        .kb-grid { display: flex; flex-direction: column; gap: 6px; background: #cbd5e1; padding: 10px; border-radius: 15px; }
+        .kb-row { display: flex; gap: 6px; justify-content: center; }
+        .key { min-width: 44px; height: 44px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border-bottom: 5px solid #94a3b8; color: #1e293b; }
         .key.active { background: var(--success); color: white; border-bottom: 2px solid #15803d; transform: translateY(3px); }
-        .key.space { width: 260px; }
+        .key.space { width: 280px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .result-box { background: white; padding: 40px; border-radius: 24px; text-align: center; border: 6px solid var(--primary); }
+        .result-box { background: white; padding: 40px; border-radius: 24px; text-align: center; border: 6px solid var(--primary); width: 320px; }
     </style>
 </head>
 <body>
@@ -57,12 +72,14 @@
 <div class="main">
     <div class="progress-bar-container">
         <div class="progress-fill" id="p-bar"></div>
-        <div class="progress-text">TIẾN TRÌNH: <span id="p-percent">0</span>% - BÀI <span id="curr-lesson-num">1</span>/54</div>
+        <div class="progress-text">TIẾN ĐỘ: <span id="p-percent">0</span>% - BÀI <span id="curr-num">1</span>/54</div>
     </div>
     
-    <div class="app-container">
-        <div id="lesson-title" style="font-weight:900; font-size:18px; color: #1e293b; text-transform: uppercase;">Luyện gõ 10 ngón</div>
-        <div style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 15px; border-radius: 20px; font-weight: bold;">HỖ TRỢ: TELEX & VNI</div>
+    <div class="app-content">
+        <div style="text-align: center;">
+            <h2 id="lesson-title" style="margin:0; color:#1e293b; letter-spacing: 1px;">LUYỆN GÕ 10 NGÓN</h2>
+            <span style="font-size: 12px; color: #64748b; font-weight: bold;">CHẾ ĐỘ: GÕ DẤU TELEX/VNI + SPACE</span>
+        </div>
 
         <div class="display-box" id="target-text"></div>
 
@@ -80,13 +97,7 @@
                 <circle class="dot" id="d-left-1" cx="102" cy="118" r="4" />
             </svg>
 
-            <div class="kb-grid">
-                <div class="kb-row" id="r1"></div>
-                <div class="kb-row" id="r2"></div>
-                <div class="kb-row" id="r3"></div>
-                <div class="kb-row" id="r4"></div>
-                <div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>
-            </div>
+            <div class="kb-grid" id="kb-container"></div>
 
             <svg class="hand-svg" viewBox="0 0 120 150" style="transform: scaleX(-1);">
                 <path id="f-right-5" class="finger" d="M10,95 C5,45 20,40 25,55 L30,95 Z" />
@@ -106,9 +117,9 @@
 
 <div class="modal" id="modal-res">
     <div class="result-box">
-        <h2 id="final-status" style="color: var(--primary); margin-top: 0;">HOÀN THÀNH!</h2>
-        <p id="stats" style="font-size: 20px; font-weight: bold; color: #475569;"></p>
-        <button style="background:var(--primary); color:white; border:none; padding:15px 50px; border-radius:12px; cursor:pointer; font-weight:900; font-size: 16px; margin-top: 10px;" onclick="nextLesson()">BÀI TIẾP THEO ➔</button>
+        <h2 style="color: var(--primary); margin:0;">HOÀN THÀNH!</h2>
+        <p id="stats" style="margin: 20px 0; font-size: 18px;"></p>
+        <button style="background:var(--primary); color:white; border:none; padding:15px; width:100%; border-radius:12px; cursor:pointer; font-weight:bold;" onclick="nextLesson()">TIẾP TỤC ➔</button>
     </div>
 </div>
 
@@ -123,10 +134,10 @@
         '6':'right-2','y':'right-2','h':'right-2','n':'right-2','7':'right-2','u':'right-2','j':'right-2','m':'right-2',
         '8':'right-3','i':'right-3','k':'right-3',',':'right-3',
         '9':'right-4','o':'right-4','l':'right-4','.':'right-4',
-        '0':'right-5','p':'right-5',';':'right-5','/':'right-5',' ':'right-1'
+        '0':'right-5','p':'right-5',';':'right-5','/':'right-5',' ':'left-1'
     };
 
-    const lessonData = [
+    const lessons = [
         "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;; af jk sd l;", "gh gh gh gh ty ty ty ty ur ur ur ur",
         "má mà mả mã mạ cá cà cả mã mạ", "con cò bé bé nó đậu cành tre đi không hỏi mẹ", "học thầy không tày học bạn tiên học lễ hậu học văn", "uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây",
         "một cây làm chẳng nên non ba cây chụm lại nên hòn núi cao", "có công mài sắt có ngày nên kim kiên trì thành công", "kiến tha lâu cũng đầy tổ cần cù bù thông minh", "lá lành đùm lá rách anh em như thể tay chân",
@@ -143,50 +154,53 @@
         "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;"
     ];
 
-    let currentIdx = 0, currentLesson = 1, errors = 0, words = [], isFinished = false;
+    let currentIdx = 0, currentLsn = 1, errors = 0, words = [], isDone = false;
 
-    // Tạo phím
-    const rowChars = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
-    rowChars.forEach((r, i) => {
-        const container = document.getElementById(`r${i+1}`);
+    // Render Keyboard
+    const rows = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
+    const kb = document.getElementById('kb-container');
+    rows.forEach(r => {
+        const div = document.createElement('div'); div.className = 'kb-row';
         r.split('').forEach(c => {
             const k = document.createElement('div'); k.className = 'key'; k.id = `k-${c}`; k.innerText = c.toUpperCase();
-            container.appendChild(k);
+            div.appendChild(k);
         });
+        kb.appendChild(div);
     });
+    kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
 
+    // Render Sidebar
     const list = document.getElementById('lesson-list');
     for(let i=1; i<=54; i++){
-        const d = document.createElement('div'); d.className = 'nav-item'; d.id = `n-${i}`; d.innerText = `B${i}`;
-        d.onclick = () => loadLesson(i); list.appendChild(d);
+        const item = document.createElement('div'); item.className = 'nav-item'; item.id = `nav-${i}`; item.innerText = `B${i}`;
+        item.onclick = () => loadLesson(i); list.appendChild(item);
     }
 
     function loadLesson(id) {
-        currentLesson = id; currentIdx = 0; errors = 0; isFinished = false;
-        document.getElementById('curr-lesson-num').innerText = id;
+        currentLsn = id; currentIdx = 0; errors = 0; isDone = false;
+        document.getElementById('curr-num').innerText = id;
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-        document.getElementById(`n-${id}`).classList.add('active');
+        document.getElementById(`nav-${id}`).classList.add('active');
         document.getElementById('modal-res').style.display = 'none';
         
         let p = Math.round((id / 54) * 100);
         document.getElementById('p-bar').style.width = p + "%";
         document.getElementById('p-percent').innerText = p;
 
-        const text = lessonData[id-1];
+        const text = lessons[id-1];
         words = (id <= 4 || id >= 53) ? text.split('') : text.split(' ');
-        
         const display = document.getElementById('target-text');
-        display.innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w === ' ' ? '&nbsp;' : w}</span>`).join(id <= 4 || id >= 53 ? '' : '<span>&nbsp;</span>');
+        display.innerHTML = words.map((w, i) => `<span class="char" id="c-${i}">${w===' '?'&nbsp;':w}</span>`).join(id <= 4 || id >= 53 ? '' : '<span>&nbsp;</span>');
         updateUI();
     }
 
     function updateUI() {
-        if(isFinished) return;
+        if(isDone) return;
         document.querySelectorAll('.char, .key, .finger, .dot').forEach(e => e.classList.remove('current', 'active'));
         const active = document.getElementById(`c-${currentIdx}`);
         if(active) active.classList.add('current');
 
-        let char = (currentLesson <= 4 || currentLesson >= 53) ? words[currentIdx].toLowerCase() : words[currentIdx][0].toLowerCase();
+        let char = (currentLsn <= 4 || currentLsn >= 53) ? words[currentIdx].toLowerCase() : words[currentIdx][0].toLowerCase();
         if(words[currentIdx] === ' ') char = ' ';
 
         const k = document.getElementById(char === ' ' ? 'k-space' : `k-${char}`);
@@ -199,12 +213,12 @@
     }
 
     const input = document.getElementById('k-input');
-    input.oninput = (e) => {
-        if(isFinished) return;
+    input.oninput = () => {
+        if(isDone) return;
         const val = input.value;
         const target = words[currentIdx];
 
-        if(currentLesson <= 4 || currentLesson >= 53) {
+        if(currentLsn <= 4 || currentLsn >= 53) {
             const typed = val.slice(-1);
             const el = document.getElementById(`c-${currentIdx}`);
             if(typed === target || (target === ' ' && typed === ' ')) el.className = 'char correct';
@@ -223,15 +237,15 @@
     };
 
     function finish() {
-        isFinished = true;
+        isDone = true;
         const acc = Math.round(((words.length - errors)/words.length)*100);
         document.getElementById('stats').innerText = `Chính xác: ${acc}% - Lỗi: ${errors}`;
         document.getElementById('modal-res').style.display = 'flex';
     }
 
-    function nextLesson() { loadLesson(currentLesson >= 54 ? 1 : currentLesson + 1); }
+    function nextLesson() { loadLesson(currentLsn >= 54 ? 1 : currentLsn + 1); }
     window.onload = () => loadLesson(1);
-    document.onclick = () => { if(!isFinished) input.focus(); };
+    document.onclick = () => { if(!isDone) input.focus(); };
 </script>
 </body>
 </html>
