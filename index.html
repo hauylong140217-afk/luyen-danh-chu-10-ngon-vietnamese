@@ -25,7 +25,7 @@
         .note-v { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; font-size: 22px !important; }
 
         .typing-box { width: 100%; max-width: 800px; text-align: center; margin: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 6px; }
-        .char { font-family: 'Consolas', monospace; font-size: 30px; color: #bbb; padding: 2px 5px; border-radius: 4px; }
+        .char { font-family: 'Consolas', monospace; font-size: 28px; color: #bbb; padding: 2px 5px; border-radius: 4px; }
         .char.current { color: #000; border-bottom: 4px solid var(--primary); background: #fffde7; }
         .char.correct { color: var(--success); }
         .char.wrong { color: white; background: var(--danger); }
@@ -74,7 +74,6 @@
     <input type="text" id="keyboard-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
     <script>
-        // Danh sách nội dung cho đúng 60 bài học
         const lessonContent = [
             "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 1
             "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", // 2
@@ -113,7 +112,7 @@
             "hãy luôn mỉm cười với cuộc sống dù có chuyện gì xảy ra", // 35
             "gieo nhân nào gặt quả nấy hãy sống tử tế với mọi người", // 36
             "trung thực là đức tính quý giá nhất của mỗi con người", // 37
-            "khiêm tốn bao nhiêu cũng chưa đủ tự phụ một chút cũng là thừa", // 38
+            "khiêm tốn bao nhiêu cũng chưa đủ tự phụ một chút là thừa", // 38
             "hành trình vạn dặm bắt đầu từ những bước chân nhỏ nhất", // 39
             "ngọc bất trác bất thành khí nhân bất học bất tri lý", // 40
             "có nuôi con mới biết lòng cha mẹ ơn nghĩa sinh thành", // 41
@@ -125,23 +124,23 @@
             "giấy rách phải giữ lấy lề lòng tự trọng là trên hết", // 47
             "gần bùn mà chẳng hôi tanh mùi bùn giữ tâm trong sáng", // 48
             "một chữ cũng là thầy nửa chữ cũng là thầy tôn sư trọng đạo", // 49
-            "không thầy đố mày làm nên công ơn giáo dưỡng của thầy cô", // 50
+            "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", // 50
             "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy", // 51
-            "kỷ luật là sức mạnh của quân đội và của thành công", // 52
+            "kỷ luật là sức mạnh của tập thể và của sự thành công", // 52
             "tự do của bạn kết thúc nơi tự do người khác bắt đầu", // 53
             "kiến thức là sức mạnh nhưng hành động mới tạo kết quả", // 54
-            "hãy học lắng nghe để thấu hiểu và sẻ chia nhiều hơn", // 55
-            "sáng tạo là chìa khóa để giải quyết mọi vấn đề phức tạp", // 56
-            "lòng biết ơn giúp chúng ta trân trọng những gì đang có", // 57
-            "sự im lặng đôi khi là câu trả lời tốt đẹp nhất", // 58
-            "đỉnh núi cao nhất luôn nằm ở phía trước hãy tiếp tục leo", // 59
+            "hãy học lắng nghe để thấu hiểu và sẻ chia nhiều hơn nữa", // 55
+            "sáng tạo là chìa khóa để giải quyết mọi vấn đề khó khăn", // 56
+            "lòng biết ơn giúp chúng ta trân trọng cuộc sống này", // 57
+            "sự im lặng đôi khi là câu trả lời sâu sắc nhất", // 58
+            "đỉnh núi cao nhất luôn nằm ở phía trước hãy nỗ lực leo", // 59
             "chúc mừng bạn hoàn thành 60 bài tập cùng hà uy long và ai gemini" // 60
         ];
 
         let currentIdx = 0, currentLesson = 1, errors = 0, wordsArray = [];
         const list = document.getElementById('lesson-list');
 
-        // Tạo Sidebar đúng 60 bài
+        // Render Sidebar
         for(let i=1; i<=60; i++) {
             const div = document.createElement('div');
             div.className = 'nav-item'; div.id = `nav-${i}`;
@@ -150,7 +149,6 @@
             list.appendChild(div);
         }
 
-        // Tạo bàn phím
         const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
         rows.forEach((str, idx) => {
             const container = document.getElementById(`r${idx+1}`);
@@ -164,7 +162,7 @@
 
         function loadLesson(id) {
             currentLesson = id;
-            let rawText = lessonContent[id - 1]; // Truy cập index mảng (0-59)
+            let rawText = lessonContent[id - 1];
             currentIdx = 0; errors = 0;
             const noteEl = document.getElementById('dynamic-note');
             if (id >= 5) {
@@ -203,7 +201,7 @@
             }
         }
 
-        document.getElementById('keyboard-input').addEventListener('keydown', (e) => {
+        document.getElementById('keyboard-input').onkeydown = (e) => {
             if (currentLesson >= 5 && e.key === ' ') {
                 e.preventDefault();
                 const typedWord = e.target.value.trim();
@@ -215,9 +213,9 @@
                 e.target.value = "";
                 if (currentIdx < wordsArray.length) updateState(); else finish();
             }
-        });
+        };
 
-        document.getElementById('keyboard-input').addEventListener('input', (e) => {
+        document.getElementById('keyboard-input').oninput = (e) => {
             if (currentLesson < 5) {
                 const typed = e.target.value.slice(-1);
                 const target = wordsArray[currentIdx];
@@ -229,7 +227,7 @@
                 if(currentIdx < wordsArray.length) updateState(); else finish();
                 e.target.value = "";
             }
-        });
+        };
 
         function finish() {
             const accuracy = Math.round(((wordsArray.length - errors) / wordsArray.length) * 100);
