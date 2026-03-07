@@ -52,8 +52,10 @@
         .key.active { background: var(--success); color: white; border-bottom-width: 1px; transform: translateY(2px); }
         .key.space { width: 220px; }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .modal-box { background: white; padding: 30px; border-radius: 15px; text-align: center; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; text-align: center; min-width: 350px; border: 3px solid var(--primary); }
+        .score-info { margin: 20px 0; font-size: 18px; }
+        .rank-khen { font-size: 22px; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -89,13 +91,23 @@
     </div>
 </div>
 
-<div class="modal" id="modal"><div class="modal-box"><h3>BÀI TIẾP THEO</h3><button onclick="nextL()">TIẾP TỤC ➔</button></div></div>
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <div id="rank-emoji" style="font-size: 50px;">🏆</div>
+        <div class="rank-khen" id="rank-khen">QUÁ ĐỈNH BẠN ƠI!</div>
+        <div class="score-info">
+            Độ chính xác: <b id="score-pc">100%</b><br>
+            Số lỗi: <b id="score-err">0</b>
+        </div>
+        <button onclick="nextL()" style="padding: 10px 20px; cursor:pointer;">TIẾP TỤC ➔</button>
+    </div>
+</div>
+
 <input type="text" id="in" style="position: absolute; opacity: 0;" autocomplete="off">
 
 <script>
     const fMap = { '1':'l-5','q':'l-5','a':'l-5','z':'l-5','2':'l-4','w':'l-4','s':'l-4','x':'l-4','3':'l-3','e':'l-3','d':'l-3','c':'l-3','4':'l-2','r':'l-2','f':'l-2','v':'l-2','5':'l-2','t':'l-2','g':'l-2','b':'l-2','6':'r-2','y':'r-2','h':'r-2','n':'r-2','7':'r-2','u':'r-2','j':'r-2','m':'r-2','8':'r-3','i':'r-3','k':'r-3',',':'r-3','9':'r-4','o':'r-4','l':'r-4','.':'r-4','0':'r-5','p':'r-5',';':'r-5','/':'r-5',' ':'l-1' };
     
-    // Tự động tạo 54 câu khác nhau
     const sentenceDB = [
         "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
         "Có công mài sắt có ngày nên kim", "Học đi đôi với hành", "Tiên học lễ hậu học văn", "Ăn quả nhớ kẻ trồng cây",
@@ -110,12 +122,12 @@
         "Luyện tay mỗi ngày", "Kỹ năng gõ mười ngón", "Kiên trì sẽ thành công", "Làm việc có kế hoạch",
         "Đam mê dẫn lối", "Tập trung là chìa khóa", "Sáng tạo không ngừng", "Hành trình vạn dặm bắt đầu từ bước chân",
         "Thất bại là mẹ thành công", "Đừng bao giờ bỏ cuộc", "Vượt qua giới hạn bản thân", 
-        "Không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", // Bài 52
+        "Không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", 
         "Tri thức là sức mạnh", 
-        "Đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong" // Bài 54
+        "Đường tuy ngắn không đi không đến việc tuy nhỏ không làm không xong"
     ];
     
-    let curIdx = 0, curL = 1, words = [], isExp = false;
+    let curIdx = 0, curL = 1, words = [], isExp = false, errorCount = 0;
     const list = document.getElementById('ls-list');
     for(let i=1; i<=54; i++){
         const item = document.createElement('div');
@@ -141,7 +153,7 @@
     kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
 
     function loadL(id) {
-        curL = id; curIdx = 0;
+        curL = id; curIdx = 0; errorCount = 0;
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`l-${id}`).classList.add('active');
         document.getElementById('modal').style.display = 'none';
@@ -167,18 +179,42 @@
         const val = input.value;
         const target = words[curIdx];
         if(curL <= 4) {
-            if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) document.getElementById(`c-${curIdx}`).className = 'char correct';
-            else document.getElementById(`c-${curIdx}`).className = 'char wrong';
+            if(val.slice(-1) === target || (target === ' ' && val.slice(-1) === ' ')) {
+                document.getElementById(`c-${curIdx}`).className = 'char correct';
+            } else {
+                document.getElementById(`c-${curIdx}`).className = 'char wrong';
+                errorCount++;
+            }
             curIdx++; input.value = "";
         } else {
             if(val.endsWith(' ')) {
-                if(val.trim() === target) document.getElementById(`c-${curIdx}`).className = 'char correct';
-                else document.getElementById(`c-${curIdx}`).className = 'char wrong';
+                if(val.trim() === target) {
+                    document.getElementById(`c-${curIdx}`).className = 'char correct';
+                } else {
+                    document.getElementById(`c-${curIdx}`).className = 'char wrong';
+                    errorCount++;
+                }
                 curIdx++; input.value = "";
             }
         }
-        if(curIdx < words.length) updateH(); else document.getElementById('modal').style.display = 'flex';
+        if(curIdx < words.length) updateH(); else showResult();
     };
+
+    function showResult() {
+        const accuracy = Math.round(((words.length - errorCount) / words.length) * 100);
+        document.getElementById('score-pc').innerText = accuracy + "%";
+        document.getElementById('score-err').innerText = errorCount;
+        
+        let khen = "", emoji = "";
+        if(accuracy >= 95) { khen = "QUÁ ĐỈNH BẠN ƠI!"; emoji = "🥇"; }
+        else if(accuracy >= 80) { khen = "RẤT TỐT, CỐ LÊN!"; emoji = "🥈"; }
+        else if(accuracy >= 50) { khen = "TẠM ĐƯỢC, RÈN THÊM NHÉ!"; emoji = "🥉"; }
+        else { khen = "BẠN CẦN TẬP TRUNG HƠN!"; emoji = "💪"; }
+        
+        document.getElementById('rank-khen').innerText = khen;
+        document.getElementById('rank-emoji').innerText = emoji;
+        document.getElementById('modal').style.display = 'flex';
+    }
 
     function nextL() { loadL(curL >= 54 ? 1 : curL + 1); }
     window.onload = () => loadL(1);
