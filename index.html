@@ -3,47 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gõ 10 Ngón - Hà Uy Long</title>
+    <title>Luyện Gõ 10 Ngón Pro - Hà Uy Long</title>
     <style>
-        :root { --bg: #f8f9fa; --primary: #007bff; --success: #28a745; --danger: #dc3545; }
+        :root { --bg: #eef2f7; --primary: #4a90e2; --success: #48bb78; --danger: #f56565; --key-bg: #ffffff; }
         * { box-sizing: border-box; }
-        body { font-family: system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; color: #2d3748; }
         
-        /* Sidebar */
-        .sidebar { width: 55px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .nav-item { padding: 12px 0; text-align: center; color: #666; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; font-weight: bold; }
-        .nav-item.active { background: var(--primary); color: white; }
+        /* Sidebar cải tiến */
+        .sidebar { width: 70px; background: #fff; border-right: 1px solid #d1d9e6; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: 0.3s; }
+        .nav-item { padding: 15px 0; text-align: center; color: #718096; cursor: pointer; border-bottom: 1px solid #edf2f7; font-size: 12px; font-weight: 600; transition: 0.2s; }
+        .nav-item:hover { background: #f7fafc; }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: inset 4px 0 0 rgba(0,0,0,0.1); }
 
         .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .progress-container { width: 100%; background: #eee; height: 6px; position: absolute; top: 0; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #5cb85c); width: 0%; transition: 0.5s; }
+        .progress-container { width: 100%; background: #cbd5e0; height: 6px; position: absolute; top: 0; z-index: 10; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: 0.5s ease-out; }
 
-        .content-area { flex: 1; padding: 10px; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
-        .lesson-info { text-align: center; margin: 20px 0 10px; }
-        .lesson-info h2 { margin: 0; font-size: 16px; color: #333; text-transform: uppercase; }
+        .content-area { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .header-box { text-align: center; margin-bottom: 25px; }
+        .header-box h2 { margin: 0; font-size: 24px; color: #1a202c; letter-spacing: 1px; }
         
-        .note-box { width: 95%; max-width: 600px; padding: 6px; border-radius: 5px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 10px; }
-        .note-unikey { background: #fff3cd; color: #856404; }
-        .note-v { background: #d4edda; color: #155724; }
+        .note-box { padding: 10px 25px; border-radius: 50px; font-weight: bold; font-size: 13px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .note-unikey { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .note-v { background: #c6f6d5; color: #22543d; border: 1px solid #9ae6b4; }
 
-        .typing-box { width: 100%; max-width: 700px; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .char { font-family: 'Consolas', monospace; font-size: 22px; color: #ccc; border-radius: 3px; }
-        .char.current { color: #000; border-bottom: 3px solid var(--primary); background: #fffde7; }
+        .typing-box { width: 95%; max-width: 850px; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 120px; align-content: center; }
+        .char { font-family: 'Consolas', monospace; font-size: 28px; color: #cbd5e0; border-radius: 4px; padding: 0 4px; transition: 0.1s; }
+        .char.current { color: #2d3748; background: #ebf8ff; border-bottom: 4px solid var(--primary); }
         .char.correct { color: var(--success); }
         .char.wrong { color: white; background: var(--danger); }
 
-        .keyboard-wrapper { background: #dee2e6; padding: 10px; width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 1px solid #bbb; }
-        .kb-row { display: flex; gap: 4px; margin-bottom: 4px; }
-        .key { width: 36px; height: 36px; background: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #aaa; font-size: 12px; }
-        .key.active { background: var(--success) !important; color: white; }
-        .key.space { width: 160px; }
+        /* Vùng Bàn Phím & Bàn Tay */
+        .keyboard-section { background: #d1d9e6; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; border-top: 2px solid #b8c2cc; }
+        .hand-container { display: flex; justify-content: center; align-items: flex-end; gap: 40px; width: 100%; max-width: 900px; }
+        
+        .hand-svg { width: 120px; height: 120px; fill: #a0aec0; transition: 0.3s; opacity: 0.6; }
+        .finger.active { fill: var(--primary); opacity: 1; }
 
-        @media (max-width: 768px) { .keyboard-wrapper { display: none; } .char { font-size: 19px; } }
+        .kb-rows { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .kb-row { display: flex; gap: 5px; }
+        .key { width: 45px; height: 45px; background: var(--key-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-bottom: 4px solid #b8c2cc; font-size: 14px; transition: 0.1s; }
+        .key.active { background: var(--primary); color: white; border-bottom-color: #2b6cb0; transform: translateY(2px); }
+        .key.space { width: 220px; }
 
-        /* Modal */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .result-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 85%; max-width: 300px; }
-        .btn-next { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; }
+        @media (max-width: 768px) {
+            .hand-container, .keyboard-section { display: none; }
+            .char { font-size: 22px; }
+        }
+
+        .modal { position: fixed; inset: 0; background: rgba(26, 32, 44, 0.9); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(4px); }
+        .result-box { background: white; padding: 35px; border-radius: 20px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
+        .btn-next { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -52,29 +62,62 @@
 
 <div class="main">
     <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
+    
     <div class="content-area">
-        <div class="lesson-info"><h2 id="title">BÀI 1</h2><small style="color: #999;">Hà Uy Long & Gemini</small></div>
-        <div id="note" class="note-box note-unikey">UNIKEY: E</div>
+        <div class="header-box">
+            <h2 id="title">BÀI 1</h2>
+            <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">NGƯỜI HƯỚNG DẪN: HÀ UY LONG</div>
+        </div>
+        
+        <div id="note" class="note-box note-unikey">CHẾ ĐỘ GÕ: TIẾNG ANH (E)</div>
+        
         <div class="typing-box" id="target-text"></div>
     </div>
-    <div class="keyboard-wrapper" id="kb-area">
-        <div class="kb-row" id="r1"></div><div class="kb-row" id="r2"></div><div class="kb-row" id="r3"></div>
-        <div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>
+
+    <div class="keyboard-section">
+        <div class="hand-container">
+            <svg class="hand-svg" viewBox="0 0 100 100">
+                <path d="M10,80 Q10,40 20,35 T30,20 T45,15 T60,20 T75,40 L70,80 Z" />
+                <circle id="f-left-5" class="finger" cx="22" cy="38" r="6" /> <circle id="f-left-4" class="finger" cx="35" cy="22" r="6" /> <circle id="f-left-3" class="finger" cx="50" cy="18" r="6" /> <circle id="f-left-2" class="finger" cx="68" cy="25" r="6" /> <circle id="f-left-1" class="finger" cx="85" cy="65" r="7" /> </svg>
+
+            <div class="kb-rows">
+                <div class="kb-row" id="r1"></div>
+                <div class="kb-row" id="r2"></div>
+                <div class="kb-row" id="r3"></div>
+                <div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>
+            </div>
+
+            <svg class="hand-svg" viewBox="0 0 100 100" style="transform: scaleX(-1);">
+                <path d="M10,80 Q10,40 20,35 T30,20 T45,15 T60,20 T75,40 L70,80 Z" />
+                <circle id="f-right-5" class="finger" cx="22" cy="38" r="6" /> <circle id="f-right-4" class="finger" cx="35" cy="22" r="6" /> <circle id="f-right-3" class="finger" cx="50" cy="18" r="6" /> <circle id="f-right-2" class="finger" cx="68" cy="25" r="6" /> <circle id="f-right-1" class="finger" cx="85" cy="65" r="7" /> </svg>
+        </div>
     </div>
 </div>
 
 <div class="modal" id="modal-res">
     <div class="result-box">
-        <h3 id="m-title">Kết quả bài học</h3>
-        <p id="stats"></p>
-        <button class="btn-next" onclick="handleNext()">Tiếp tục ➔</button>
-        <button class="btn-next" style="background:#6c757d; margin-top:5px;" onclick="closeModal()">Xem lại bài gõ</button>
+        <h2 id="m-title" style="color: var(--primary);">Tuyệt vời!</h2>
+        <p id="stats" style="font-size: 18px; line-height: 1.6;"></p>
+        <button class="btn-next" onclick="handleNext()">Bài tiếp theo ➔</button>
     </div>
 </div>
 
 <input type="text" id="k-input" style="position: absolute; opacity: 0;" autocomplete="off">
 
 <script>
+    // Phân loại ngón tay gõ phím
+    const fingerMap = {
+        'q': 'left-5', 'a': 'left-5', 'z': 'left-5',
+        'w': 'left-4', 's': 'left-4', 'x': 'left-4',
+        'e': 'left-3', 'd': 'left-3', 'c': 'left-3',
+        'r': 'left-2', 'f': 'left-2', 'v': 'left-2', 't': 'left-2', 'g': 'left-2', 'b': 'left-2',
+        'y': 'right-2', 'h': 'right-2', 'n': 'right-2', 'u': 'right-2', 'j': 'right-2', 'm': 'right-2',
+        'i': 'right-3', 'k': 'right-3', ',': 'right-3',
+        'o': 'right-4', 'l': 'right-4', '.': 'right-4',
+        'p': 'right-5', ';': 'right-5', '/': 'right-5',
+        ' ': 'left-1' // Phím cách dùng ngón cái
+    };
+
     const lessonData = [
         "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;; af jk sd l;", "gh gh gh gh ty ty ty ty ur ur ur ur",
         "má mà mả mã mạ cá cà cả mã mạ", "con cò bé bé nó đậu cành tre đi không hỏi mẹ", "học thầy không tày học bạn tiên học lễ hậu học văn", "uống nước nhớ nguồn ăn quả nhớ kẻ trồng cây",
@@ -89,8 +132,7 @@
         "có nuôi con mới biết lòng cha mẹ ơn nghĩa sinh thành", "cây có cội nước có nguồn luôn nhớ về cội nguồn", "lá rụng về cội tình yêu quê hương luôn cháy bỏng", "trâu ta ăn cỏ đồng ta dù trong dù đục ao nhà vẫn hơn",
         "tốt gỗ hơn tốt nước sơn cái nết đánh chết cái đẹp", "đói cho sạch rách cho thơm giữ gìn phẩm giá con người", "giấy rách phải giữ lấy lề lòng tự trọng là trên hết", "gần bùn mà chẳng hôi tanh mùi bùn giữ tâm trong sáng",
         "một chữ cũng là thầy nửa chữ cũng là thầy tôn sư trọng đạo", "không thầy đố mày làm nên công ơn giáo dưỡng thầy cô", "muốn sang thì bắc cầu kiều muốn con hay chữ phải yêu lấy thầy", "kỷ luật là sức mạnh của tập thể và của sự thành công",
-        "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", // 53 (Nội dung bài 1)
-        "asdf jkl; asdf jkl; asdf jkl; asdf jkl;"  // 54 (Nội dung bài 2)
+        "aaaa ssss dddd ffff jjjj kkkk llll ;;;;", "asdf jkl; asdf jkl; asdf jkl; asdf jkl;"
     ];
 
     let currentIdx = 0, currentLesson = 1, errors = 0, words = [], isFinished = false;
@@ -108,15 +150,13 @@
 
     function loadLesson(id) {
         currentLesson = id; currentIdx = 0; errors = 0; isFinished = false;
-        document.getElementById('title').innerText = `BÀI ${id}`;
-        
-        // Bài 52 đầy thanh progress (100%)
+        document.getElementById('title').innerText = `BÀI HỌC ${id}`;
         let progress = (id >= 52) ? 100 : (id / 52 * 100);
         document.getElementById('p-bar').style.width = progress + "%";
         
         const n = document.getElementById('note');
-        if(id >= 5 && id <= 52) { n.innerText = "UNIKEY: V"; n.className="note-box note-v"; }
-        else { n.innerText = "UNIKEY: E"; n.className="note-box note-unikey"; }
+        if(id >= 5 && id <= 52) { n.innerText = "CHẾ ĐỘ GÕ: TIẾNG VIỆT (V)"; n.className="note-box note-v"; }
+        else { n.innerText = "CHẾ ĐỘ GÕ: TIẾNG ANH (E)"; n.className="note-box note-unikey"; }
 
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById(`n-${id}`).classList.add('active');
@@ -131,27 +171,38 @@
             words = text.split(''); 
             display.innerHTML = words.map((x,i)=>`<span class="char" id="c-${i}">${x===' '?'&nbsp;':x}</span>`).join(''); 
         }
-        update(); document.getElementById('k-input').focus();
+        update(); 
     }
 
     function update() {
         if(isFinished) return;
-        document.querySelectorAll('.char').forEach(e => e.classList.remove('current'));
-        document.querySelectorAll('.key').forEach(e => e.classList.remove('active'));
-        const active = document.getElementById(`c-${currentIdx}`);
-        if(active) active.classList.add('current');
-        if(currentLesson < 5 || currentLesson > 52) {
-            const char = words[currentIdx].toLowerCase();
-            const key = document.getElementById(char===' '?'k-space':`k-${char}`);
-            if(key) key.classList.add('active');
+        document.querySelectorAll('.char, .key, .finger').forEach(e => e.classList.remove('current', 'active'));
+        
+        const activeChar = document.getElementById(`c-${currentIdx}`);
+        if(activeChar) activeChar.classList.add('current');
+        
+        // Chỉ dẫn phím và ngón tay
+        let charToType = "";
+        if(currentLesson >= 5 && currentLesson <= 52) {
+            charToType = words[currentIdx][0].toLowerCase(); // Lấy chữ cái đầu của từ tiếng Việt để gợi ý
+        } else {
+            charToType = words[currentIdx].toLowerCase();
         }
+
+        const keyId = charToType === ' ' ? 'k-space' : `k-${charToType}`;
+        const keyEl = document.getElementById(keyId);
+        if(keyEl) keyEl.classList.add('active');
+
+        const fingerId = fingerMap[charToType];
+        if(fingerId) document.getElementById(`f-${fingerId}`).classList.add('active');
     }
 
     const input = document.getElementById('k-input');
     input.onkeydown = (e) => {
         if(isFinished) return;
         if(currentLesson >= 5 && currentLesson <= 52 && e.key === ' ') {
-            e.preventDefault(); const typed = input.value.trim(); if(!typed) return;
+            e.preventDefault(); 
+            const typed = input.value.trim(); if(!typed) return;
             const el = document.getElementById(`c-${currentIdx}`);
             if(typed === words[currentIdx]) el.className = 'char correct'; else { el.className = 'char wrong'; errors++; }
             currentIdx++; input.value = ""; if(currentIdx < words.length) update(); else finish();
@@ -174,20 +225,12 @@
         const acc = Math.round(((words.length - errors)/words.length)*100);
         document.getElementById('stats').innerHTML = `Độ chính xác: <b>${acc}%</b><br>Số lỗi: <b>${errors}</b>`;
         document.getElementById('modal-res').style.display = 'flex';
-        // Xóa tiêu điểm bàn phím để không gõ tiếp được
-        document.getElementById('k-input').blur();
+        input.blur();
     }
 
-    function closeModal() {
-        document.getElementById('modal-res').style.display = 'none';
-    }
-
-    function handleNext() { 
-        if(currentLesson >= 54) loadLesson(1); else loadLesson(currentLesson + 1); 
-    }
-
+    function handleNext() { if(currentLesson >= 54) loadLesson(1); else loadLesson(currentLesson + 1); }
     window.onload = () => loadLesson(1);
-    document.onclick = () => { if(!isFinished) document.getElementById('k-input').focus(); };
+    document.onclick = () => { if(!isFinished) input.focus(); };
 </script>
 </body>
 </html>
