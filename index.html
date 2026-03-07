@@ -2,155 +2,175 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Master - Đôi Bàn Tay</title>
+    <title>Typing Master v5.0 - Đôi Tay Chỉ Dẫn</title>
     <style>
         :root {
-            /* Tự động theo hệ thống */
-            --bg: #f8fafc; --panel: #ffffff; --primary: #38bdf8;
-            --success: #22c55e; --danger: #ef4444; --text: #1e293b;
-            --kb-bg: #e2e8f0; --key-bg: #ffffff;
-            /* Màu các ngón tay */
-            --p1: #f472b6; --r1: #fbbf24; --m1: #4ade80; --i1: #60a5fa;
+            --bg: #f0f2f5; --panel: #ffffff; --primary: #00f2ff;
+            --text: #1c1e21; --key-bg: #e4e6eb; --key-active: #00f2ff;
+            --finger-hit: #ff4757;
         }
-
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #020617; --panel: #1e293b; --text: #f8fafc;
-                --kb-bg: #000; --key-bg: #111827;
+                --bg: #050505; --panel: #18191a; --text: #e4e6eb;
+                --key-bg: #3a3b3c; --key-active: #00f2ff;
             }
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg); color: var(--text);
             display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* SIDEBAR */
-        .sidebar { width: 260px; background: var(--panel); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        /* SIDEBAR CHỌN LEVEL */
+        .sidebar { width: 240px; background: var(--panel); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+        .sb-header { padding: 20px; font-weight: 900; color: var(--primary); letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .ls-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .ls-item { padding: 10px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; }
+        .ls-item {
+            padding: 12px; margin-bottom: 5px; border-radius: 6px; cursor: pointer;
+            font-size: 13px; transition: 0.2s; display: flex; justify-content: space-between;
+        }
+        .ls-item:hover { background: rgba(0, 242, 255, 0.1); }
         .ls-item.active { background: var(--primary); color: #000; font-weight: bold; }
 
-        /* MAIN */
+        /* VÙNG CHÍNH */
         .main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .stats { height: 60px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.03); }
-        .stat-val { font-weight: bold; color: var(--primary); font-size: 18px; }
+        .header-stats { height: 60px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.2); }
+        .stat-box { text-align: center; }
+        .stat-val { font-size: 20px; font-weight: bold; color: var(--primary); display: block; }
 
-        .typing-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 30px; }
-        .display-box {
-            width: 100%; max-width: 800px; background: var(--panel); padding: 40px; border-radius: 20px;
-            min-height: 150px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 40px; }
+        
+        .text-display {
+            width: 100%; max-width: 850px; background: var(--panel); padding: 50px; border-radius: 15px;
+            font-size: 36px; line-height: 1.5; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);
         }
-        .word { font-size: 32px; border-bottom: 3px solid transparent; }
-        .word.active { border-bottom-color: var(--primary); background: rgba(56, 189, 248, 0.1); }
-        .word.ok { color: var(--success); }
-        .word.err { background: var(--danger); color: #fff; border-radius: 4px; }
+        .word { border-bottom: 4px solid transparent; transition: 0.2s; }
+        .word.active { border-bottom-color: var(--primary); color: #fff; }
+        .word.ok { color: #2ecc71; }
+        .word.err { background: #ff4757; color: #fff; border-radius: 5px; }
 
-        /* BÀN TAY & BÀN PHÍM */
-        .hands-container { display: flex; gap: 40px; align-items: flex-end; }
-        .hand-img { width: 120px; opacity: 0.3; transition: 0.2s; }
-        .hand-img.active { opacity: 1; filter: drop-shadow(0 0 10px var(--primary)); }
+        /* BÀN PHÍM VÀ ĐÔI TAY MẪU */
+        .kb-container { display: flex; align-items: flex-end; gap: 50px; }
+        .hand-svg { width: 150px; height: 150px; opacity: 0.2; transition: 0.3s; fill: none; stroke: var(--text); stroke-width: 2; }
+        .hand-svg.active { opacity: 1; stroke: var(--primary); filter: drop-shadow(0 0 10px var(--primary)); }
+        .finger { transition: 0.3s; }
+        .finger.active { fill: var(--primary); }
 
-        .kb-box { background: var(--kb-bg); padding: 15px; border-radius: 15px; border: 2px solid rgba(255,255,255,0.05); }
-        .kb-row { display: flex; gap: 4px; margin-bottom: 4px; justify-content: center; }
+        .keyboard { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid #333; }
+        .kb-row { display: flex; gap: 5px; margin-bottom: 5px; justify-content: center; }
         .key {
             width: 45px; height: 45px; background: var(--key-bg); border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: bold; border-bottom: 3px solid rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            font-size: 14px; border-bottom: 3px solid rgba(0,0,0,0.5); transition: 0.1s;
         }
-        /* Gán màu cho phím theo ngón tay */
-        .k-p1 { border-top: 3px solid var(--p1); } .k-r1 { border-top: 3px solid var(--r1); }
-        .k-m1 { border-top: 3px solid var(--m1); } .k-i1 { border-top: 3px solid var(--i1); }
-        
-        .key.active { background: var(--primary); color: #000; transform: translateY(2px); border-bottom: none; }
-        .key.space { width: 250px; }
+        .key.active { background: var(--primary); color: #000; transform: translateY(2px); border-bottom: none; box-shadow: 0 0 15px var(--primary); }
+        .key.space { width: 280px; }
 
         /* BẢNG ĐIỂM */
-        #result {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.8);
-            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;
+        #score-board {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.9);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
         }
-        .card { background: var(--panel); padding: 40px; border-radius: 20px; text-align: center; }
-        
-        #hidden-input { position: fixed; top: -100px; }
+        .card { background: var(--panel); padding: 50px; border-radius: 20px; text-align: center; border: 2px solid var(--primary); }
+        .btn { margin-top: 20px; padding: 12px 30px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        #input-gate { position: fixed; top: -100px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
+    <div class="sb-header">SYSTEM v5.0</div>
     <div class="ls-list" id="ls-list"></div>
 </div>
 
 <div class="main">
-    <div class="stats">
-        <div>WPM: <span id="wpm-val" class="stat-val">0</span></div>
-        <div>Độ chính xác: <span id="acc-val" class="stat-val">0%</span></div>
+    <div class="header-stats">
+        <div class="stat-box"><span class="stat-val" id="wpm">0</span><small>WPM</small></div>
+        <div class="stat-box"><span class="stat-val" id="acc">0%</span><small>ACCURACY</small></div>
+        <div id="mode-text" style="font-weight: bold; letter-spacing: 1px;">LEVEL MODE</div>
     </div>
 
-    <div class="typing-area">
-        <div class="display-box" id="display"></div>
-        
-        <div class="hands-container">
-            <div id="hand-l" class="hand-side">
-                <svg class="hand-img" id="svg-l" viewBox="0 0 100 100"><path d="M20,80 Q10,50 30,20 T50,10 T70,20 T80,50 L80,80 Z" fill="currentColor"/></svg>
-            </div>
-            
-            <div class="kb-box" id="keyboard"></div>
+    <div class="content">
+        <div class="text-display" id="display"></div>
 
-            <div id="hand-r" class="hand-side">
-                <svg class="hand-img" id="svg-r" viewBox="0 0 100 100"><path d="M80,80 Q90,50 70,20 T50,10 T30,20 T20,50 L20,80 Z" fill="currentColor"/></svg>
-            </div>
+        <div class="kb-container">
+            <svg class="hand-svg" id="hand-left" viewBox="0 0 100 100">
+                <path class="finger" id="f-l5" d="M10,60 Q5,30 15,30 T25,60" /> <path class="finger" id="f-l4" d="M25,50 Q20,15 35,15 T45,50" /> <path class="finger" id="f-l3" d="M45,40 Q45,5 55,5 T65,40" />   <path class="finger" id="f-l2" d="M65,50 Q75,15 85,20 T80,55" /> <path class="finger" id="f-l1" d="M80,80 Q95,75 90,95" />        <path d="M10,60 L20,95 L80,95 L80,55" /> </svg>
+
+            <div class="keyboard" id="keyboard"></div>
+
+            <svg class="hand-svg" id="hand-right" viewBox="0 0 100 100">
+                <path class="finger" id="f-r5" d="M90,60 Q95,30 85,30 T75,60" />
+                <path class="finger" id="f-r4" d="M75,50 Q80,15 65,15 T55,50" />
+                <path class="finger" id="f-r3" d="M55,40 Q55,5 45,5 T35,40" />
+                <path class="finger" id="f-r2" d="M35,50 Q25,15 15,20 T20,55" />
+                <path class="finger" id="f-r1" d="M20,80 Q5,75 10,95" />
+                <path d="M90,60 L80,95 L20,95 L20,55" />
+            </svg>
         </div>
     </div>
 
-    <div id="result">
+    <div id="score-board">
         <div class="card">
-            <h2>BÀI TẬP HOÀN TẤT</h2>
-            <div id="final-stats" style="margin: 20px 0;"></div>
-            <button onclick="nextLesson()" style="padding:10px 20px; cursor:pointer">Tiếp tục</button>
+            <h1 style="color: var(--primary); margin-bottom: 20px;">KẾT QUẢ</h1>
+            <div id="final-stats" style="font-size: 24px; margin-bottom: 30px;"></div>
+            <button class="btn" onclick="nextLesson()">TIẾP THEO ➔</button>
         </div>
     </div>
 </div>
 
-<input type="text" id="hidden-input" autofocus>
+<input type="text" id="input-gate" autofocus>
 
 <script>
-    const DATA = ["asdf jkl; asdf jkl;", "má mà mả mã mạ", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây"];
-    const ROWS = [
-        {k:"1234567890-=", f:["p1","p1","r1","m1","i1","i1","i1","i1","m1","r1","p1","p1"]},
-        {k:"qwertyuiop[]", f:["p1","r1","m1","i1","i1","i1","i1","m1","r1","p1","p1","p1"]},
-        {k:"asdfghjkl;'", f:["p1","r1","m1","i1","i1","i1","i1","m1","r1","p1","p1"]},
-        {k:"zxcvbnm,./", f:["p1","r1","m1","i1","i1","i1","i1","m1","r1","p1"]}
+    const DATA = [
+        "asdf jkl; asdf jkl;", "aaaa ssss dddd ffff", "jjjj kkkk llll ;;;;", "má mà mả mã mạ",
+        "học đi đôi với hành", "có công mài sắt có ngày nên kim", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây"
+        // ... Thêm đủ 54 bài vào đây
     ];
+
+    const KB_MAP = [
+        "1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"
+    ];
+
+    // Bản đồ phím -> Ngón tay (l2: trái trỏ, r3: phải giữa,...)
+    const FINGER_MAP = {
+        'q': 'f-l5', 'a': 'f-l5', 'z': 'f-l5', '1': 'f-l5',
+        'w': 'f-l4', 's': 'f-l4', 'x': 'f-l4', '2': 'f-l4',
+        'e': 'f-l3', 'd': 'f-l3', 'c': 'f-l3', '3': 'f-l3',
+        'r': 'f-l2', 'f': 'f-l2', 'v': 'f-l2', 't': 'f-l2', 'g': 'f-l2', 'b': 'f-l2', '4': 'f-l2', '5': 'f-l2',
+        'y': 'f-r2', 'h': 'f-r2', 'n': 'f-r2', 'u': 'f-r2', 'j': 'f-r2', 'm': 'f-r2', '6': 'f-r2', '7': 'f-r2',
+        'i': 'f-r3', 'k': 'f-r3', ',': 'f-r3', '8': 'f-r3',
+        'o': 'f-r4', 'l': 'f-r4', '.': 'f-r4', '9': 'f-r4',
+        'p': 'f-r5', ';': 'f-r5', '/': 'f-r5', '0': 'f-r5', '-': 'f-r5', '=': 'f-r5', '[': 'f-r5', ']': 'f-r5', "'": 'f-r5',
+        ' ': 'f-r1'
+    };
 
     let curL = 1, words = [], curIdx = 0, errors = 0, startTime = null, isCompiling = false;
 
     function init() {
         const list = document.getElementById('ls-list');
-        DATA.forEach((d, i) => {
-            list.innerHTML += `<div class="ls-item" id="ls-${i+1}" onclick="loadLesson(${i+1})">Bài ${i+1} <small id="s-${i+1}">--</small></div>`;
-        });
+        for(let i=1; i<=54; i++) {
+            list.innerHTML += `<div class="ls-item" id="ls-${i}" onclick="loadLesson(${i})">Level ${i < 10 ? '0'+i : i} <small id="sc-${i}">--%</small></div>`;
+        }
 
-        const kb = document.getElementById('keyboard');
-        ROWS.forEach(row => {
+        const kbEl = document.getElementById('keyboard');
+        KB_MAP.forEach(row => {
             const rDiv = document.createElement('div'); rDiv.className = 'kb-row';
-            row.k.split('').forEach((key, i) => {
-                rDiv.innerHTML += `<div class="key k-${row.f[i]}" id="k-${key}">${key.toUpperCase()}</div>`;
-            });
-            kb.appendChild(rDiv);
+            row.split('').forEach(k => { rDiv.innerHTML += `<div class="key" id="k-${k}">${k.toUpperCase()}</div>`; });
+            kbEl.appendChild(rDiv);
         });
-        kb.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
+        kbEl.innerHTML += `<div class="kb-row"><div class="key space" id="k-space">SPACE</div></div>`;
 
         loadLesson(1);
-        setupEvents();
+        setupLogic();
     }
 
-    function setupEvents() {
-        const input = document.getElementById('hidden-input');
+    function setupLogic() {
+        const input = document.getElementById('input-gate');
         input.addEventListener('compositionstart', () => isCompiling = true);
         input.addEventListener('compositionend', () => isCompiling = false);
 
@@ -161,12 +181,13 @@
             const target = words[curIdx].normalize('NFC');
 
             if (val.endsWith(' ') || (curIdx === words.length-1 && val.normalize('NFC') === target)) {
+                const typed = val.trim().normalize('NFC');
                 const el = document.getElementById(`w-${curIdx}`);
-                if (val.trim().normalize('NFC') === target) el.className = 'word ok';
+                if (typed === target) el.className = 'word ok';
                 else { el.className = 'word err'; errors++; }
                 curIdx++; input.value = "";
-                if (curIdx >= words.length) showResult();
-                else updateUI();
+                if (curIdx >= words.length) showScore();
+                else updateHints();
             }
         };
         document.body.onclick = () => input.focus();
@@ -174,39 +195,50 @@
 
     function loadLesson(id) {
         curL = id; curIdx = 0; errors = 0; startTime = null;
-        document.getElementById('result').style.display = 'none';
-        document.querySelectorAll('.ls-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('score-board').style.display = 'none';
+        document.querySelectorAll('.ls-item').forEach(i => i.classList.remove('active'));
         document.getElementById(`ls-${id}`).classList.add('active');
-        words = DATA[id-1].split(' ');
+        
+        const rawText = DATA[id-1] || "Bài tập đang được cập nhật...";
+        words = rawText.split(' ');
         document.getElementById('display').innerHTML = words.map((w, i) => `<span class="word" id="w-${i}">${w}</span>`).join('');
-        updateUI();
+        updateHints();
     }
 
-    function updateUI() {
-        document.querySelectorAll('.word, .key, .hand-img').forEach(el => el.classList.remove('active'));
-        const wordEl = document.getElementById(`w-${curIdx}`);
-        if (!wordEl) return;
-        wordEl.classList.add('active');
+    function updateHints() {
+        document.querySelectorAll('.word, .key, .finger, .hand-svg').forEach(el => el.classList.remove('active'));
+        if (curIdx >= words.length) return;
 
+        document.getElementById(`w-${curIdx}`).classList.add('active');
         const nextChar = words[curIdx][0].toLowerCase();
-        const keyEl = document.getElementById(`k-${nextChar}`) || document.getElementById('k-space');
-        if (keyEl) {
-            keyEl.classList.add('active');
-            // Kích hoạt bàn tay tương ứng (trái/phải)
-            const isLeft = "qwertasdfgzxcv12345".includes(nextChar);
-            document.getElementById(isLeft ? 'svg-l' : 'svg-r').classList.add('active');
+        const keyId = nextChar === ' ' ? 'space' : nextChar;
+        const keyEl = document.getElementById(`k-${keyId}`);
+        if (keyEl) keyEl.classList.add('active');
+
+        // Hiện ngón tay mẫu
+        const fingerId = FINGER_MAP[nextChar];
+        if (fingerId) {
+            document.getElementById(fingerId).classList.add('active');
+            const handId = fingerId.startsWith('f-l') ? 'hand-left' : 'hand-right';
+            document.getElementById(handId).classList.add('active');
+        }
+
+        if (startTime) {
+            const min = (new Date() - startTime) / 60000;
+            document.getElementById('wpm').innerText = Math.round((curIdx / 5) / min) || 0;
+            document.getElementById('acc').innerText = Math.round(((curIdx - errors) / (curIdx || 1)) * 100) + "%";
         }
     }
 
-    function showResult() {
+    function showScore() {
         const acc = Math.round(((words.length - errors) / words.length) * 100);
-        document.getElementById('final-stats').innerHTML = `Độ chính xác: ${acc}%`;
-        document.getElementById('result').style.display = 'flex';
-        document.getElementById(`s-${curL}`).innerText = acc + "%";
+        document.getElementById('final-stats').innerHTML = `Tốc độ: ${document.getElementById('wpm').innerText} WPM<br>Chính xác: ${acc}%`;
+        document.getElementById('score-board').style.display = 'flex';
+        document.getElementById(`sc-${curL}`).innerText = acc + "%";
     }
 
     function nextLesson() {
-        loadLesson(curL < DATA.length ? curL + 1 : 1);
+        loadLesson(curL + 1);
     }
 
     window.onload = init;
