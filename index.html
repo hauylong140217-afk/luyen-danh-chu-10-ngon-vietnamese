@@ -28,16 +28,19 @@
             color: var(--primary);
         }
 
-        .telex-guide {
+        /* Phần hướng dẫn gõ mới */
+        .guide-container {
             margin: 10px;
             padding: 10px;
-            background: rgba(2, 132, 199, 0.1);
+            background: rgba(2, 132, 199, 0.05);
             border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
         }
-        .telex-guide table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .telex-guide td { border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px 5px; }
+        .guide-title { font-weight: bold; margin-bottom: 5px; color: var(--primary); display: block; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .guide-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .guide-table td { border-bottom: 1px solid rgba(0,0,0,0.03); padding: 2px 0; }
+        .guide-table b { color: var(--danger); }
 
         .unikey-alert { padding: 12px; margin: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; text-align: center; border: 2px solid var(--primary); }
         .mode-e { background: #fee2e2; color: #b91c1c; border-color: #ef4444; }
@@ -78,12 +81,18 @@
 <div class="sidebar">
     <div class="author-box">Tác giả: Hà Uy Long</div>
     
-    <div class="telex-guide">
-        <b>Dấu & Chữ (Telex):</b>
-        <table>
+    <div class="guide-container">
+        <span class="guide-title">QUY TẮC GÕ TIẾNG VIỆT</span>
+        <table class="guide-table">
+            <tr><td colspan="2" style="background:rgba(0,0,0,0.05); font-weight:bold">Kiểu TELEX</td></tr>
             <tr><td>Sắc: <b>s</b> | Huyền: <b>f</b></td><td>Hỏi: <b>r</b> | Ngã: <b>x</b></td></tr>
             <tr><td>Nặng: <b>j</b> | Ư/Ơ: <b>w</b></td><td>Ă: <b>aw</b> | Â: <b>aa</b></td></tr>
-            <tr><td>Ê: <b>ee</b> | Ô: <b>oo</b></td><td>Đ: <b>dd</b></td></tr>
+            <tr><td>Ê: <b>ee</b> | Ô: <b>oo</b> | Đ: <b>dd</b></td><td>ƯƠ: <b>w</b></td></tr>
+            
+            <tr><td colspan="2" style="background:rgba(0,0,0,0.05); font-weight:bold; padding-top:5px">Kiểu VNI</td></tr>
+            <tr><td>Sắc: <b>1</b> | Huyền: <b>2</b></td><td>Hỏi: <b>3</b> | Ngã: <b>4</b></td></tr>
+            <tr><td>Nặng: <b>5</b> | Ă: <b>6</b></td><td>Â: <b>6</b> | Ê: <b>6</b> | Ô: <b>6</b></td></tr>
+            <tr><td>Ơ: <b>7</b> | Ư: <b>8</b> | Đ: <b>9</b></td><td>Dấu bỏ sau cùng</td></tr>
         </table>
     </div>
 
@@ -119,8 +128,8 @@
 <input type="text" id="hidden-input" autofocus>
 
 <script>
+    // Giữ nguyên mảng DATA của bạn
     const warmUp = ["asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;;", "asdfasdf jkl;jkl;", "fj f d s a j k l ;"];
-    
     const shortPhrases = [
         "má mà mả mã mạ", "con cò có cái cổ cong cong", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây",
         "lá lành đùm lá rách", "tiên học lễ hậu học văn", "có chí thì nên", "tốt gỗ hơn tốt nước sơn",
@@ -147,31 +156,30 @@
         "Tháng ba giỗ Tổ Hùng Vương Về nguồn dâng nén trầm hương đầu mùa",
         "Dù ai đi ngược về xuôi Nhớ ngày Giỗ Tổ mùng mười tháng Ba Một vùng công đức Mẹ Cha Khơi sông mở cõi giao hoà bốn phương. Ai về Cổ Tích, Hy Cương Lâm Thao, Phú Thọ rừng bương đồi chè Đêm nằm như vẫn còn nghe Trống đồng vang vọng suối khe ruộng đồng... Mây bay vẫn dáng Tiên Rồng Âu Cơ lưng địu, tay bồng, vai mang. Vua Hùng dựng nước Văn Lang Núi sông voi ngựa hàng hàng uy nghi. Vương triều khi thịnh, khi suy Lửa hồng son sắt chẳng khi nào tàn Một vùng nắng dội, mưa chan Mồ hôi đổ xuống, bản làng mọc lên. Cháu con nghìn thuở không quên Ngày giỗ Tổ, bao hồn thiêng hội về.",
         "Tháng ba giỗ Tổ Hùng vương Về nguồn dâng nén trầm hương đầu mùa Non cao vọng tiếng chuông chùa Hùng thiêng sông núi đang mùa đơm bông Linh thiêng vang vọng tiếng cồng Nước nguồn nuôi dưỡng con rồng cháu tiên Dòng Lô Giang với lời nguyền Non sông gấm vóc vững bền ngàn năm Cánh chim Lạc đợi trăng rằm Suối nguồn vẫn chảy, dâu tằm vẫn xanh Còn đây khúc Ghẹo ngọt lành Khúc Xoan, nón cọ song hành dáng xuân Sáo tiêu hòa tiếng chuông ngân Đá vàng ghi tạc trần gian nguyện thề Khơi trong dòng nước sông quê Cháu con gìn giữ lời thề ngàn năm Núi sông, biển cả, Bắc Nam… Đều chung một ánh trăng rằm sáng soi Hùng thiêng lưu mãi muôn đời Vẹn nguyên bờ cõi… giống nòi tổ tiên.",
-        "Đất nước bốn ngàn năm lịch sử Lật từng trang quá khứ hiện ra Công lao xây dựng sơn hà Hùng Vương Quốc Tổ không nhòa dấu son Chẳng quản ngại trèo non xuống bể Đến Phong Châu lập kế sinh nhai Xây bao thành rộng lũy dài Chăn dân no ấm, trong ngoài bình yên Tìm mảnh đất linh thiêng hạ trại Thu giang sơn một dải dựng xây Sông Đà, núi Tản còn đây Sơn Tinh dâng nước diệt bầy yêu ma Dòng Hồng Lạc con nhà văn võ Giống Rồng Tiên thấu tỏ nghĩa nhân Đồng lòng chống họa ngoại xâm Sức trai Phù Đổng diệt quân giặc thù Trang sử đỏ nghìn thu vẫn sáng Ánh hào quang tỏa rạng ngàn đời Tháng Ba có một ngày Mười Là ngày giỗ Tổ chẳng đời nào quên.",
+        "Đất nước bốn ngàn năm lịch sử Lật từng trang quá khứ hiện ra Công lao xây dựng sơn hà Hùng Vương Quốc Tổ không nhòa dấu son Chẳng quản ngại trèo non xuống bể Đến Phong Châu lập kế sinh nhai Xây bao thành rộng lũy dài Chăn dân no ấm, trong ngoài bình yên Tiên mảnh đất linh thiêng hạ trại Thu giang sơn một dải dựng xây Sông Đà, núi Tản còn đây Sơn Tinh dâng nước diệt bầy yêu ma Dòng Hồng Lạc con nhà văn võ Giống Rồng Tiên thấu tỏ nghĩa nhân Đồng lòng chống họa ngoại xâm Sức trai Phù Đổng diệt quân giặc thù Trang sử đỏ nghìn thu vẫn sáng Ánh hào quang tỏa rạng ngàn đời Tháng Ba có một ngày Mười Là ngày giỗ Tổ chẳng đời nào quên.",
         "Đời đời tưởng nhớ ông cha Vị vua khai quốc lập nhà nước Nam Diệt trừ bè lũ gian tham Dựng xây bờ cõi ngàn năm cơ đồ Con dân mãi mãi tôn thờ Dù xa vạn nẻo bến bờ muôn phương Nhớ ngày giỗ Tổ Hùng Vương Về thăm dâng kính nén hương cội nguồn.",
         "Một dải sơn hà mấy núi sông Công ơn Tổ đức đã vun trồng Cha đưa xuống bể trời đông tiến Mẹ dắt lên rừng mở đất thông Biển Việt ngàn xưa đà có chủ Bờ Nam vạn đại hữu nhân ông Giang sơn gấm vóc từ bao thuở Hậu thế lưu truyền nếp Tổ Tông",
         "Đam mê trong điệu hát xoan Theo em về với đất xưa Vua Hùng Phú Thọ đồi núi chập chùng Việt Trì Bạch Hạc uy lừng Tam Giang Giỗ Tổ lễ hội non sông Muôn đời con cháu Tiên Rồng về đây Ơn Quốc Tổ đã dựng xây Văn Lang nước Việt cho bầy cháu con Tấm lòng mãi luôn sắt son Yêu nước truyền thống chúng con tiếp truyền Lễ đền Mẫu thật linh thiêng Âu Cơ quốc Mẫu mẹ hiền muôn dân Trang cổ tích đẹp bội phần Đẹp màu huyền thoại nhuộm màu yêu thương Lâm Thao thẳng đó con đường Lễ đền bà Chúa vẫn thường khói nhang Em đưa anh thăm vòng quanh Mảnh đất cổ tích vang danh trường tồn Thêm yêu vùng đất cội nguồn Thêm yêu dòng máu Lạc Hồng chúng ta.",
         "Nhớ Ngày Giỗ Tổ Hùng Vương Cháu con hội tụ thập phương quay về Khói hương ngát tỏa lời thề Giữ yên bờ cõi miền quê Lạc Rồng Khấn cầu Vua đấng cha ông Linh thiêng phù trợ non sông yên bình Xua tan nạn giặc rập rình Sức mạnh đoàn kết chung tình đắp xây Ngược xuôi Nam Bắc đó đây Một nhà cùng cội vang đầy tiếng thơm Dâng Ngày lễ hội hoa đơm Thành tâm con vái no cơm ấm lòng Đá mềm chân cứng cầu mong Êm vui hạnh phúc đầy đong nghĩa tình Duyên nồng đẹp nụ cười xinh Ửng hồng đôi má lung linh sao trời An nhàn thanh thản vui chơi Cháu con tài lộc ơn đời đức vua.",
         "Núi Nghĩa Lĩnh linh thiêng đất Việt Ngàn ngàn năm rực rỡ mây rồng Đỉnh cao đệ nhất thờ Quốc Phụ Chung Mẫu dân Nam ánh lửa nồng Lời hứa sắt son hồn đất nước Xây nền độc lập vững non sông Tộc truyền kiệt tác danh muôn thuở Giếng Ngọc bốn mùa nước lặng trong Lễ Hội Đền Hùng dân khí vượng Bánh chưng dày tích sáng đàng Đông Hát xoan tưới mát khai dân trí Nhất hậu dân sinh cháu Lạc Hồng.",
         "Con ạ thời vua Hùng Vương thứ 6 Cần nhân tài nối nghiệp cha ông Lang Liêu cậu bé côi cút, nhà nông Bị ghẻ lạnh sống cuộc đời dân dã. Năm tháng gian nan, vất vả Tôi rèn phẩm chất Rồng Tiên Thông minh, sáng dạ, ngoan hiền Mùa thi năm ấy, chàng đứng đầu xứng đáng. Bánh chưng xanh tựa mặt đất mênh mang Bánh dày tròn như bầu trời úp xuống Gạo nếp, lá dong cây cối từ đồng ruộng Gần gũi, thân quen mà ý nghĩa thiêng liêng. Nay các con sống hạnh phúc, bình yên Hãy ghi nhớ công ơn bao đời trước Lời Bác dặn: các vua Hùng có công dựng nước! Thế hệ các con hãy đền đáp công ơn Học thành tài góp sức cho đất nước phồn vinh con nhé!",
-        "Nhìn con ru cháu à ơi Mà lòng luôn nhớ những lời ru xưa Cái ngoan cái ngủ đi cho Mẹ còn bắt ốc mò cua ngoài đồng Bé ngoan bé ngủ bà trông Để còn chợ búa gánh gồng ngược xuôi Dù ai đi ngược về xuôi Nhớ ngày dỗ tổ mồng mười tháng ba Dù ai có đi đâu xa Nhớ ngày dỗ tổ tháng ba thì về Lời ru xưa rất mặn mà Ngấm vào máu thịt và vào tim ta Bác Hồ dạy dỗ chúng ta Vua Hùng dựng nước mãi còn khắc ghi Ai ơi dù ở đâu thì Mình luôn phải nhớ khắc ghi trong lòng Nhớ ta là giống tiên rồng Quê hương thấm máu anh hùng nơi đây Quê hương đất nước mình đây Dòng sông ngọn núi đất này cây xanh... Đều vang một khúc hùng anh Giữ gìn đất nước rạng danh giống nòi Việt Nam đất nước của tôi Luôn đẹp rạng rỡ sáng ngời lòng tin Nhớ ơn công đức tổ tiên Luôn vui phấn đấu... dân yên... nước giàu",
+        "Nhớ Ngày Giỗ Tổ Hùng Vương Cháu con hội tụ thập phương quay về Khói hương ngát tỏa lời thề Giữ yên bờ cõi miền quê Lạc Rồng Khấn cầu Vua đấng cha ông Linh thiêng phù trợ non sông yên bình Xua tan nạn giặc rập rình Sức mạnh đoàn kết chung tình đắp xây Ngược xuôi Nam Bắc đó đây Một nhà cùng cội vang đầy tiếng thơm Dâng Ngày lễ hội hoa đơm Thành tâm con vái no cơm ấm lòng Đá mềm chân cứng cầu mong Êm vui hạnh phúc đầy đong nghĩa tình Duyên nồng đẹp nụ cười xinh Ửng hồng đôi má lung linh sao trời An nhàn thanh thản vui chơi Cháu con tài lộc ơn đời đức vua.",
         "Thuở ngày xưa con theo Cha về biển Mẹ lên rừng dựng nghiệp chốn non xanh Muôn đời rừng biển chung gốc chung ngành Truyền thuyết lịch sử dài theo năm tháng. Từ lúc bình minh đến khi chạng vạng Những đứa con ngày ấy tiếp bước Cha Quăng chài tung lưới giữ yên biển nhà Như thành lũy nhấp nhô chặn quỷ dữ. Dù sách vở có bao nhiêu câu chữ Đâu có thể nói hết những chiến công Của lớp người xưa thế hệ cha ông Bằng mọi cách giữ toàn vẹn bờ cõi... Đến ngày nay chúng ta có thể nói Tự hào thay truyền thống Tổ Hùng Vương Là ngọn đuốc sáng dẫn lối chỉ đường Đoàn kết anh em chung một dòng tộc... Những chiến sỹ giữ chủ quyền cột mốc Vững tay súng để Tổ quốc yên bình Ngày Giỗ Tổ - Nhân dân đất nước mình Vẫn dành tình yêu cho người lính đảo.",
         "Trời Nam một buổi chiều tà Vầng thơ viết vội để mà cảm ơn Thưở xưa nước Việt, Hùng Vương Quốc tổ dựng nước hùng cường ngàn năm Nhớ kỷ Hồng Bàng xa xăm Văn Lang, Âu Lạc tiếng tăm lẫy lừng Đánh đuổi phương Bắc đã từng Truyền ngôi dạy bảo nhiều vùng nước ta Dạy dân về cách làm nhà Chăn nuôi thú vật, vịt, gà, chim muông Dạy dân dựa sức suối nguồn Làm nương lúa nước, bánh vuông, bánh tròn Truyện xưa, tích cũ vẫn còn Lang Liêu làm bánh vuông, tròn dâng vua An Tiêm – ông tổ nghề dưa Lưu danh hậu thế xứng vừa cha ông Bao năm dạy dân vun trồng Răn con khuyên cháu Lạc Hồng nước ta Quốc tổ ngàn năm vang xa Tâm hương gợi nhớ để mà biết ơn."
     ];
 
-    const DATA = [];
-    warmUp.forEach(w => DATA.push(w));
-    shortPhrases.forEach(s => DATA.push(s));
-    kingPoems.forEach(k => DATA.push(k));
-
+    const DATA = [...warmUp, ...shortPhrases, ...kingPoems];
     while(DATA.length < 2000) {
         DATA.push("Luyện tập gõ nhanh đoạn văn bản số " + (DATA.length + 1) + " để nâng cao kỹ năng mười ngón mỗi ngày.");
     }
 
     const KB_MAP = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
     const FINGER_MAP = {
-        'q':'f-l5','a':'f-l5','z':'f-l5','w':'f-l4','s':'f-l4','x':'f-l4','e':'f-l3','d':'f-l3','c':'f-l3','r':'f-l2','f':'f-l2','v':'f-l2','t':'f-l2','g':'f-l2','b':'f-l2',
-        'y':'f-r2','h':'f-r2','n':'f-r2','u':'f-r2','j':'f-r2','m':'f-r2','i':'f-r3','k':'f-r3',',':'f-r3','o':'f-r4','l':'f-r4','.':'f-r4','p':'f-r5',';':'f-r5',' ':'f-r1'
+        '1':'f-l5','q':'f-l5','a':'f-l5','z':'f-l5','2':'f-l4','w':'f-l4','s':'f-l4','x':'f-l4',
+        '3':'f-l3','e':'f-l3','d':'f-l3','c':'f-l3','4':'f-l2','r':'f-l2','f':'f-l2','v':'f-l2',
+        '5':'f-l2','t':'f-l2','g':'f-l2','b':'f-l2','6':'f-r2','y':'f-r2','h':'f-r2','n':'f-r2',
+        '7':'f-r2','u':'f-r2','j':'f-r2','m':'f-r2','8':'f-r3','i':'f-r3','k':'f-r3',',':'f-r3',
+        '9':'f-r4','o':'f-r4','l':'f-r4','.':'f-r4','0':'f-r5','p':'f-r5',';':'f-r5','/':'f-r5',' ':'f-r1'
     };
 
     let curL = 1, chars = [], curIdx = 0, errors = 0, startTime = null, isIME = false;
@@ -211,11 +219,12 @@
         document.getElementById('cur-lesson-name').innerText = id;
 
         const hint = document.getElementById('unikey-hint');
+        // Logic hiển thị nhắc nhở Unikey
         if(id <= 4) {
-            hint.innerText = "UNIKEY: CHỮ [E]";
+            hint.innerText = "TẮT TIẾNG VIỆT (CHỮ E)";
             hint.className = "unikey-alert mode-e";
         } else {
-            hint.innerText = "UNIKEY: CHỮ [V]";
+            hint.innerText = "BẬT TIẾNG VIỆT (CHỮ V)";
             hint.className = "unikey-alert mode-v";
         }
 
