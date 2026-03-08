@@ -19,6 +19,16 @@
         body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
         .sidebar { width: 300px; background: var(--panel); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        
+        /* PHẦN TÁC GIẢ TO */
+        .author-box {
+            padding: 20px 15px 5px 15px;
+            font-size: 25px;
+            font-weight: bold;
+            text-align: center;
+            color: var(--text);
+        }
+
         .unikey-alert { padding: 15px; margin: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; text-align: center; border: 2px solid var(--primary); }
         .mode-e { background: #fee2e2; color: #b91c1c; border-color: #ef4444; }
         .mode-v { background: #dcfce7; color: #15803d; border-color: #22c55e; }
@@ -56,6 +66,8 @@
 <body>
 
 <div class="sidebar">
+    <div class="author-box">Tác giả: [Tên của bạn]</div>
+    
     <div id="unikey-hint" class="unikey-alert">UNIKEY CHECK</div>
     <div class="ls-list" id="ls-list"></div>
 </div>
@@ -88,7 +100,6 @@
 <input type="text" id="hidden-input" autofocus>
 
 <script>
-    // Dữ liệu gốc để tạo 2000 bài
     const baseTexts = [
         "má mà mả mã mạ", "con cò có cái cổ cong cong", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây",
         "lá lành đùm lá rách", "tiên học lễ hậu học văn", "có chí thì nên", "tốt gỗ hơn tốt nước sơn",
@@ -110,7 +121,6 @@
         "asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;;", "asdfasdf jkl;jkl;", "fj f d s a j k l ;"
     ];
 
-    // Tạo đủ 2000 bài
     for(let i=4; i<2000; i++) {
         DATA.push(baseTexts[i % baseTexts.length]);
     }
