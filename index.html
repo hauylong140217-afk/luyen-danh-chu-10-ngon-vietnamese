@@ -55,7 +55,6 @@
 
         .typing-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 30px; }
         
-        /* ĐÃ SỬA: Thêm scroll-behavior để cuộn mượt */
         .display-box { 
             width: 95%; 
             max-width: 900px; 
@@ -216,10 +215,12 @@
 
     function init() {
         const list = document.getElementById('ls-list');
+        list.innerHTML = ""; // Xóa danh sách cũ
         DATA.forEach((d, i) => {
             list.innerHTML += `<div class="ls-item" id="ls-${i+1}" onclick="loadLesson(${i+1})">Bài ${i+1}</div>`;
         });
         const kb = document.getElementById('keyboard');
+        kb.innerHTML = ""; // Xóa bàn phím cũ
         KB_MAP.forEach(row => {
             const r = document.createElement('div'); r.className = 'kb-row';
             row.split('').forEach(k => r.innerHTML += `<div class="key" id="k-${k}">${k.toUpperCase()}</div>`);
@@ -248,8 +249,9 @@
         }
         document.getElementById('cur-lesson-name').innerText = id;
 
+        // ĐÃ SỬA: Bài 1 đến Bài 4 báo Tắt (Mode E), từ Bài 5 trở lên báo Bật (Mode V)
         const hint = document.getElementById('unikey-hint');
-        if(id <= 1) {
+        if(id < 5) {
             hint.innerText = "TẮT TIẾNG VIỆT (CHỮ E)";
             hint.className = "unikey-alert mode-e";
         } else {
@@ -273,7 +275,8 @@
         });
         input.oninput = () => {
             if (isIME) return;
-            if (curL <= 1) { handleInput(input.value); input.value = ""; }
+            // ĐÃ SỬA: Dưới bài 5 thì xử lý từng phím gõ đơn lẻ (để gõ asdf jkl; dễ dàng)
+            if (curL < 5) { handleInput(input.value); input.value = ""; }
             else if (input.value.endsWith(' ')) { handleInput(input.value.trim().normalize('NFC') + ' '); input.value = ""; }
         };
         document.body.onclick = () => input.focus();
@@ -299,7 +302,6 @@
         const targetEl = document.getElementById(`c-${curIdx}`);
         if (!targetEl) return;
 
-        // ĐÃ SỬA: Tự động cuộn tới ký tự hiện tại
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         targetEl.classList.add('active');
