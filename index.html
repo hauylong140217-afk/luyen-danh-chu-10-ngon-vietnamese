@@ -128,7 +128,8 @@
 <input type="text" id="hidden-input" autofocus>
 
 <script>
-    // Giữ nguyên mảng DATA của bạn
+<script>
+    // 1. Dữ liệu gốc của bạn
     const warmUp = ["asdf jkl; asdf jkl;", "aa ss dd ff jj kk ll ;;", "asdfasdf jkl;jkl;", "fj f d s a j k l ;"];
     const shortPhrases = [
         "má mà mả mã mạ", "con cò có cái cổ cong cong", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây",
@@ -168,11 +169,30 @@
         "Trời Nam một buổi chiều tà Vầng thơ viết vội để mà cảm ơn Thưở xưa nước Việt, Hùng Vương Quốc tổ dựng nước hùng cường ngàn năm Nhớ kỷ Hồng Bàng xa xăm Văn Lang, Âu Lạc tiếng tăm lẫy lừng Đánh đuổi phương Bắc đã từng Truyền ngôi dạy bảo nhiều vùng nước ta Dạy dân về cách làm nhà Chăn nuôi thú vật, vịt, gà, chim muông Dạy dân dựa sức suối nguồn Làm nương lúa nước, bánh vuông, bánh tròn Truyện xưa, tích cũ vẫn còn Lang Liêu làm bánh vuông, tròn dâng vua An Tiêm – ông tổ nghề dưa Lưu danh hậu thế xứng vừa cha ông Bao năm dạy dân vun trồng Răn con khuyên cháu Lạc Hồng nước ta Quốc tổ ngàn năm vang xa Tâm hương gợi nhớ để mà biết ơn."
     ];
 
-    const DATA = [...warmUp, ...shortPhrases, ...kingPoems];
-    while(DATA.length < 2000) {
-        DATA.push("Luyện tập gõ nhanh đoạn văn bản số " + (DATA.length + 1) + " để nâng cao kỹ năng mười ngón mỗi ngày.");
+    // 2. Logic Xử lý DATA mới - Chia 5 cụm và tách thơ
+    let DATA = [];
+    
+    // Gộp warmUp và shortPhrases: 5 cụm/bài
+    let baseData = [...warmUp, ...shortPhrases];
+    for (let i = 0; i < baseData.length; i += 5) {
+        DATA.push(baseData.slice(i, i + 5).join("  "));
     }
 
+    // Tách kingPoems thành từng câu đơn
+    kingPoems.forEach(poem => {
+        let lines = poem.split(/[.,!?\n]/); 
+        lines.forEach(line => {
+            let cleanLine = line.trim();
+            if (cleanLine.length > 5) DATA.push(cleanLine);
+        });
+    });
+
+    // Tạo thêm bài tập cho đủ số lượng
+    while(DATA.length < 1000) {
+        DATA.push("Luyện tập gõ nhanh đoạn văn bản số " + (DATA.length + 1) + " để nâng cao kỹ năng mỗi ngày.");
+    }
+
+    // 3. Phần điều khiển hệ thống (Giữ nguyên của bạn)
     const KB_MAP = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
     const FINGER_MAP = {
         '1':'f-l5','q':'f-l5','a':'f-l5','z':'f-l5','2':'f-l4','w':'f-l4','s':'f-l4','x':'f-l4',
@@ -219,8 +239,7 @@
         document.getElementById('cur-lesson-name').innerText = id;
 
         const hint = document.getElementById('unikey-hint');
-        // Logic hiển thị nhắc nhở Unikey
-        if(id <= 4) {
+        if(id <= 1) { // Chỉ bài đầu là warmUp không dấu
             hint.innerText = "TẮT TIẾNG VIỆT (CHỮ E)";
             hint.className = "unikey-alert mode-e";
         } else {
@@ -239,11 +258,12 @@
         input.addEventListener('compositionstart', () => isIME = true);
         input.addEventListener('compositionend', () => { 
             isIME = false; 
-            if(curL > 4) { handleInput(input.value.normalize('NFC')); input.value = ""; }
+            handleInput(input.value.normalize('NFC')); 
+            input.value = ""; 
         });
         input.oninput = () => {
             if (isIME) return;
-            if (curL <= 4) { handleInput(input.value); input.value = ""; }
+            if (curL <= 1) { handleInput(input.value); input.value = ""; }
             else if (input.value.endsWith(' ')) { handleInput(input.value.trim().normalize('NFC') + ' '); input.value = ""; }
         };
         document.body.onclick = () => input.focus();
@@ -293,5 +313,3 @@
     function nextLesson() { loadLesson(curL < DATA.length ? curL + 1 : 1); }
     window.onload = init;
 </script>
-</body>
-</html>
