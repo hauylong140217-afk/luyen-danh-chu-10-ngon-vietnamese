@@ -2,191 +2,342 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Luyện Gõ 10 Ngón - Hà Uy Long</title>
+    <title>Hệ Thống Luyện Gõ 10 Ngón - Hà Uy Long</title>
     <style>
         :root {
-            --bg: #1e293b; --panel: #334155; --text: #f8fafc;
-            --primary: #38bdf8; --success: #4ade80; --danger: #f87171;
+            --bg: #ffffff; --panel: #f8fafc; --text: #1e293b;
+            --primary: #0284c7; --success: #22c55e; --danger: #ef4444;
+            --kb-key: #f1f5f9; --key-text: #475569;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a; --panel: #1e293b; --text: #f8fafc;
+                --kb-key: #334155; --key-text: #f8fafc;
+            }
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        .sidebar { width: 320px; background: var(--panel); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         
-        .sidebar { width: 280px; background: #0f172a; border-right: 1px solid #334155; display: flex; flex-direction: column; }
-        .author { padding: 25px; font-size: 24px; font-weight: 800; text-align: center; color: var(--primary); border-bottom: 1px solid #334155; }
-        .ls-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .ls-item { padding: 12px; margin-bottom: 6px; border-radius: 6px; cursor: pointer; font-size: 14px; color: #94a3b8; transition: 0.2s; }
-        .ls-item:hover { background: rgba(255,255,255,0.05); }
-        .ls-item.active { background: var(--primary); color: #0f172a; font-weight: bold; }
-
-        .main { flex: 1; display: flex; flex-direction: column; }
-        .stats-bar { height: 60px; display: flex; align-items: center; justify-content: space-around; background: #0f172a; border-bottom: 1px solid #334155; }
-        .stat { font-weight: bold; }
-        .stat span { color: var(--primary); font-size: 20px; margin-left: 8px; }
-
-        .typing-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-        .word-display { 
-            width: 100%; max-width: 900px; background: var(--panel); padding: 40px; border-radius: 12px; 
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; line-height: 1.6;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        .author-box {
+            padding: 20px 15px 5px 15px;
+            font-size: 25px;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary);
         }
 
-        .char { font-size: 34px; font-weight: 600; color: #64748b; border-bottom: 3px solid transparent; }
-        .char.active { color: var(--text); border-bottom-color: var(--primary); background: rgba(56, 189, 248, 0.1); }
+        .guide-container {
+            margin: 10px;
+            padding: 10px;
+            background: rgba(2, 132, 199, 0.05);
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .guide-title { font-weight: bold; margin-bottom: 5px; color: var(--primary); display: block; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .guide-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .guide-table td { border-bottom: 1px solid rgba(0,0,0,0.03); padding: 2px 0; }
+        .guide-table b { color: var(--danger); }
+
+        .unikey-alert { padding: 12px; margin: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; text-align: center; border: 2px solid var(--primary); }
+        .mode-e { background: #fee2e2; color: #b91c1c; border-color: #ef4444; }
+        .mode-v { background: #dcfce7; color: #15803d; border-color: #22c55e; }
+
+        .ls-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .ls-item { padding: 10px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; font-size: 13px; border: 1px solid rgba(0,0,0,0.05); }
+        .ls-item.active { background: var(--primary); color: white; }
+
+        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .stats { height: 60px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.08); font-weight: bold; }
+        .stat-val { font-size: 22px; color: var(--primary); }
+
+        .typing-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 30px; }
+        
+        .display-box { 
+            width: 95%; 
+            max-width: 900px; 
+            background: var(--panel); 
+            padding: 30px; 
+            border-radius: 15px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 8px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            max-height: 40vh; 
+            overflow-y: auto; 
+            scroll-behavior: smooth; 
+        }
+
+        .char { font-size: 32px; font-weight: bold; color: #94a3b8; border-bottom: 4px solid transparent; }
+        .char.active { color: var(--text); border-bottom-color: var(--primary); }
         .char.ok { color: var(--success); }
-        .char.err { color: var(--danger); }
+        .char.err { background: var(--danger); color: white; border-radius: 4px; }
 
-        .kb { margin-top: 40px; }
-        .row { display: flex; gap: 4px; margin-bottom: 4px; justify-content: center; }
-        .key { width: 45px; height: 45px; background: #475569; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border-bottom: 3px solid #1e293b; }
-        .key.active { background: var(--primary); color: #0f172a; border-bottom: 0; transform: translateY(2px); }
+        .kb-container { display: flex; align-items: flex-end; gap: 30px; }
+        .hand { width: 120px; height: 120px; fill: none; stroke: currentColor; stroke-width: 1.5; opacity: 0.2; }
+        .hand.active { opacity: 1; color: var(--primary); }
+        .finger.active { fill: var(--primary); }
 
-        #overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.9); display: none; align-items: center; justify-content: center; z-index: 10; }
-        .card { background: var(--panel); padding: 40px; border-radius: 16px; text-align: center; border: 2px solid var(--primary); }
-        #h-input { position: absolute; opacity: 0; }
+        .keyboard { background: rgba(0,0,0,0.1); padding: 10px; border-radius: 10px; }
+        .kb-row { display: flex; gap: 4px; margin-bottom: 4px; justify-content: center; }
+        .key { width: 40px; height: 40px; background: var(--kb-key); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border-bottom: 3px solid rgba(0,0,0,0.2); }
+        .key.active { background: var(--primary); color: white; transform: translateY(2px); border-bottom: 0; }
+
+        #result-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .result-card { background: var(--bg); padding: 40px; border-radius: 20px; text-align: center; border: 2px solid var(--primary); }
+        #hidden-input { position: fixed; top: -100px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="author">Hà Uy Long</div>
+    <div class="author-box">Tác giả: Hà Uy Long</div>
+    
+    <div class="guide-container">
+        <span class="guide-title">QUY TẮC GÕ TIẾNG VIỆT</span>
+        <table class="guide-table">
+            <tr><td colspan="2" style="background:rgba(0,0,0,0.05); font-weight:bold">Kiểu TELEX</td></tr>
+            <tr><td>Sắc: <b>s</b> | Huyền: <b>f</b></td><td>Hỏi: <b>r</b> | Ngã: <b>x</b></td></tr>
+            <tr><td>Nặng: <b>j</b> | Ư/Ơ: <b>w</b></td><td>Ă: <b>aw</b> | Â: <b>aa</b></td></tr>
+            <tr><td>Ê: <b>ee</b> | Ô: <b>oo</b> | Đ: <b>dd</b></td><td>ƯƠ: <b>w</b></td></tr>
+            
+            <tr><td colspan="2" style="background:rgba(0,0,0,0.05); font-weight:bold; padding-top:5px">Kiểu VNI</td></tr>
+            <tr><td>Sắc: <b>1</b> | Huyền: <b>2</b></td><td>Hỏi: <b>3</b> | Ngã: <b>4</b></td></tr>
+            <tr><td>Nặng: <b>5</b> | Ă: <b>6</b></td><td>Â: <b>6</b> | Ê: <b>6</b> | Ô: <b>6</b></td></tr>
+            <tr><td>Ơ: <b>7</b> | Ư: <b>8</b> | Đ: <b>9</b></td><td>Dấu bỏ sau cùng</td></tr>
+        </table>
+    </div>
+
+    <div id="unikey-hint" class="unikey-alert">KIỂM TRA UNIKEY</div>
     <div class="ls-list" id="ls-list"></div>
 </div>
 
 <div class="main">
-    <div class="stats-bar">
-        <div class="stat">BÀI: <span id="l-num">1</span></div>
-        <div class="stat">WPM: <span id="wpm">0</span></div>
-        <div class="stat">ACC: <span id="acc">0%</span></div>
+    <div class="stats">
+        <div>BÀI: <span id="cur-lesson-name">1</span></div>
+        <div>WPM: <span id="wpm" class="stat-val">0</span></div>
+        <div>CHÍNH XÁC: <span id="acc" class="stat-val">0%</span></div>
     </div>
-    <div class="typing-area">
-        <div class="word-display" id="display"></div>
-        <div class="kb" id="kb"></div>
+
+    <div class="typing-zone">
+        <div class="display-box" id="display"></div>
+        <div class="kb-container">
+            <svg id="hand-l" class="hand" viewBox="0 0 100 100"><path class="finger" id="f-l5" d="M10,60 Q5,30 15,30 T25,60" /><path class="finger" id="f-l4" d="M25,50 Q20,15 35,15 T45,50" /><path class="finger" id="f-l3" d="M45,40 Q45,5 55,5 T65,40" /><path class="finger" id="f-l2" d="M65,50 Q75,15 85,20 T80,55" /><path class="finger" id="f-l1" d="M80,80 Q95,75 90,95" /></svg>
+            <div class="keyboard" id="keyboard"></div>
+            <svg id="hand-r" class="hand" viewBox="0 0 100 100"><path class="finger" id="f-r5" d="M90,60 Q95,30 85,30 T75,60" /><path class="finger" id="f-r4" d="M75,50 Q80,15 65,15 T55,50" /><path class="finger" id="f-r3" d="M55,40 Q55,5 45,5 T35,40" /><path class="finger" id="f-r2" d="M35,50 Q25,15 15,20 T20,55" /><path class="finger" id="f-r1" d="M20,80 Q5,75 10,95" /></svg>
+        </div>
     </div>
-    <div id="overlay">
-        <div class="card">
-            <h1 style="margin-bottom:20px">KẾT QUẢ</h1>
-            <div id="res-text" style="font-size: 18px; margin-bottom: 30px;"></div>
-            <button onclick="nextL()" style="padding:12px 35px; background:var(--primary); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">BÀI TIẾP THEO</button>
+
+    <div id="result-overlay">
+        <div class="result-card">
+            <h2 style="color:var(--primary)">HOÀN THÀNH!</h2>
+            <div id="final-stats" style="margin: 20px 0; font-size: 20px;"></div>
+            <button onclick="nextLesson()" style="padding:12px 30px; cursor:pointer; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">BÀI TIẾP THEO ➔</button>
         </div>
     </div>
 </div>
 
-<input type="text" id="h-input" autofocus autocomplete="off">
+<input type="text" id="hidden-input" autofocus>
 
 <script>
+// ĐÃ CẬP NHẬT: Bài 1-4 không tiếng Việt, các câu sau có dấu đầy đủ
     const warmUp = [
-        "asdf jkl; asdf jkl; asdf jkl; asdf jkl;",
-        "aa ss dd ff jj kk ll ;; asdf jkl;",
-        "asdfasdf jkl;jkl; a s d f j k l ;",
-        "f d s a j k l ; fj gh ty ur ie wo qp"
+        "asdf jkl; asdf jkl; asdf jkl; asdf jkl;", // Bài 1
+        "aa ss dd ff jj kk ll ;; asdf jkl;",      // Bài 2
+        "asdfasdf jkl;jkl; a s d f j k l ;",      // Bài 3
+        "f d s a j k l ; fj gh ty ur ie wo qp"    // Bài 4
     ];
 
-    const phrases = [
+    const shortPhrases = [
         "má mà mả mã mạ", "con cò có cái cổ cong cong", "uống nước nhớ nguồn", "ăn quả nhớ kẻ trồng cây",
-        "lá lành đùm lá rách", "tiên học lễ hậu học văn", "có chí thì nên", "tốt gỗ hơn tốt nước sơn"
+        "lá lành đùm lá rách", "tiên học lễ hậu học văn", "có chí thì nên", "tốt gỗ hơn tốt nước sơn",
+        "đói cho sạch rách cho thơm", "kiến tha lâu cũng đầy tổ", "không thầy đố mày làm nên",
+        "học thầy không tày học bạn", "công cha như núi thái sơn", "nghĩa mẹ như nước trong nguồn chảy ra",
+        "gần mực thì đen gần đèn thì sáng", "ăn chậm nhai kỹ", "học một biết mười", "thời gian là vàng bạc",
+        "lời chào cao hơn mâm cỗ", "đoàn kết là sức mạnh", "sức khỏe là vốn quý nhất", "cái nết đánh chết cái đẹp",
+        "chậm mà chắc", "nhập gia tùy tục", "nói đi đôi với làm", "tấc đất tấc vàng", "chân cứng đá mềm",
+        "gieo gió gặt bão", "kính trên nhường dưới", "uống nước nhớ người đào giếng", "luyện tay mỗi ngày",
+        "kỹ năng gõ mười ngón", "kiên trì sẽ thành công", "làm việc có kế hoạch", "đam mê dẫn lối",
+        "tập trung là chìa khóa", "sáng tạo không ngừng", "thất bại là mẹ thành công", "vượt qua giới hạn bản thân",
+        "tri thức là sức mạnh", "đường tuy ngắn không đi không đến", "việc tuy nhỏ không làm không xong",
+        "một con ngựa đau cả tàu bỏ cỏ", "mùa xuân là tết trồng cây", "không có việc gì khó", "chỉ sợ lòng không bền",
+        "đào núi và lấp biển", "quyết chí ắt làm nên", "vì lợi ích mười năm trồng cây", "vì lợi ích trăm năm trồng người",
+        "đi một ngày đàng học một sàng khôn", "có công mài sắt có ngày nên kim", "muốn biết phải hỏi muốn giỏi phải học"
+    ];
+    // Các bài thơ có dấu để luyện gõ tiếng Việt từ Bài 5 trở đi
+    const kingPoems = [
+        "Dù ai đi ngược về xuôi Nhớ ngày giỗ Tổ mùng mười tháng ba Khắp miền truyền mãi câu ca Nước non vẫn nước non nhà nghìn năm",
+        "Tháng ba có một ngày mười Là ngày giỗ Tổ chẳng đời nào quên",
+        "Ai về Phú Thọ cùng ta Vui ngày giỗ Tổ tháng ba mùng mười",
+        "Tháng ba nô nức hội đền Nhớ ngày giỗ Tổ bốn nghìn năm nay",
+        "Dù xa vạn nẻo bến bờ muôn phương Nhớ ngày giỗ Tổ Hùng Vương Về thăm dâng kính nén hương cội nguồn",
+        "Tháng ba giỗ Tổ Hùng Vương Về nguồn dâng nén trầm hương đầu mùa",
+        "Dù ai đi ngược về xuôi Nhớ ngày Giỗ Tổ mùng mười tháng Ba Một vùng công đức Mẹ Cha Khơi sông mở cõi giao hoà bốn phương. Ai về Cổ Tích, Hy Cương Lâm Thao, Phú Thọ rừng bương đồi chè Đêm nằm như vẫn còn nghe Trống đồng vang vọng suối khe ruộng đồng... Mây bay vẫn dáng Tiên Rồng Âu Cơ lưng địu, tay bồng, vai mang. Vua Hùng dựng nước Văn Lang Núi sông voi ngựa hàng hàng uy nghi. Vương triều khi thịnh, khi suy Lửa hồng son sắt chẳng khi nào tàn Một vùng nắng dội, mưa chan Mồ hôi đổ xuống, bản làng mọc lên. Cháu con nghìn thuở không quên Ngày giỗ Tổ, bao hồn thiêng hội về.",
+        "Tháng ba giỗ Tổ Hùng vương Về nguồn dâng nén trầm hương đầu mùa Non cao vọng tiếng chuông chùa Hùng thiêng sông núi đang mùa đơm bông Linh thiêng vang vọng tiếng cồng Nước nguồn nuôi dưỡng con rồng cháu tiên Dòng Lô Giang với lời nguyền Non sông gấm vóc vững bền ngàn năm Cánh chim Lạc đợi trăng rằm Suối nguồn vẫn chảy, dâu tằm vẫn xanh Còn đây khúc Ghẹo ngọt lành Khúc Xoan, nón cọ song hành dáng xuân Sáo tiêu hòa tiếng chuông ngân Đá vàng ghi tạc trần gian nguyện thề Khơi trong dòng nước sông quê Cháu con gìn giữ lời thề ngàn năm Núi sông, biển cả, Bắc Nam… Đều chung một ánh trăng rằm sáng soi Hùng thiêng lưu mãi muôn đời Vẹn nguyên bờ cõi… giống nòi tổ tiên.",
+        "Đất nước bốn ngàn năm lịch sử Lật từng trang quá khứ hiện ra Công lao xây dựng sơn hà Hùng Vương Quốc Tổ không nhòa dấu son Chẳng quản ngại trèo non xuống bể Đến Phong Châu lập kế sinh nhai Xây bao thành rộng lũy dài Chăn dân no ấm, trong ngoài bình yên Tiên mảnh đất linh thiêng hạ trại Thu giang sơn một dải dựng xây Sông Đà, núi Tản còn đây Sơn Tinh dâng nước diệt bầy yêu ma Dòng Hồng Lạc con nhà văn võ Giống Rồng Tiên thấu tỏ nghĩa nhân Đồng lòng chống họa ngoại xâm Sức trai Phù Đổng diệt quân giặc thù Trang sử đỏ nghìn thu vẫn sáng Ánh hào quang tỏa rạng ngàn đời Tháng Ba có một ngày Mười Là ngày giỗ Tổ chẳng đời nào quên.",
+        "Đời đời tưởng nhớ ông cha Vị vua khai quốc lập nhà nước Nam Diệt trừ bè lũ gian tham Dựng xây bờ cõi ngàn năm cơ đồ Con dân mãi mãi tôn thờ Dù xa vạn nẻo bến bờ muôn phương Nhớ ngày giỗ Tổ Hùng Vương Về thăm dâng kính nén hương cội nguồn.",
+        "Một dải sơn hà mấy núi sông Công ơn Tổ đức đã vun trồng Cha đưa xuống bể trời đông tiến Mẹ dắt lên rừng mở đất thông Biển Việt ngàn xưa đà có chủ Bờ Nam vạn đại hữu nhân ông Giang sơn gấm vóc từ bao thuở Hậu thế lưu truyền nếp Tổ Tông",
+        "Đam mê trong điệu hát xoan Theo em về với đất xưa Vua Hùng Phú Thọ đồi núi chập chùng Việt Trì Bạch Hạc uy lừng Tam Giang Giỗ Tổ lễ hội non sông Muôn đời con cháu Tiên Rồng về đây Ơn Quốc Tổ đã dựng xây Văn Lang nước Việt cho bầy cháu con Tấm lòng mãi luôn sắt son Yêu nước truyền thống chúng con tiếp truyền Lễ đền Mẫu thật linh thiêng Âu Cơ quốc Mẫu mẹ hiền muôn dân Trang cổ tích đẹp bội phần Đẹp màu huyền thoại nhuộm màu yêu thương Lâm Thao thẳng đó con đường Lễ đền bà Chúa vẫn thường khói nhang Em đưa anh thăm vòng quanh Mảnh đất cổ tích vang danh trường tồn Thêm yêu vùng đất cội nguồn Thêm yêu dòng máu Lạc Hồng chúng ta.",
+        "Nhớ Ngày Giỗ Tổ Hùng Vương Cháu con hội tụ thập phương quay về Khói hương ngát tỏa lời thề Giữ yên bờ cõi miền quê Lạc Rồng Khấn cầu Vua đấng cha ông Linh thiêng phù trợ non sông yên bình Xua tan nạn giặc rập rình Sức mạnh đoàn kết chung tình đắp xây Ngược xuôi Nam Bắc đó đây Một nhà cùng cội vang đầy tiếng thơm Dâng Ngày lễ hội hoa đơm Thành tâm con vái no cơm ấm lòng Đá mềm chân cứng cầu mong Êm vui hạnh phúc đầy đong nghĩa tình Duyên nồng đẹp nụ cười xinh Ửng hồng đôi má lung linh sao trời An nhàn thanh thản vui chơi Cháu con tài lộc ơn đời đức vua.",
+        "Núi Nghĩa Lĩnh linh thiêng đất Việt Ngàn ngàn năm rực rỡ mây rồng Đỉnh cao đệ nhất thờ Quốc Phụ Chung Mẫu dân Nam ánh lửa nồng Lời hứa sắt son hồn đất nước Xây nền độc lập vững non sông Tộc truyền kiệt tác danh muôn thuở Giếng Ngọc bốn mùa nước lặng trong Lễ Hội Đền Hùng dân khí vượng Bánh chưng dày tích sáng đàng Đông Hát xoan tưới mát khai dân trí Nhất hậu dân sinh cháu Lạc Hồng.",
+        "Con ạ thời vua Hùng Vương thứ 6 Cần nhân tài nối nghiệp cha ông Lang Liêu cậu bé côi cút, nhà nông Bị ghẻ lạnh sống cuộc đời dân dã. Năm tháng gian nan, vất vả Tôi rèn phẩm chất Rồng Tiên Thông minh, sáng dạ, ngoan hiền Mùa thi năm ấy, chàng đứng đầu xứng đáng. Bánh chưng xanh tựa mặt đất mênh mang Bánh dày tròn như bầu trời úp xuống Gạo nếp, lá dong cây cối từ đồng ruộng Gần gũi, thân quen mà ý nghĩa thiêng liêng. Nay các con sống hạnh phúc, bình yên Hãy ghi nhớ công ơn bao đời trước Lời Bác dặn: các vua Hùng có công dựng nước! Thế hệ các con hãy đền đáp công ơn Học thành tài góp sức cho đất nước phồn vinh con nhé!",
+        "Nhớ Ngày Giỗ Tổ Hùng Vương Cháu con hội tụ thập phương quay về Khói hương ngát tỏa lời thề Giữ yên bờ cõi miền quê Lạc Rồng Khấn cầu Vua đấng cha ông Linh thiêng phù trợ non sông yên bình Xua tan nạn giặc rập rình Sức mạnh đoàn kết chung tình đắp xây Ngược xuôi Nam Bắc đó đây Một nhà cùng cội vang đầy tiếng thơm Dâng Ngày lễ hội hoa đơm Thành tâm con vái no cơm ấm lòng Đá mềm chân cứng cầu mong Êm vui hạnh phúc đầy đong nghĩa tình Duyên nồng đẹp nụ cười xinh Ửng hồng đôi má lung linh sao trời An nhàn thanh thản vui chơi Cháu con tài lộc ơn đời đức vua.",
+        "Thuở ngày xưa con theo Cha về biển Mẹ lên rừng dựng nghiệp chốn non xanh Muôn đời rừng biển chung gốc chung ngành Truyền thuyết lịch sử dài theo năm tháng. Từ lúc bình minh đến khi chạng vạng Những đứa con ngày ấy tiếp bước Cha Quăng chài tung lưới giữ yên biển nhà Như thành lũy nhấp nhô chặn quỷ dữ. Dù sách vở có bao nhiêu câu chữ Đâu có thể nói hết những chiến công Của lớp người xưa thế hệ cha ông Bằng mọi cách giữ toàn vẹn bờ cõi... Đến ngày nay chúng ta có thể nói Tự hào thay truyền thống Tổ Hùng Vương Là ngọn đuốc sáng dẫn lối chỉ đường Đoàn kết anh em chung một dòng tộc... Những chiến sỹ giữ chủ quyền cột mốc Vững tay súng để Tổ quốc yên bình Ngày Giỗ Tổ - Nhân dân đất nước mình Vẫn dành tình yêu cho người lính đảo.",
+        "Trời Nam một buổi chiều tà Vầng thơ viết vội để mà cảm ơn Thưở xưa nước Việt, Hùng Vương Quốc tổ dựng nước hùng cường ngàn năm Nhớ kỷ Hồng Bàng xa xăm Văn Lang, Âu Lạc tiếng tăm lẫy lừng Đánh đuổi phương Bắc đã từng Truyền ngôi dạy bảo nhiều vùng nước ta Dạy dân về cách làm nhà Chăn nuôi thú vật, vịt, gà, chim muông Dạy dân dựa sức suối nguồn Làm nương lúa nước, bánh vuông, bánh tròn Truyện xưa, tích cũ vẫn còn Lang Liêu làm bánh vuông, tròn dâng vua An Tiêm – ông tổ nghề dưa Lưu danh hậu thế xứng vừa cha ông Bao năm dạy dân vun trồng Răn con khuyên cháu Lạc Hồng nước ta Quốc tổ ngàn năm vang xa Tâm hương gợi nhớ để mà biết ơn."
     ];
 
-    let DATA = [...warmUp, ...phrases];
-    const KB_LAYOUT = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
-    let curIdx = 0, errors = 0, startTime = null, currentLesson = 1, chars = [], isIME = false;
+    let DATA = [];
+    // Gộp bài khởi động (Latinh) và các câu tục ngữ không dấu
+    let latinSection = [...warmUp];
+    let noAccentPhrases = [...shortPhrases];
+
+    // Tạo danh sách DATA: 4 bài đầu là Latinh thuần, sau đó đến các bài không dấu
+    latinSection.forEach(l => DATA.push(l));
+
+    for (let i = 0; i < noAccentPhrases.length; i += 5) {
+        DATA.push(noAccentPhrases.slice(i, i + 5).join("  "));
+    }
+
+    kingPoems.forEach(poem => {
+        let lines = poem.split(/[.,!?\n]/); 
+        lines.forEach(line => {
+            let cleanLine = line.trim();
+            if (cleanLine.length > 5) DATA.push(cleanLine);
+        });
+    });
+
+    const reviewPool = DATA.slice(4, 63); 
+    while(DATA.length < 2000) {
+        let randomLesson = reviewPool[Math.floor(Math.random() * reviewPool.length)];
+        DATA.push(randomLesson);
+    }
+
+    const KB_MAP = ["1234567890-=", "qwertyuiop[]", "asdfghjkl;'", "zxcvbnm,./"];
+    const FINGER_MAP = {
+        '1':'f-l5','q':'f-l5','a':'f-l5','z':'f-l5','2':'f-l4','w':'f-l4','s':'f-l4','x':'f-l4',
+        '3':'f-l3','e':'f-l3','d':'f-l3','c':'f-l3','4':'f-l2','r':'f-l2','f':'f-l2','v':'f-l2',
+        '5':'f-l2','t':'f-l2','g':'f-l2','b':'f-l2','6':'f-r2','y':'f-r2','h':'f-r2','n':'f-r2',
+        '7':'f-r2','u':'f-r2','j':'f-r2','m':'f-r2','8':'f-r3','i':'f-r3','k':'f-r3',',':'f-r3',
+        '9':'f-r4','o':'f-r4','l':'f-r4','.':'f-r4','0':'f-r5','p':'f-r5',';':'f-r5','/':'f-r5',' ':'f-r1'
+    };
+
+    let curL = 1, chars = [], curIdx = 0, errors = 0, startTime = null, isIME = false;
 
     function init() {
         const list = document.getElementById('ls-list');
+        list.innerHTML = "";
         DATA.forEach((d, i) => {
-            list.innerHTML += `<div class="ls-item" id="ls-${i+1}" onclick="loadLesson(${i+1})">Bài ${i+1}: ${d.substring(0, 12)}...</div>`;
+            list.innerHTML += `<div class="ls-item" id="ls-${i+1}" onclick="loadLesson(${i+1})">Bài ${i+1}</div>`;
         });
-        
-        const kb = document.getElementById('kb');
-        KB_LAYOUT.forEach(row => {
-            const r = document.createElement('div'); r.className = 'row';
+        const kb = document.getElementById('keyboard');
+        kb.innerHTML = "";
+        KB_MAP.forEach(row => {
+            const r = document.createElement('div'); r.className = 'kb-row';
             row.split('').forEach(k => r.innerHTML += `<div class="key" id="k-${k}">${k.toUpperCase()}</div>`);
             kb.appendChild(r);
         });
-        kb.innerHTML += `<div class="row"><div class="key" id="k-space" style="width:250px">SPACE</div></div>`;
-        
+        kb.innerHTML += `<div class="kb-row"><div class="key" id="k-space" style="width:250px">SPACE</div></div>`;
         loadLesson(1);
-        setupEvents();
+        setupInput();
+    }
+
+    function resetStats() {
+        curIdx = 0; errors = 0; startTime = null;
+        document.getElementById('wpm').innerText = "0";
+        document.getElementById('acc').innerText = "0%";
     }
 
     function loadLesson(id) {
-        currentLesson = id; curIdx = 0; errors = 0; startTime = null;
-        document.getElementById('overlay').style.display = 'none';
+        resetStats();
+        curL = id;
+        document.getElementById('result-overlay').style.display = 'none';
         document.querySelectorAll('.ls-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`ls-${id}`).classList.add('active');
-        document.getElementById('l-num').innerText = id;
-        
+        const activeItem = document.getElementById(`ls-${id}`);
+        if(activeItem) {
+            activeItem.classList.add('active');
+            activeItem.scrollIntoView({ block: 'nearest' });
+        }
+        document.getElementById('cur-lesson-name').innerText = id;
+
+        const hint = document.getElementById('unikey-hint');
+        if(id < 5) {
+            hint.innerText = "TẮT TIẾNG VIỆT (CHỮ E)";
+            hint.className = "unikey-alert mode-e";
+        } else {
+            hint.innerText = "BẬT TIẾNG VIỆT (CHỮ V)";
+            hint.className = "unikey-alert mode-v";
+        }
+
         chars = DATA[id-1].split('');
-        document.getElementById('display').innerHTML = chars.map((c, i) => 
-            `<span class="char" id="c-${i}">${c === ' ' ? '&nbsp;' : c}</span>`
-        ).join('');
+        const disp = document.getElementById('display');
+        disp.innerHTML = chars.map((c, i) => `<span class="char" id="c-${i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
         updateUI();
     }
 
-    function setupEvents() {
-        const input = document.getElementById('h-input');
-        input.onkeydown = (e) => { if(e.key === "Backspace") e.preventDefault(); };
+    function setupInput() {
+        const input = document.getElementById('hidden-input');
         input.addEventListener('compositionstart', () => isIME = true);
-        input.addEventListener('compositionend', (e) => { 
+        input.addEventListener('compositionend', () => { 
             isIME = false; 
-            process(e.data.normalize('NFC')); 
+            handleInput(input.value.normalize('NFC')); 
             input.value = ""; 
         });
-        input.oninput = (e) => { 
-            if(!isIME && e.data) { process(e.data); input.value = ""; }
+        input.oninput = () => {
+            if (isIME) return;
+            if (curL < 5) { handleInput(input.value); input.value = ""; }
+            else if (input.value.endsWith(' ')) { handleInput(input.value.trim().normalize('NFC') + ' '); input.value = ""; }
         };
         document.body.onclick = () => input.focus();
     }
 
-    function process(typed) {
+    function handleInput(typed) {
         if (!startTime) startTime = new Date();
-        
-        for (let char of typed) {
-            if (curIdx >= chars.length) break;
+        const typedArr = typed.split('');
+        typedArr.forEach(char => {
+            if (curIdx >= chars.length) return;
             const target = chars[curIdx].normalize('NFC');
-
-            // LOGIC TYPING STUDY:
-            // 1. Chặn nhấn Space nếu chưa đến lúc
-            if (target === ' ' && char !== ' ') continue;
-            // 2. Chặn nhấn phím chữ nếu đang ở dấu cách
-            if (target !== ' ' && char === ' ') continue;
-
             const el = document.getElementById(`c-${curIdx}`);
-            if (char === target) {
-                el.className = 'char ok';
-            } else {
-                el.className = 'char err'; // Báo đỏ nhưng vẫn cho nhảy qua
-                errors++;
-            }
+            if (char === target) el.className = 'char ok';
+            else { el.className = 'char err'; errors++; }
             curIdx++;
-        }
-        
-        if (curIdx >= chars.length) finish();
+        });
+        if (curIdx >= chars.length) showResult();
         else updateUI();
     }
 
     function updateUI() {
-        document.querySelectorAll('.char, .key').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.char, .key, .finger, .hand').forEach(el => el.classList.remove('active'));
         const targetEl = document.getElementById(`c-${curIdx}`);
-        if (targetEl) {
-            targetEl.classList.add('active');
-            const key = chars[curIdx].toLowerCase();
-            const keyEl = document.getElementById(key === ' ' ? 'k-space' : `k-${key}`);
-            if (keyEl) keyEl.classList.add('active');
+        if (!targetEl) return;
+
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        targetEl.classList.add('active');
+        const nextChar = chars[curIdx].toLowerCase();
+        const keyEl = document.getElementById(nextChar === ' ' ? 'k-space' : `k-${nextChar}`);
+        if (keyEl) keyEl.classList.add('active');
+        const fingerId = FINGER_MAP[nextChar];
+        if (fingerId) {
+            document.getElementById(fingerId).classList.add('active');
+            document.getElementById(fingerId.startsWith('f-l') ? 'hand-l' : 'hand-r').classList.add('active');
         }
         if (startTime) {
             const min = (new Date() - startTime) / 60000;
             document.getElementById('wpm').innerText = Math.round((curIdx / 5) / min) || 0;
-            document.getElementById('acc').innerText = Math.round(((curIdx - errors) / curIdx) * 100) + "%";
+            document.getElementById('acc').innerText = Math.round(((curIdx - errors) / (curIdx || 1)) * 100) + "%";
         }
     }
 
-    function finish() {
-        const acc = Math.round(((chars.length - errors) / chars.length) * 100);
-        document.getElementById('res-text').innerHTML = `Tốc độ: <b>${document.getElementById('wpm').innerText} WPM</b><br>Độ chính xác: <b>${acc}%</b>`;
-        document.getElementById('overlay').style.display = 'flex';
+    function showResult() {
+        const finalAcc = Math.round(((chars.length - errors) / chars.length) * 100);
+        document.getElementById('final-stats').innerHTML = `Tốc độ: <b>${document.getElementById('wpm').innerText} WPM</b><br>Độ chính xác: <b>${finalAcc}%</b>`;
+        document.getElementById('result-overlay').style.display = 'flex';
     }
 
-    function nextL() { loadLesson(currentLesson < DATA.length ? currentLesson + 1 : 1); }
+    function nextLesson() { loadLesson(curL < DATA.length ? curL + 1 : 1); }
     window.onload = init;
 </script>
 </body>
